@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import choreo.auto.AutoChooser;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auto.Auto;
@@ -15,8 +14,6 @@ import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
-  private AutoChooser autoChooser;
-
   private final ShooterCTREIO shooterIO;
   private final ShooterSubsystem shooterSubsystem;
   private final DrivetrainIOCTRE drivetrainIO;
