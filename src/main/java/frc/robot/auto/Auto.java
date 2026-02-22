@@ -14,8 +14,8 @@ import org.littletonrobotics.junction.Logger;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 public class Auto {
-    private DrivetrainSubsystem drivetrain;
-    private AutoFactory autoFactory;
+    private final DrivetrainSubsystem drivetrain;
+    private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
 
     public Auto(DrivetrainSubsystem drivetrain) {
