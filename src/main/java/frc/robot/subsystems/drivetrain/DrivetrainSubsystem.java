@@ -204,7 +204,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     followTrajectory(trajectorySample);
                 }
             }
-            case TeliOp -> teliopDrive();
+            case TeleOp -> teliopDrive();
 
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
