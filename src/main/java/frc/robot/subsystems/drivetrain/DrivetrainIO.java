@@ -42,7 +42,7 @@ public interface DrivetrainIO {
             this.SuccessfulDaqs = state.SuccessfulDaqs;
             this.FailedDaqs = state.FailedDaqs;
             this.OdometryPeriod = state.OdometryPeriod;
-            this.Timestamp = state.OdometryPeriod;
+            this.Timestamp = state.Timestamp;
 
         }
     }
