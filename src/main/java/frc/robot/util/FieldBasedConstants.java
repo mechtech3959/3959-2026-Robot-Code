@@ -14,11 +14,11 @@ public class FieldBasedConstants {
     private static final Pose3d redBase = new Pose3d(11.901, 4.034, 3.0, new Rotation3d(new Rotation2d(0)));
 
     public static Pose3d getBlueBase() {
-        return blueBase;
+        return new Pose3d(blueBase.getX(), blueBase.getY(), blueBase.getZ(), blueBase.getRotation());
     }
 
     public static Pose3d getRedBase() {
-        return redBase;
+        return new Pose3d(redBase.getX(), redBase.getY(), redBase.getZ(), redBase.getRotation());
     }
 
 }
