@@ -1,5 +1,9 @@
 package frc.robot.subsystems.drivetrain;
 
+import frc.robot.subsystems.drivetrain.modules.ModuleIO;
+import frc.robot.subsystems.drivetrain.modules.ModuleIOCTRE;
+import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
@@ -18,9 +22,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.drivetrain.modules.ModuleIO;
-import frc.robot.subsystems.drivetrain.modules.ModuleIOCTRE;
-import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
 
@@ -31,28 +33,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Brake,
         ChoreoTrajectory,
         TeliOp,
-        Slow,
         Heading,
         VisionHeading,
 
     }
 
-    public enum OutputMode {
-        Fast,
-        Slow,
-        Ramp
-    }
-
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
             .withHeadingPID(3, 0, 0)
             .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
-    private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
-
     private final PIDController autoXController = new PIDController(7, 0, 0);
     private final PIDController autoYController = new PIDController(7, 0, 0);
     private final PIDController autoHeadingController = new PIDController(7, 0, 0);
-    private final PIDController autoDriveController = new PIDController(3.0, 0, 0.1);
     private SwerveSample trajectorySample = null;
+    private final PIDController autoDriveController = new PIDController(3.0, 0, 0.1);
+
+    private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
 
     private SwerveState currentDriveState = SwerveState.TeliOp;
     private CommandXboxController controller;
@@ -69,9 +64,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final ModuleIO[] modules = new ModuleIO[4];
 
     private static final double maxSpeed = 5;
-    private static final double maxAngSpeed = 1.75;
+    private static final double maxAngSpeed = 2.75;
 
     public DrivetrainSubsystem(DrivetrainIO io, CommandXboxController controller) {
+
         this.io = io;
         this.controller = controller;
 
@@ -83,15 +79,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         io.registerDrivetrainTelemetry(swerveInputs);
 
+        autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
     public void periodic() {
 
         io.updateDrivetrainData(swerveInputs);
-        Logger.processInputs(getName() + "/", swerveInputs);
-        // teliopDrive();
-        // headingDrive();
+        Logger.processInputs(getName(), swerveInputs);
+
         applyState();
 
         for (int i = 0; i < 4; i++) {
@@ -138,7 +134,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
 
         Rotation2d skewCompensationFactor = Rotation2d
-                .fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * -0.03);
+                .fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * -0.02);
 
         return ChassisSpeeds.fromRobotRelativeSpeeds(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -146,35 +142,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                         swerveInputs.Pose.getRotation()),
                 swerveInputs.Pose.getRotation().plus(skewCompensationFactor));
 
-    }
-
-    private ChassisSpeeds slowcalculateSpeedsBasedOnJoystickInputs() {
-        // was .isEmpty() but threw error for some reason
-        if (!DriverStation.getAlliance().isPresent()) {
-            return new ChassisSpeeds(0, 0, 0);
-        }
-
-        double xMagnitude = MathUtil.applyDeadband(controller.getLeftY(), 0.1);
-        double yMagnitude = MathUtil.applyDeadband(controller.getLeftX(), 0.1);
-        double angularMagnitude = MathUtil.applyDeadband(controller.getRightX(), 0.1);
-        Logger.recordOutput("xMag", xMagnitude);
-        //
-        // xMagnitude = Math.copySign(xMagnitude * xMagnitude, xMagnitude);
-        // yMagnitude = Math.copySign(yMagnitude * yMagnitude, yMagnitude);
-        angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
-
-        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? -xMagnitude * 2 : xMagnitude * 2)
-                * 0.8;
-        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? -yMagnitude * 2 : yMagnitude * 2)
-                * 0.8;
-        double angularVelocity = angularMagnitude * 1 * 1;
-
-        Rotation2d skewCompensationFactor = Rotation2d.fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * -0.03);
-
-        return ChassisSpeeds.fromRobotRelativeSpeeds(
-                ChassisSpeeds.fromFieldRelativeSpeeds(
-                        new ChassisSpeeds(xVelocity, yVelocity, -angularVelocity), swerveInputs.Pose.getRotation()),
-                swerveInputs.Pose.getRotation().plus(skewCompensationFactor));
     }
 
     public Pose2d getPose() {
@@ -186,8 +153,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void followTrajectory(SwerveSample sample) {
-        autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
-
         // Get the current pose of the robot
         Pose2d pose = io.getPose();
         ChassisSpeeds speed = sample.getChassisSpeeds();
@@ -227,12 +192,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
-    public void slowDrive() {
-        io.setSwerveState(new SwerveRequest.ApplyFieldSpeeds()
-                .withSpeeds(slowcalculateSpeedsBasedOnJoystickInputs())
-                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage));
-    }
-
     public void visionHeadingDrive() {
     }
 
@@ -246,7 +205,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 }
             }
             case TeliOp -> teliopDrive();
-            case Slow -> slowDrive();
+
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
 

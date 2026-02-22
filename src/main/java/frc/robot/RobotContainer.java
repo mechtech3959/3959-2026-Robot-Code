@@ -24,6 +24,7 @@ public class RobotContainer {
   CommandXboxController driverController = new CommandXboxController(0);
   Auto autom;
 
+  @SuppressWarnings("unchecked")
   public RobotContainer() {
     shooterIO = new ShooterCTREIO();
     shooterSubsystem = new ShooterSubsystem(shooterIO);
@@ -47,5 +48,4 @@ public class RobotContainer {
         () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -100)));
   }
 
- 
 }
