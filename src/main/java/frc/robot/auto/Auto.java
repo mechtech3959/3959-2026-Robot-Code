@@ -36,7 +36,7 @@ public class Auto {
     public AutoRoutine testRoutine() {
         final AutoRoutine routine = autoFactory.newRoutine("test");
         final AutoTrajectory test = Test.asAutoTraj(routine);
-       Logger.recordOutput("Auto", test.getRawTrajectory().getPoses());
+        Logger.recordOutput("Auto", test.getRawTrajectory().getPoses());
 
         // When the routine becomes active, reset odometry then follow the trajectory
         routine.active().onTrue(
