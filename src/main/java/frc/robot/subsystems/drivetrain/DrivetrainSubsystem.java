@@ -184,9 +184,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void headingDrive() {
+        ChassisSpeeds joystickSpeeds = calculateSpeedsBasedOnJoystickInputs();
         io.setSwerveState(headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose))
-                .withVelocityX(calculateSpeedsBasedOnJoystickInputs().vxMetersPerSecond)
-                .withVelocityY(calculateSpeedsBasedOnJoystickInputs().vyMetersPerSecond));
+                .withVelocityX(joystickSpeeds.vxMetersPerSecond)
+                .withVelocityY(joystickSpeeds.vyMetersPerSecond));
 
     }
 
