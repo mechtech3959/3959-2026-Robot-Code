@@ -18,8 +18,8 @@ public class RobotContainer {
   private final ShooterSubsystem shooterSubsystem;
   private final DrivetrainIOCTRE drivetrainIO;
   private final DrivetrainSubsystem drivetrainSubsystem;
-  CommandXboxController driverController = new CommandXboxController(0);
-  Auto autom;
+  private final CommandXboxController driverController = new CommandXboxController(0);
+  private final Auto autom;
 
   @SuppressWarnings("unchecked")
   public RobotContainer() {
