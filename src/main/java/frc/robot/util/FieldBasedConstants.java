@@ -10,7 +10,15 @@ public class FieldBasedConstants {
         return DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue;
     }
 
-    public static final Pose3d blueBase = new Pose3d(4.611, 4.034, 3.0, new Rotation3d(new Rotation2d(0)));
-    public static final Pose3d redBase = new Pose3d(11.901, 4.034, 3.0, new Rotation3d(new Rotation2d(0)));
+    private static final Pose3d blueBase = new Pose3d(4.611, 4.034, 3.0, new Rotation3d(new Rotation2d(0)));
+    private static final Pose3d redBase = new Pose3d(11.901, 4.034, 3.0, new Rotation3d(new Rotation2d(0)));
+
+    public static Pose3d getBlueBase() {
+        return blueBase;
+    }
+
+    public static Pose3d getRedBase() {
+        return redBase;
+    }
 
 }

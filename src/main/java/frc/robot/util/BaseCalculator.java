@@ -5,10 +5,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 public class BaseCalculator {
     public static Rotation2d angleToAlign(Pose2d position) {
-        double y1 = FieldBasedConstants.isBlueAlliance() ? FieldBasedConstants.blueBase.getY()
-                : FieldBasedConstants.redBase.getY();
-        double x1 = FieldBasedConstants.isBlueAlliance() ? FieldBasedConstants.blueBase.getX()
-                : FieldBasedConstants.redBase.getX();
+        double y1 = FieldBasedConstants.isBlueAlliance() ? FieldBasedConstants.getBlueBase().getY()
+                : FieldBasedConstants.getRedBase().getY();
+        double x1 = FieldBasedConstants.isBlueAlliance() ? FieldBasedConstants.getBlueBase().getX()
+                : FieldBasedConstants.getRedBase().getX();
         double y2 = position.getY();
         double x2 = position.getX();
         double yDist = y2 - y1;
