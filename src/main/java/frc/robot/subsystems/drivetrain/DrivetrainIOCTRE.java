@@ -35,8 +35,6 @@ public class DrivetrainIOCTRE extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
 
         this.resetRotation(FieldBasedConstants.isBlueAlliance() ? Rotation2d.kZero : Rotation2d.k180deg);
         if (Utils.isSimulation()) {
-            this.simulationInit();
-            
             startSimThread();
         }
 
