@@ -132,8 +132,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 * ramp;
         double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
 
+        // Empirical time offset (−0.02 s) used to compensate for rotational skew:
+        // we rotate the pose estimate by omega * dt to account for ~20 ms latency
+        // between measured pose and applied chassis speeds.
+        final double SKEW_COMPENSATION_TIME_S = -0.02;
+
         Rotation2d skewCompensationFactor = Rotation2d
-                .fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * -0.02);
+                .fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * SKEW_COMPENSATION_TIME_S);
 
         return ChassisSpeeds.fromRobotRelativeSpeeds(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
