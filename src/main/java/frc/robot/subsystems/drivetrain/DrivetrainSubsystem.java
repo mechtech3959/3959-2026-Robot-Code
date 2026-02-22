@@ -33,8 +33,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         ChoreoTrajectory,
         TeleOp,
         Heading,
-        VisionHeading,
-
+        VisionHeading
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
