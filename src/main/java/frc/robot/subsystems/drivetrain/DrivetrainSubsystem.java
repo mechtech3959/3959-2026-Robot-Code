@@ -159,12 +159,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         speed.vyMetersPerSecond += autoYController.calculate(pose.getY(), sample.y);
         speed.omegaRadiansPerSecond += autoHeadingController.calculate(pose.getRotation().getRadians(), sample.heading);
 
-        // Generate the next speeds for the robot
-        ChassisSpeeds speeds = new ChassisSpeeds(
-                sample.vx + autoXController.calculate(pose.getX(), sample.x),
-                sample.vy + autoYController.calculate(pose.getY(), sample.y),
-                sample.omega + autoHeadingController.calculate(pose.getRotation().getRadians(), sample.heading));
-
         io.setSwerveState(pathRequest.withSpeeds(speed)
                 .withWheelForceFeedforwardsX(sample.moduleForcesX())
                 .withWheelForceFeedforwardsY(sample.moduleForcesY())
