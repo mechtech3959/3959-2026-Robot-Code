@@ -31,7 +31,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Disabled,
         Brake,
         ChoreoTrajectory,
-        TeliOp,
+        TeleOp,
         Heading,
         VisionHeading,
 
@@ -48,7 +48,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
 
-    private SwerveState currentDriveState = SwerveState.TeliOp;
+    private SwerveState currentDriveState = SwerveState.TeleOp;
     private CommandXboxController controller;
     private DrivetrainIO io = new DrivetrainIO() {
     };
@@ -165,7 +165,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
     }
 
-    public void teliopDrive() {
+    public void teleopDrive() {
         io.setSwerveState(new SwerveRequest.ApplyFieldSpeeds()
                 .withSpeeds(calculateSpeedsBasedOnJoystickInputs())
                 .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage));
@@ -197,7 +197,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     followTrajectory(trajectorySample);
                 }
             }
-            case TeleOp -> teliopDrive();
+            case TeleOp -> teleopDrive();
 
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
