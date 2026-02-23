@@ -23,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     private double targetRPM;
-    private double targetAngle;
+    private double targetAngle = 0;
 
     private final ShooterIO io;
     private ShooterState shooterState = ShooterState.IDLE;
@@ -73,6 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
         Logger.recordOutput("here", true);
         Logger.recordOutput("speed", io.getShooterSpeed());
         Logger.recordOutput("isAtSpeed", io.isNearTargetSpeed());
+        shooterStatus();
         handleShooterState();
     }
 
