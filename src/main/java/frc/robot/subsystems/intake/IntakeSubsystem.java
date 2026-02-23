@@ -3,6 +3,13 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
+    public enum IntakeStates {
+        STOW,
+        MID_STOW,
+        INTAKE,
+        START
+    }
+
     private final IntakeIO intakeIO;
     private IntakeStates currentIntakeState = IntakeStates.START;
 
@@ -11,6 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     private void applyState() {
+        // TODO WATCH THIS AND CHANGE BEFORE APPLICATION
         switch (currentIntakeState) {
             case STOW:
                 intakeIO.setControl(0);
@@ -37,5 +45,4 @@ public class IntakeSubsystem extends SubsystemBase {
         applyState();
     }
 
-    public enum IntakeStates {STOW, MID_STOW, INTAKE, START}
 }

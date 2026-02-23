@@ -11,12 +11,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
     private ClimberStates currentClimberState = ClimberStates.HOME;
 
-    public void setClimberState(ClimberStates state){
+    public void setClimberState(ClimberStates state) {
         this.currentClimberState = state;
     }
 
-    private void applyState(){
-        switch (currentClimberState){
+    private void applyState() {
+        // TODO WATCH THIS AND CHANGE BEFORE APPLICATION
+
+        switch (currentClimberState) {
             case HOME:
                 climberIO.setPosition(0);
                 break;

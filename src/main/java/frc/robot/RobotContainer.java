@@ -35,14 +35,5 @@ public class RobotContainer {
 
   private void configureBindings() {
     autom.configure();
-    driverController.a().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -5)));
-    driverController.b().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -10)));
-    driverController.x().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.UNKNOWN, 0)));
-    driverController.y().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -100)));
   }
-
 }

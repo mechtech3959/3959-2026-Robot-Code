@@ -27,10 +27,10 @@ public class Robot extends LoggedRobot {
 
       setUseTiming(false); // Run as fast as possible
       // Pull the replay log from AdvantageScope (or prompt the user)
-      String logPath = LogFileUtil.findReplayLog();
-      Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+     // String logPath = LogFileUtil.findReplayLog();
+     // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
       // Save outputs to a new log
-      Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+     // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
     }
 
     m_robotContainer = new RobotContainer();
