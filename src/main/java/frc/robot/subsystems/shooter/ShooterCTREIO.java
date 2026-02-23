@@ -50,4 +50,16 @@ public class ShooterCTREIO implements ShooterIO {
         return rightShooter.getVelocity().isNear(target, 25); // Adjust the tolerance as needed
 
     }
+
+    @Override
+    public void updateInputs(ShooterIOInputs inputs) {
+        inputs.leftShooterSpeedRPS = leftShooter.getVelocity().getValueAsDouble();
+        inputs.rightShooterSpeedRPS = rightShooter.getVelocity().getValueAsDouble();
+        inputs.leftShooterSpeedRPM = leftShooter.getVelocity().getValueAsDouble() * 60 / 2048;
+        inputs.rightShooterSpeedRPM = rightShooter.getVelocity().getValueAsDouble() * 60 / 2048;
+        inputs.targetSpeedRPS = target;
+        inputs.atTargetSpeed = isNearTargetSpeed();
+        inputs.LeftShooterCurrentAmps = leftShooter.getStatorCurrent().getValueAsDouble();
+        inputs.RightShooterCurrentAmps = rightShooter.getStatorCurrent().getValueAsDouble();
+    }
 }

@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.shooter.ShooterIO.ShooterIOInputs;
 
 public class ShooterSubsystem extends SubsystemBase {
     // TODO time longest possible time to shoot all balls / average time to shoot
@@ -26,11 +27,11 @@ public class ShooterSubsystem extends SubsystemBase {
         UNKNOWN
     }
 
- 
     private double targetRPM;
     private double targetAngle = 0;
 
     private final ShooterIO io;
+    private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     private ShooterState shooterState = ShooterState.IDLE;
     private ShooterMode shooterMode = ShooterMode.UNKNOWN;
 
@@ -74,13 +75,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-       // Logger.recordOutput("",tunableRPM);
-       
-         io.periodic();
-        Logger.recordOutput("here", true);
-        Logger.recordOutput("speed", io.getShooterSpeed());
-        Logger.recordOutput("target", targetRPM);
-        Logger.recordOutput("isAtSpeed", io.isNearTargetSpeed());
+
+        io.periodic();
+        io.updateInputs(inputs);
+        Logger.processInputs(getName(), inputs);
         shooterStatus();
         handleShooterState();
     }
