@@ -1,11 +1,15 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
-    // TODO time longest possible time to shoot all balls / average time to shoot all
+    // TODO time longest possible time to shoot all balls / average time to shoot
+    // all
     // balls, use this to determine auto shooting times
     public enum ShooterState {
         STOPPED,
@@ -22,6 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
         UNKNOWN
     }
 
+ 
     private double targetRPM;
     private double targetAngle;
 
@@ -69,9 +74,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        io.periodic();
+       // Logger.recordOutput("",tunableRPM);
+       
+         io.periodic();
         Logger.recordOutput("here", true);
         Logger.recordOutput("speed", io.getShooterSpeed());
+        Logger.recordOutput("target", targetRPM);
         Logger.recordOutput("isAtSpeed", io.isNearTargetSpeed());
         handleShooterState();
     }
