@@ -1,7 +1,9 @@
 package frc.robot.subsystems.intake.feed;
 
 public interface FeedIO {
-    void runFeedMotor();
+    default void runFeedMotor() {
+    }
 
-    void stopFeedMotor();
+    default void stopFeedMotor() {
+    }
 }
