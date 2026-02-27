@@ -40,6 +40,8 @@ public interface VisionIO {
 
     default void updateTracking() {
     }
+    default void updateInputs(VisionIOInputs inputs) {
+    }
 
     default void periodic() {
     }

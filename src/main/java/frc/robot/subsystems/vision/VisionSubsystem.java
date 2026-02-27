@@ -1,16 +1,27 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.littletonrobotics.junction.Logger;
+import frc.robot.subsystems.vision.VisionIO.VisionIOInputsAutoLogged;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
 
 public class VisionSubsystem extends SubsystemBase {
     private VisionIO io;
+    private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
 
     public VisionSubsystem(VisionIO io) {
         this.io = io;
     }
 
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs(getName(), inputs);
+    }
+
     public void setRobot(double yaw) {
-        LimelightHelpers.SetRobotOrientation(io.pipeLine, yaw, 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(inputs.pipeLine, yaw, 0, 0, 0, 0, 0);
         // figure out angle of LL Mounts
 
     }
@@ -21,19 +32,19 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public double getTX() {
-        return io.TX;
+        return inputs.TX;
     }
 
     public double getTY() {
-        return io.TY;
+        return inputs.TY;
     }
 
     public double getTA() {
-        return io.TA;
+        return inputs.TA;
     }
 
     public boolean getTV() {
-        return io.TV;
+        return inputs.TV;
     }
 
     @Override

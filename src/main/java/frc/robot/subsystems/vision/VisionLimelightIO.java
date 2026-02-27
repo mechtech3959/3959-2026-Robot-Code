@@ -26,25 +26,41 @@ public class VisionLimelightIO implements VisionIO {
         foundPosition = new Pose2d();
         timeStamp = 0;
     }
+
     @Override
     public void updateTracking() {
         TX = LimelightHelpers.getTX(pipeLine);
         TY = LimelightHelpers.getTY(pipeLine);
         TA = LimelightHelpers.getTA(pipeLine);
         TV = LimelightHelpers.getTV(pipeLine);
-          limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
+        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
         if (limelightMeasurement != null) {
             foundPosition = limelightMeasurement.pose;
             timeStamp = limelightMeasurement.timestampSeconds;
         }
     }
+
     @Override
     public void trackingStart() {
         TX = LimelightHelpers.getTX(pipeLine);
         TY = LimelightHelpers.getTY(pipeLine);
         TA = LimelightHelpers.getTA(pipeLine);
         TV = LimelightHelpers.getTV(pipeLine);
- 
+
+    }
+
+    @Override
+    public void updateInputs(VisionIOInputs inputs) {
+        inputs.TX = LimelightHelpers.getTX(pipeLine);
+        inputs.TY = LimelightHelpers.getTY(pipeLine);
+        inputs.TA = LimelightHelpers.getTA(pipeLine);
+        inputs.TV = LimelightHelpers.getTV(pipeLine);
+        inputs.pipeLine = pipeLine;
+        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
+        if (limelightMeasurement != null) {
+            foundPosition = limelightMeasurement.pose;
+            timeStamp = limelightMeasurement.timestampSeconds;
+        }
     }
 
 }
