@@ -28,8 +28,8 @@ public class ShooterConfig {
                         .withStatorCurrentLimitEnable(true).withSupplyCurrentLimit(50)
                         .withSupplyCurrentLimitEnable(true);
         // KI (7.5) 1
-        static Slot0Configs slot0Configs = new Slot0Configs().withKP(0.5).withKI(0).withKD(0).withKS(0.14)
-                        .withKV(0.11167).withKA(0);
+        static Slot0Configs slot0Configs = new Slot0Configs().withKP(0.6).withKI(0).withKD(0).withKS(0.14)
+                        .withKV(0.108).withKA(0);
         static MotionMagicConfigs motionMagic = new MotionMagicConfigs().withMotionMagicAcceleration(9999)
                         .withMotionMagicCruiseVelocity(0).withMotionMagicJerk(0);
 
