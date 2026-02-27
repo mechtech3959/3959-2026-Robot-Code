@@ -13,7 +13,8 @@ public class FuelIndexingREVIO implements FuelIndexingIO {
         FuelIndexingConfiguration fuelIndexingMotorConfig = new FuelIndexingConfiguration();
         fuelIndexingMotor.configure(fuelIndexingMotorConfig.getConfig(), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
-
+    @Override
     public void runFuelIndexingMotor() { fuelIndexingMotor.set(1);}
+    @Override
     public void stopFuelIndexingMotor() { fuelIndexingMotor.set(0);}
 }

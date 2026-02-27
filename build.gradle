@@ -110,6 +110,7 @@ jar {
 compileJava {
     options.errorprone.disableWarningsInGeneratedCode = true
     options.errorprone.excludedPaths = ".*/build/generated/.*"
+    options.errorprone.disable "UnusedVariable"
 }
 // Configure jar and deploy tasks
 deployArtifact.jarTask = jar

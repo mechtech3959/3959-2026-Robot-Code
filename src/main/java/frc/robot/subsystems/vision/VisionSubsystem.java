@@ -2,9 +2,6 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
-import frc.robot.subsystems.vision.VisionIO.VisionIOInputsAutoLogged;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
 
 public class VisionSubsystem extends SubsystemBase {
     private VisionIO io;
@@ -47,8 +44,4 @@ public class VisionSubsystem extends SubsystemBase {
         return inputs.TV;
     }
 
-    @Override
-    public void periodic() {
-        io.updateTracking();
-    }
 }
