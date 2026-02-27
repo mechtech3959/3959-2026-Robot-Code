@@ -14,8 +14,10 @@ public interface ShooterIO {
         public double targetSpeedRPS = 0;
         public boolean atTargetSpeed = false;
 
-        public double LeftShooterCurrentAmps = 0;
-        public double RightShooterCurrentAmps = 0;
+        public double LeftShooterCurrentStator = 0;
+        public double RightShooterCurrentStator = 0;
+        public double LeftShooterCurrentSupply = 0;
+        public double RightShooterCurrentSupply = 0;
         public double hoodAngle = 50;
     }
 
