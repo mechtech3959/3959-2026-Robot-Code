@@ -20,7 +20,7 @@ public class ClimberConfiguration {
                 .kV(0.12)
                 .kCos(0.2)
                 // kCosRatio = (Gear Ratio) * (2 * PI) = converts Rotations to Radians
-                .kCosRatio(9.0 * 2.0 * Math.PI);
+                .kCosRatio(315.0 * 2.0 * Math.PI);
 
         climberMotorConfig.closedLoop.maxMotion
                 .cruiseVelocity(2000)       // 2000 rpm
