@@ -1,11 +1,16 @@
 package frc.robot.subsystems.climber;
 
 public interface ClimberIO {
-    void setPosition(double position);
+    default void setPosition(double position) {
+    }
 
-    void stop();
+    default void stop() {
+    }
 
-    double getPosition();
+    default double getPosition() {
+        return 0;
+    }
 
-    void climb();
+    default void climb() {
+    }
 }

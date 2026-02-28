@@ -14,15 +14,17 @@ public class IntakeREVIO implements IntakeIO {
         IntakeConfiguration intakeMotorConfig = new IntakeConfiguration();
         intakeMotor.configure(intakeMotorConfig.getConfig(), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
-
+@Override
     public void setControl(double position) {
         intakeMotor.getClosedLoopController().setSetpoint(position, SparkBase.ControlType.kMAXMotionPositionControl);
     }
 
+    @Override
     public void stop() {
         intakeMotor.stopMotor();
     }
 
+    @Override
     public double getPosition() {
         return intakeMotor.getEncoder().getPosition();
     }

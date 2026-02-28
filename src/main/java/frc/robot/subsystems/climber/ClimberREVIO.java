@@ -15,6 +15,7 @@ public class ClimberREVIO implements ClimberIO {
         climberMotor.configure(climberConfig.getClimberMotorConfig(), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    @Override
     public void setPosition(double position) {
         // Update to a quicker PID to move out of the way faster
         SparkMaxConfig climberMotorConfig = climberConfig.getClimberMotorConfig();
@@ -24,14 +25,17 @@ public class ClimberREVIO implements ClimberIO {
         climberMotor.getClosedLoopController().setSetpoint(position, SparkBase.ControlType.kMAXMotionPositionControl);
     }
 
+    @Override
     public void stop() {
         climberMotor.stopMotor();
     }
 
+    @Override
     public double getPosition() {
         return climberMotor.getEncoder().getPosition();
     }
 
+    @Override
     public void climb() {
         // Update to a slower PID so we do not kill the robot
         SparkMaxConfig climberMotorConfig = climberConfig.getClimberMotorConfig();

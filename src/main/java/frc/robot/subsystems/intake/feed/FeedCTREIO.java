@@ -12,10 +12,12 @@ public class FeedCTREIO implements FeedIO {
         feedMotor.getConfigurator().apply(feedMotorConfig.getConfig());
     }
 
+    @Override
     public void runFeedMotor() {
         feedMotor.set(1.0);
     }
 
+    @Override
     public void stopFeedMotor() {
         feedMotor.set(0.0);
     }
