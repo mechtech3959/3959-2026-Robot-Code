@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.generated.LimelightHelpers;
 
 public class VisionLimelightIO implements VisionIO {
 
@@ -32,17 +33,15 @@ public class VisionLimelightIO implements VisionIO {
         timeStamp = 0;
     }
 
-@Override
-public void updateTracking(double yawDegrees) {
-    LimelightHelpers.SetRobotOrientation(pipeLine, yawDegrees, 0, 0, 0, 0, 0);
-    limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
-    if (limelightMeasurement != null) {
-        foundPosition = limelightMeasurement.pose;
-        timeStamp = limelightMeasurement.timestampSeconds;
+    @Override
+    public void updateTracking(double yawDegrees) {
+        LimelightHelpers.SetRobotOrientation(pipeLine, yawDegrees, 0, 0, 0, 0, 0);
+        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
+        if (limelightMeasurement != null) {
+            foundPosition = limelightMeasurement.pose;
+            timeStamp = limelightMeasurement.timestampSeconds;
+        }
     }
-}
-
-    
 
     @Override
     public void trackingStart() {

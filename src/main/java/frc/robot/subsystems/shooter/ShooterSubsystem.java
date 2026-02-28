@@ -26,7 +26,6 @@ public class ShooterSubsystem extends SubsystemBase {
         UNKNOWN
     }
 
- 
     private double targetRPM;
     private double targetAngle = 0;
 
@@ -74,9 +73,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-       // Logger.recordOutput("",tunableRPM);
-       
-         io.periodic();
+        // Logger.recordOutput("",tunableRPM);
+
+        io.periodic();
         Logger.recordOutput("here", true);
         Logger.recordOutput("speed", io.getShooterSpeed());
         Logger.recordOutput("target", targetRPM);

@@ -15,16 +15,15 @@ public class ClimberConfiguration {
                 .reverseSoftLimit(0.1)
                 .reverseSoftLimitEnabled(true);
 
-        climberMotorConfig.closedLoop.pid(15.0, 0.0, 0.0)
-                .feedForward.kS(0.15)
+        climberMotorConfig.closedLoop.pid(15.0, 0.0, 0.0).feedForward.kS(0.15)
                 .kV(0.12)
                 .kCos(0.2)
                 // kCosRatio = (Gear Ratio) * (2 * PI) = converts Rotations to Radians
                 .kCosRatio(9.0 * 2.0 * Math.PI);
 
         climberMotorConfig.closedLoop.maxMotion
-                .cruiseVelocity(2000)       // 2000 rpm
-                .maxAcceleration(4000)      // 2000/4000 = 0.5 sec to reach 2000 rpm
+                .cruiseVelocity(2000) // 2000 rpm
+                .maxAcceleration(4000) // 2000/4000 = 0.5 sec to reach 2000 rpm
                 .allowedProfileError(0.01); // Deadband
     }
 

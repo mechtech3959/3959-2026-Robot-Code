@@ -12,7 +12,8 @@ public class ClimberREVIO implements ClimberIO {
     ClimberConfiguration climberConfig = new ClimberConfiguration();
 
     public ClimberREVIO() {
-        climberMotor.configure(climberConfig.getClimberMotorConfig(), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        climberMotor.configure(climberConfig.getClimberMotorConfig(), ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
     }
 
     @Override

@@ -67,6 +67,4 @@ public class VisionSubsystem extends SubsystemBase {
                 VecBuilder.fill(stdDev, stdDev, 9999));
     }
 
-    
-
 }

@@ -10,6 +10,7 @@ public interface ShooterIO {
 
     default void setShooterSpeed(double speed) {
     }
+
     default void setShooterNeutral() {
     }
 

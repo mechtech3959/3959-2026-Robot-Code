@@ -1,4 +1,4 @@
-package frc.robot.subsystems.fuelindexing;
+package frc.robot.subsystems.indexer;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 

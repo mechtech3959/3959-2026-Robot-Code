@@ -13,5 +13,6 @@ import edu.wpi.first.units.measure.*;
 @SuppressWarnings("unused")
 public final class ChoreoVars {
 
-    private ChoreoVars() {}
+    private ChoreoVars() {
+    }
 }
