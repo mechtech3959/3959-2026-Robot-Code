@@ -24,7 +24,7 @@ public class VisionLimelightIO implements VisionIO {
     }
 
     @Override
-    public void setVisionNeutral() {
+    public void setVisionNeutral() {}
 
 @Override
 public void updateTracking(double yawDegrees) {
