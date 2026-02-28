@@ -9,6 +9,7 @@ public interface ClimberIO {
         public double appliedVolts = 0; // Attempted volts
         public double currentAmps = 0; // Current amps being drawn
         public double tempCelsius = 0; // Current motor temperature
+        public double velocity = 0; // Current motor temperature
     }
 
     default void updateInputs(ClimberIOInputs inputs){}

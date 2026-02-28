@@ -52,5 +52,6 @@ public class ClimberREVIO implements ClimberIO {
         inputs.appliedVolts = climberMotor.getAppliedOutput() * climberMotor.getBusVoltage();
         inputs.currentAmps = climberMotor.getOutputCurrent();
         inputs.tempCelsius = climberMotor.getMotorTemperature();
+        inputs.velocity = climberMotor.getEncoder().getVelocity();
     }
 }

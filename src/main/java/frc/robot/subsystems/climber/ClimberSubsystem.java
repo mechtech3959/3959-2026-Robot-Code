@@ -17,25 +17,20 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private void applyState() {
     switch (currentClimberState) {
-    case HOME:
+    case HOME ->
       climberIO.setPosition(0);
-      break;
-    case CLEAR_INTAKE:
+    case CLEAR_INTAKE ->
       climberIO.setPosition(0.6);
-      break;
-    case CLIMB:
+    case CLIMB ->
       climberIO.climb();
-      break;
-    case CAMERA_CUSTOM:
+    case CAMERA_CUSTOM ->
       climberIO.setPosition(cameraCustomPosition);
       // May not work how I think it will, but use the controller thumbstick
       // input to slowly add or subtract this number to move the camera for the
       // driver.
-      break;
-    default:
+    default ->
       System.out.println("Error in Climber Subsystem: State applied to "
                          + "non-existing option/undefined error.");
-      break;
     }
   }
 
