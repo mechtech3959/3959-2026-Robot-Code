@@ -19,6 +19,4 @@ public interface ClimberIO {
     void stop();
 
     double getPosition();
-
-    void climb();
 }
