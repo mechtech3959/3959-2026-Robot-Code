@@ -3,12 +3,11 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIO.VisionIOInputs;
+
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 public class VisionSubsystem extends SubsystemBase {
-    
+
     private final VisionIO[] cameras;
     private final VisionIOInputsAutoLogged[] inputs;
     private final DrivetrainSubsystem drivetrain;
@@ -44,12 +43,23 @@ public class VisionSubsystem extends SubsystemBase {
             return;
         if (measurement.tagCount == 0)
             return;
+        if (measurement.rawFiducials.length > 0) {
+            for (var fiducial : measurement.rawFiducials) {
+                if (fiducial.ambiguity > 0.7)
+                    return; // 0-1 scale, lower is better
+            }
+        }
         if (measurement.avgTagDist > 4.0)
             return;
 
+        if (drivetrain.getLinearVelocity() > 1.5 || Math.abs(drivetrain.getAngularVelocity()) > 0.5) {
+            // Don't trust measurements that are very far from our current estimate
+            return;
+        }
         // Trust more tags or closer tags more
         double stdDev = measurement.tagCount > 1 ? 0.3 : 1.0;
         stdDev *= (measurement.avgTagDist / 2.0); // scale by distance
+        stdDev = Math.max(stdDev, 0.2); // don't go below 0.2 std dev
 
         drivetrain.poseEst(
                 measurement.pose,
@@ -57,33 +67,6 @@ public class VisionSubsystem extends SubsystemBase {
                 VecBuilder.fill(stdDev, stdDev, 9999));
     }
 
-}
-
-    public void setRobot(double yaw) {
-        LimelightHelpers.SetRobotOrientation(inputs.pipeLine, yaw, 0, 0, 0, 0, 0);
-        // figure out angle of LL Mounts
-
-    }
-
-    public void setPipeline(String pipeLine) {
-        io.setVisionNeutral();
-        io.trackingStart();
-    }
-
-    public double getTX() {
-        return inputs.TX;
-    }
-
-    public double getTY() {
-        return inputs.TY;
-    }
-
-    public double getTA() {
-        return inputs.TA;
-    }
-
-    public boolean getTV() {
-        return inputs.TV;
-    }
+    
 
 }
