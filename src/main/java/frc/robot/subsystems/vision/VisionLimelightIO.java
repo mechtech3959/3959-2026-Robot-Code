@@ -18,6 +18,11 @@ public class VisionLimelightIO implements VisionIO {
     }
 
     @Override
+    public LimelightHelpers.PoseEstimate getPoseEstimate() {
+        return limelightMeasurement;
+    }
+
+    @Override
     public void setVisionNeutral() {
         TX = 0;
         TY = 0;
@@ -27,18 +32,17 @@ public class VisionLimelightIO implements VisionIO {
         timeStamp = 0;
     }
 
-    @Override
-    public void updateTracking() {
-        TX = LimelightHelpers.getTX(pipeLine);
-        TY = LimelightHelpers.getTY(pipeLine);
-        TA = LimelightHelpers.getTA(pipeLine);
-        TV = LimelightHelpers.getTV(pipeLine);
-        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
-        if (limelightMeasurement != null) {
-            foundPosition = limelightMeasurement.pose;
-            timeStamp = limelightMeasurement.timestampSeconds;
-        }
+@Override
+public void updateTracking(double yawDegrees) {
+    LimelightHelpers.SetRobotOrientation(pipeLine, yawDegrees, 0, 0, 0, 0, 0);
+    limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
+    if (limelightMeasurement != null) {
+        foundPosition = limelightMeasurement.pose;
+        timeStamp = limelightMeasurement.timestampSeconds;
     }
+}
+
+    
 
     @Override
     public void trackingStart() {
@@ -56,7 +60,6 @@ public class VisionLimelightIO implements VisionIO {
         inputs.TA = LimelightHelpers.getTA(pipeLine);
         inputs.TV = LimelightHelpers.getTV(pipeLine);
         inputs.pipeLine = pipeLine;
-        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
         if (limelightMeasurement != null) {
             foundPosition = limelightMeasurement.pose;
             timeStamp = limelightMeasurement.timestampSeconds;

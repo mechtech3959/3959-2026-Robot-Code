@@ -15,6 +15,9 @@ public interface VisionIO {
         public Pose2d foundPosition = new Pose2d();
         public double timeStamp = 0;
     }
+ default LimelightHelpers.PoseEstimate getPoseEstimate() {
+    return null;
+}
 
     default void setVisionNeutral() {
     }
@@ -38,7 +41,7 @@ public interface VisionIO {
         return false;
     }
 
-    default void updateTracking() {
+    default void updateTracking(double yawDegrees) {
     }
     default void updateInputs(VisionIOInputs inputs) {
     }
