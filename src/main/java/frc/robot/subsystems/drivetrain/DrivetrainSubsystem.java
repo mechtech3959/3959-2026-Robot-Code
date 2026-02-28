@@ -225,5 +225,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public Rotation2d getHeading() {
         return swerveInputs.Pose.getRotation();
     }
+    public double getAngularVelocity() {
+        return swerveInputs.Speeds.omegaRadiansPerSecond;
+    }
+    public double getLinearVelocity() {
+        return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
+    }
 
 }

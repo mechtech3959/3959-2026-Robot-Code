@@ -12,6 +12,9 @@ public interface VisionIO {
         public boolean TV = false;
         public String pipeLine = "";
     }
+ default LimelightHelpers.PoseEstimate getPoseEstimate() {
+    return null;
+}
 
     default void setVisionNeutral() {
     }
@@ -35,7 +38,7 @@ public interface VisionIO {
         return false;
     }
 
-    default void updateTracking() {
+    default void updateTracking(double yawDegrees) {
     }
     default void updateInputs(VisionIOInputs inputs) {
     }
