@@ -22,13 +22,13 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.FieldBasedConstants;
 
 // Inspired by FRC 2910 
-public class DrivetrainIOCTRE extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>
+public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>
         implements DrivetrainIO, AutoCloseable {
     private static final double kSimLoopPeriod = 0.004; // 4 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
-    public DrivetrainIOCTRE(SwerveDrivetrainConstants constants,
+    public DrivetrainCTREIO(SwerveDrivetrainConstants constants,
             @SuppressWarnings("unchecked") SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>... moduleConstants) {
 
         super(TalonFX::new, TalonFX::new, CANcoder::new, constants, moduleConstants);

@@ -1,38 +1,46 @@
 package frc.robot.subsystems.intake;
 
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
+import frc.robot.subsystems.intake.feed.FeedSubsystem;
 
 public class IntakeSubsystem extends SubsystemBase {
     public enum IntakeStates {
         STOW,
         MID_STOW,
         INTAKE,
-        START
+        START,
+        TEST
     }
 
     private final IntakeIO intakeIO;
+    private final FeedSubsystem feedSubsystem;
     private IntakeStates currentIntakeState = IntakeStates.START;
 
-    public IntakeSubsystem(IntakeIO io) {
+    private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+
+    public IntakeSubsystem(IntakeIO io, FeedSubsystem feedSubsystem) {
         this.intakeIO = io;
+        this.feedSubsystem = feedSubsystem;
+        
     }
 
     private void applyState() {
         // TODO WATCH THIS AND CHANGE BEFORE APPLICATION
         switch (currentIntakeState) {
-            case STOW:
+            case STOW ->
                 intakeIO.setControl(0);
-                break;
-            case MID_STOW:
-                intakeIO.setControl(1);
-                break;
-            case INTAKE:
-                intakeIO.setControl(2);
-                break;
-            default:
-                System.out.println("Error in Intake Subsystem: State applied to "
-                        + "non-existing option/undefined error.");
-                break;
+
+            case MID_STOW ->
+                intakeIO.setControl(0);
+            case INTAKE ->
+                intakeIO.setControl(0);
+            case TEST ->{}
+            default -> System.out.println("Error in Intake Subsystem: State applied to "
+                    + "non-existing option/undefined error.");
         }
     }
 
@@ -40,8 +48,20 @@ public class IntakeSubsystem extends SubsystemBase {
         this.currentIntakeState = state;
     }
 
+    public void setIntakeState(IntakeStates state, FeedStates feedState) {
+        this.currentIntakeState = state;
+        this.feedSubsystem.setFeedState(feedState);
+    }
+
+    public void setIntakeState(IntakeStates state, FeedStates feedState, double feedSpeed) {
+        this.currentIntakeState = state;
+        this.feedSubsystem.setFeedState(feedState, feedSpeed);
+    }
+
     @Override
     public void periodic() {
+        intakeIO.updateInputs(inputs);
+        Logger.processInputs(getName(), inputs);
         applyState();
     }
 

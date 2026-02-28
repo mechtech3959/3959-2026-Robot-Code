@@ -1,7 +1,7 @@
 package frc.robot.subsystems.drivetrain;
 
 import frc.robot.subsystems.drivetrain.modules.ModuleIO;
-import frc.robot.subsystems.drivetrain.modules.ModuleIOCTRE;
+import frc.robot.subsystems.drivetrain.modules.ModuleCTREIO;
 import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 
 import org.littletonrobotics.junction.Logger;
@@ -70,7 +70,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         this.controller = controller;
 
         for (int i = 0; i < 4; i++) {
-            modules[i] = new ModuleIOCTRE(io.getSwerveModule(i));
+            modules[i] = new ModuleCTREIO(io.getSwerveModule(i));
             modules[i].updateInputs(moduleInputs[i]);
 
         }

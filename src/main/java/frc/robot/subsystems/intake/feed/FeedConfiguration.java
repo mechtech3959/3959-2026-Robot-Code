@@ -11,7 +11,7 @@ public class FeedConfiguration {
     public FeedConfiguration() {
         feedMotorConfig.withCurrentLimits(new CurrentLimitsConfigs()
                 .withStatorCurrentLimit(40.0)
-                .withStatorCurrentLimitEnable(true))
+                .withStatorCurrentLimitEnable(true).withSupplyCurrentLimit(20).withSupplyCurrentLimitEnable(true))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Coast));
     }
