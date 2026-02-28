@@ -1,20 +1,21 @@
 package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import limelight.Limelight;
+import limelight.networktables.LimelightResults;
 
 public class VisionLimelightIO implements VisionIO {
 
-    public double TX;
-    public double TY;
-    public double TA;
     public boolean TV;
     public String pipeLine;
     public Pose2d foundPosition;
-    public double timeStamp;
-    private LimelightHelpers.PoseEstimate limelightMeasurement;
+    // private LimelightHelpers.PoseEstimate limelightMeasurement;
+    private Limelight limeLight;
 
     public VisionLimelightIO(String pipeLine) {
         this.pipeLine = pipeLine;
+
+        this.limeLight = new Limelight(pipeLine);
     }
 
     @Override
@@ -24,13 +25,6 @@ public class VisionLimelightIO implements VisionIO {
 
     @Override
     public void setVisionNeutral() {
-        TX = 0;
-        TY = 0;
-        TA = 0;
-        TV = false;
-        foundPosition = new Pose2d();
-        timeStamp = 0;
-    }
 
 @Override
 public void updateTracking(double yawDegrees) {
@@ -46,10 +40,6 @@ public void updateTracking(double yawDegrees) {
 
     @Override
     public void trackingStart() {
-        TX = LimelightHelpers.getTX(pipeLine);
-        TY = LimelightHelpers.getTY(pipeLine);
-        TA = LimelightHelpers.getTA(pipeLine);
-        TV = LimelightHelpers.getTV(pipeLine);
 
     }
 

@@ -231,4 +231,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public double getLinearVelocity() {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
     }
+
 }
