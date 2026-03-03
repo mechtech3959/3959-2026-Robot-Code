@@ -14,8 +14,8 @@ import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
-  private final ShooterCTREIO shooterIO;
-  private final ShooterSubsystem shooterSubsystem;
+  //private final ShooterCTREIO shooterIO;
+  //private final ShooterSubsystem shooterSubsystem;
   private final DrivetrainIOCTRE drivetrainIO;
   private final DrivetrainSubsystem drivetrainSubsystem;
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -23,18 +23,18 @@ public class RobotContainer {
 
   @SuppressWarnings("unchecked")
   public RobotContainer() {
-    shooterIO = new ShooterCTREIO();
-    shooterSubsystem = new ShooterSubsystem(shooterIO);
+   // shooterIO = new ShooterCTREIO();
+   // shooterSubsystem = new ShooterSubsystem(shooterIO);
     drivetrainIO = new DrivetrainIOCTRE(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
         TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
     drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO, driverController);
     autom = new Auto(drivetrainSubsystem);
-
+      autom.configure();
     configureBindings();
   }
 
   private void configureBindings() {
-    driverController.a().onTrue(Commands.runOnce(
+   /* driverController.a().onTrue(Commands.runOnce(
         () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -55)));
     driverController.b().onTrue(Commands.runOnce(
         () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -50)));
@@ -42,6 +42,7 @@ public class RobotContainer {
         () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.UNKNOWN, 0)));
     driverController.y().onTrue(Commands.runOnce(
         () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -60)));
+         */
   }
 
 }
