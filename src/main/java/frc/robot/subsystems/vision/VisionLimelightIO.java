@@ -13,9 +13,11 @@ public class VisionLimelightIO implements VisionIO {
     public Pose2d foundPosition;
     public double timeStamp;
     private LimelightHelpers.PoseEstimate limelightMeasurement;
+    private String limelightModel;
 
-    public VisionLimelightIO(String pipeLine) {
+    public VisionLimelightIO(String pipeLine,String limelightModel) {
         this.pipeLine = pipeLine;
+        this.limelightModel = limelightModel;
     }
 
     @Override

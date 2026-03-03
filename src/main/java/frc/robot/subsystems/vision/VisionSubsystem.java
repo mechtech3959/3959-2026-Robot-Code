@@ -23,6 +23,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
         double yaw = drivetrain.getHeading().getDegrees();
 
         for (int i = 0; i < cameras.length; i++) {
