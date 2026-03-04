@@ -19,7 +19,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.util.BaseCalculator;
@@ -78,6 +81,29 @@ public class DrivetrainSubsystem extends SubsystemBase {
         io.registerDrivetrainTelemetry(swerveInputs);
 
         autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
+        SmartDashboard.putData("Swerve Drive", new Sendable() {
+            @Override
+            public void initSendable(SendableBuilder builder) {
+                builder.setSmartDashboardType("SwerveDrive");
+
+                builder.addDoubleProperty("Front Left Angle", () -> moduleInputs[0].steerAbsolutePositionRad, null);
+                builder.addDoubleProperty("Front Left Velocity", () -> moduleInputs[0].driveVelocityRadPerSec / 30,
+                        null);
+
+                builder.addDoubleProperty("Front Right Angle", () -> moduleInputs[1].steerAbsolutePositionRad, null);
+                builder.addDoubleProperty("Front Right Velocity", () -> moduleInputs[1].driveVelocityRadPerSec / 30,
+                        null);
+                builder.addDoubleProperty("Back Left Angle", () -> moduleInputs[2].steerAbsolutePositionRad, null);
+                builder.addDoubleProperty("Back Left Velocity", () -> moduleInputs[2].driveVelocityRadPerSec / 30,
+                        null);
+                builder.addDoubleProperty("Back Right Angle", () -> moduleInputs[3].steerAbsolutePositionRad, null);
+                builder.addDoubleProperty("Back Right Velocity", () -> moduleInputs[3].driveVelocityRadPerSec / 30,
+                        null);
+                builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
+
+            };
+        });
+
     }
 
     @Override
@@ -234,4 +260,26 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
     }
 
+    public Sendable driveSendable() {
+        return new Sendable() {
+            @Override
+            public void initSendable(SendableBuilder builder) {
+                builder.setSmartDashboardType("SwerveDrive");
+
+                builder.addDoubleProperty("Front Left Angle", () -> moduleInputs[0].steerAbsolutePositionRad, null);
+                builder.addDoubleProperty("Front Left Velocity", () -> moduleInputs[0].driveVelocityRadPerSec, null);
+
+                builder.addDoubleProperty("Front Right Angle", () -> moduleInputs[1].steerAbsolutePositionRad, null);
+                builder.addDoubleProperty("Front Right Velocity", () -> moduleInputs[1].driveVelocityRadPerSec, null);
+                builder.addDoubleProperty("Back Left Angle", () -> moduleInputs[2].steerAbsolutePositionRad, null);
+                builder.addDoubleProperty("Back Left Velocity", () -> moduleInputs[2].driveVelocityRadPerSec, null);
+
+                builder.addDoubleProperty("Back Right Angle", () -> moduleInputs[3].steerAbsolutePositionRad, null);
+                builder.addDoubleProperty("Back Right Velocity", () -> moduleInputs[3].driveVelocityRadPerSec, null);
+                builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
+
+            };
+        };
+
+    }
 }
