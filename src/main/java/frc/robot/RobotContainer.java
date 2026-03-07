@@ -10,12 +10,13 @@ import frc.robot.auto.Auto;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.DrivetrainIOCTRE;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveState;
 import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
-  //private final ShooterCTREIO shooterIO;
-  //private final ShooterSubsystem shooterSubsystem;
+  // private final ShooterCTREIO shooterIO;
+  // private final ShooterSubsystem shooterSubsystem;
   private final DrivetrainIOCTRE drivetrainIO;
   private final DrivetrainSubsystem drivetrainSubsystem;
   private final CommandXboxController driverController = new CommandXboxController(0);
@@ -23,26 +24,47 @@ public class RobotContainer {
 
   @SuppressWarnings("unchecked")
   public RobotContainer() {
-   // shooterIO = new ShooterCTREIO();
-   // shooterSubsystem = new ShooterSubsystem(shooterIO);
+    // shooterIO = new ShooterCTREIO();
+    // shooterSubsystem = new ShooterSubsystem(shooterIO);
     drivetrainIO = new DrivetrainIOCTRE(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
         TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
     drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO, driverController);
     autom = new Auto(drivetrainSubsystem);
-      autom.configure();
+    autom.configure();
     configureBindings();
   }
 
   private void configureBindings() {
-   /* driverController.a().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -55)));
-    driverController.b().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -50)));
-    driverController.x().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.UNKNOWN, 0)));
-    driverController.y().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -60)));
-         */
+    /*
+     * driverController.a().onTrue(Commands.runOnce(
+     * () ->
+     * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
+     * -55)));
+     * driverController.b().onTrue(Commands.runOnce(
+     * () ->
+     * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
+     * -50)));
+     * driverController.x().onTrue(Commands.runOnce(
+     * () ->
+     * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.UNKNOWN,
+     * 0)));
+     * driverController.y().onTrue(Commands.runOnce(
+     * () ->
+     * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
+     * -60)));
+     */
+    driverController.a().onChange(Commands.runOnce(() -> {
+      drivetrainSubsystem.changeState(SwerveState.Heading);
+    }));
+    driverController.b().onChange(Commands.runOnce(() -> {
+      drivetrainSubsystem.changeState(SwerveState.TeleOp);
+    }));
+    driverController.x().onChange(Commands.runOnce(() -> {
+      drivetrainSubsystem.changeState(SwerveState.Brake);
+    }));
+    driverController.y().onChange(Commands.runOnce(() -> {
+      drivetrainSubsystem.changeState(SwerveState.VisionHeading);
+    }));
   }
 
 }
