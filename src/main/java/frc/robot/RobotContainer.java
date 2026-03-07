@@ -49,13 +49,13 @@ public class RobotContainer {
 
   private void configureBindings() {
     driverController.a().onTrue(Commands.runOnce(
-        () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.RUN, 0.25)));
+        () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.25)));
     driverController.b().onTrue(Commands.runOnce(
-        () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.RUN, 0.5)));
+        () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.5)));
     driverController.x().onTrue(Commands.runOnce(
-        () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.RUN, 0.75)));
+        () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.75)));
     driverController.y().onTrue(Commands.runOnce(
-        () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.RUN, 1)));
+        () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 1)));
   }
 
 }
