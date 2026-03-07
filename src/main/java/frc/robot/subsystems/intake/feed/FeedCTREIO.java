@@ -5,7 +5,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.RobotMap;
 
 public class FeedCTREIO implements FeedIO {
-    private final TalonFX feedMotor = new TalonFX(RobotMap.INTAKE.FEED_MOTOR, RobotMap.CAN.DRIVE_BUS);
+    private final TalonFX feedMotor = new TalonFX(RobotMap.INTAKE.FEED_MOTOR, RobotMap.CAN.SLOW_BUS);
 
     public FeedCTREIO() {
         FeedConfiguration feedMotorConfig = new FeedConfiguration();

@@ -13,13 +13,12 @@ public class ShooterCTREIO implements ShooterIO {
     private final TalonFX rightShooter;
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
     private final NeutralOut neutralOut = new NeutralOut();
-    CANBus tempBus = new CANBus("rio");
 
     private double target = 0;
 
     public ShooterCTREIO() {
-        this.leftShooter = new TalonFX(RobotMap.SHOOTER.LEFT_SHOOTER, tempBus);
-        this.rightShooter = new TalonFX(RobotMap.SHOOTER.RIGHT_SHOOTER, tempBus);
+        this.leftShooter = new TalonFX(RobotMap.SHOOTER.LEFT_SHOOTER, RobotMap.CAN.FAST_BUS);
+        this.rightShooter = new TalonFX(RobotMap.SHOOTER.RIGHT_SHOOTER, RobotMap.CAN.FAST_BUS);
         leftShooter.getConfigurator().apply(ShooterConfig.leftShooterConfiguration());
         rightShooter.getConfigurator().apply(ShooterConfig.rightShooterConfiguration());
         leftShooter.setControl(new StrictFollower(rightShooter.getDeviceID()));
