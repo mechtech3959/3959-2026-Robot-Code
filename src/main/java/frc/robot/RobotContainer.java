@@ -11,8 +11,6 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.DrivetrainIOCTRE;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveState;
-import frc.robot.subsystems.shooter.ShooterCTREIO;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
   // private final ShooterCTREIO shooterIO;
@@ -33,7 +31,9 @@ public class RobotContainer {
     autom.configure();
     configureBindings();
   }
-
+  public void endTransition() {
+    drivetrainSubsystem.changeState(SwerveState.TeleOp);
+  }
   private void configureBindings() {
     /*
      * driverController.a().onTrue(Commands.runOnce(

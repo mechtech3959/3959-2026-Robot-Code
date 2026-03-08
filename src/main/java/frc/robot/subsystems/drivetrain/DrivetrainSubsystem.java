@@ -1,9 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import frc.robot.subsystems.drivetrain.modules.ModuleIO;
-import frc.robot.subsystems.drivetrain.modules.ModuleIOCTRE;
-import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
@@ -19,12 +15,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.drivetrain.modules.ModuleIO;
+import frc.robot.subsystems.drivetrain.modules.ModuleIOCTRE;
+import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
 
@@ -46,12 +44,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final PIDController autoYController = new PIDController(7, 0, 0);
     private final PIDController autoHeadingController = new PIDController(7, 0, 0);
     private SwerveSample trajectorySample = null;
-    private final PIDController autoDriveController = new PIDController(3.0, 0, 0.1);
 
     private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
 
     private SwerveState currentDriveState = SwerveState.TeleOp;
-    private CommandXboxController controller;
+    private final CommandXboxController controller;
     private DrivetrainIO io = new DrivetrainIO() {
     };
     final DrivetrainIOInputsAutoLogged swerveInputs = new DrivetrainIOInputsAutoLogged();
@@ -64,8 +61,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final ModuleIO[] modules = new ModuleIO[4];
 
-    private static final double maxSpeed = 5;
-    private static final double maxAngSpeed = 2.75;
+    private static final double maxSpeed = 10.0; // meters per second, placeholder value - adjust based on your robot's capabilities
+    private static final double maxAngSpeed = Math.PI; // radians per second, placeholder value - adjust based on your robot's capabilities
 
     public DrivetrainSubsystem(DrivetrainIO io, CommandXboxController controller) {
 
@@ -81,27 +78,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
         io.registerDrivetrainTelemetry(swerveInputs);
 
         autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
-        SmartDashboard.putData("Swerve Drive", new Sendable() {
-            @Override
-            public void initSendable(SendableBuilder builder) {
-                builder.setSmartDashboardType("SwerveDrive");
-
-                builder.addDoubleProperty("Front Left Angle", () -> moduleInputs[0].steerAbsolutePositionRad, null);
-                builder.addDoubleProperty("Front Left Velocity", () -> moduleInputs[0].driveVelocityRadPerSec / 30,
-                        null);
-
-                builder.addDoubleProperty("Front Right Angle", () -> moduleInputs[1].steerAbsolutePositionRad, null);
-                builder.addDoubleProperty("Front Right Velocity", () -> moduleInputs[1].driveVelocityRadPerSec / 30,
-                        null);
-                builder.addDoubleProperty("Back Left Angle", () -> moduleInputs[2].steerAbsolutePositionRad, null);
-                builder.addDoubleProperty("Back Left Velocity", () -> moduleInputs[2].driveVelocityRadPerSec / 30,
-                        null);
-                builder.addDoubleProperty("Back Right Angle", () -> moduleInputs[3].steerAbsolutePositionRad, null);
-                builder.addDoubleProperty("Back Right Velocity", () -> moduleInputs[3].driveVelocityRadPerSec / 30,
-                        null);
-                builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
-
-            };
+        SmartDashboard.putData("Swerve Drive", (SendableBuilder builder) -> {
+            builder.setSmartDashboardType("SwerveDrive");
+            
+            builder.addDoubleProperty("Front Left Angle", () -> moduleInputs[0].steerAbsolutePositionRad, null);
+            builder.addDoubleProperty("Front Left Velocity", () -> moduleInputs[0].driveVelocityRadPerSec / 30,
+                    null);
+            
+            builder.addDoubleProperty("Front Right Angle", () -> moduleInputs[1].steerAbsolutePositionRad, null);
+            builder.addDoubleProperty("Front Right Velocity", () -> moduleInputs[1].driveVelocityRadPerSec / 30,
+                    null);
+            builder.addDoubleProperty("Back Left Angle", () -> moduleInputs[2].steerAbsolutePositionRad, null);
+            builder.addDoubleProperty("Back Left Velocity", () -> moduleInputs[2].driveVelocityRadPerSec / 30,
+                    null);
+            builder.addDoubleProperty("Back Right Angle", () -> moduleInputs[3].steerAbsolutePositionRad, null);
+            builder.addDoubleProperty("Back Right Velocity", () -> moduleInputs[3].driveVelocityRadPerSec / 30,
+                    null);
+            builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
         });
 
     }
@@ -206,6 +199,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void disable() {
+        
     }
 
     public void headingDrive() {
@@ -260,26 +254,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
     }
 
-    public Sendable driveSendable() {
-        return new Sendable() {
-            @Override
-            public void initSendable(SendableBuilder builder) {
-                builder.setSmartDashboardType("SwerveDrive");
-
-                builder.addDoubleProperty("Front Left Angle", () -> moduleInputs[0].steerAbsolutePositionRad, null);
-                builder.addDoubleProperty("Front Left Velocity", () -> moduleInputs[0].driveVelocityRadPerSec, null);
-
-                builder.addDoubleProperty("Front Right Angle", () -> moduleInputs[1].steerAbsolutePositionRad, null);
-                builder.addDoubleProperty("Front Right Velocity", () -> moduleInputs[1].driveVelocityRadPerSec, null);
-                builder.addDoubleProperty("Back Left Angle", () -> moduleInputs[2].steerAbsolutePositionRad, null);
-                builder.addDoubleProperty("Back Left Velocity", () -> moduleInputs[2].driveVelocityRadPerSec, null);
-
-                builder.addDoubleProperty("Back Right Angle", () -> moduleInputs[3].steerAbsolutePositionRad, null);
-                builder.addDoubleProperty("Back Right Velocity", () -> moduleInputs[3].driveVelocityRadPerSec, null);
-                builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
-
-            };
-        };
-
-    }
+   
 }
