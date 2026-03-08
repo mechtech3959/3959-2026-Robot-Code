@@ -1,6 +1,9 @@
 package frc.robot.subsystems.conveyor;
 
 public interface ConveyorIO {
-    void runConveyorMotor();
-    void stopCoveyorMotor();
+    default void runConveyorMotor() {
+    }
+
+    default void stopConveyorMotor() {
+    }
 }

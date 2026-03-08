@@ -226,4 +226,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return swerveInputs.Pose.getRotation();
     }
 
+    public double getAngularVelocity() {
+        return swerveInputs.Speeds.omegaRadiansPerSecond;
+    }
+
+    public double getLinearVelocity() {
+        return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
+    }
+
 }

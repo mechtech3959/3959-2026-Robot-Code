@@ -54,7 +54,8 @@ public interface DrivetrainIO {
     }
 
     default SwerveModule<TalonFX, TalonFX, CANcoder> getSwerveModule(int index) {
-        throw new UnsupportedOperationException("DrivetrainIO.getSwerveModule(int) must be implemented by concrete drivetrain classes.");
+        throw new UnsupportedOperationException(
+                "DrivetrainIO.getSwerveModule(int) must be implemented by concrete drivetrain classes.");
     }
 
     default void configure() {

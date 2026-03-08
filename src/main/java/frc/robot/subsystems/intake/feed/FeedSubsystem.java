@@ -34,5 +34,7 @@ public class FeedSubsystem extends SubsystemBase {
         applyState();
     }
 
-    public enum FeedStates {RUN, STOP}
+    public enum FeedStates {
+        RUN, STOP
+    }
 }

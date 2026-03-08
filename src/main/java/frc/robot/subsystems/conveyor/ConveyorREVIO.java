@@ -7,16 +7,22 @@ import com.revrobotics.spark.SparkMax;
 
 public class ConveyorREVIO implements ConveyorIO {
     private final SparkMax conveyorMotor = new SparkMax(30, MotorType.kBrushless);
-    
+
     public ConveyorREVIO() {
         ConveyorConfiguration conveyorMotorConfig = new ConveyorConfiguration();
-        conveyorMotor.configure(conveyorMotorConfig.getConfig(), ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    
+        conveyorMotor.configure(conveyorMotorConfig.getConfig(), ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
+
     }
 
-    
-    public void runConveyorMotor() { conveyorMotor.set(1);}
-    public void stopCoveyorMotor() { conveyorMotor.set(0);}
+    @Override
+    public void runConveyorMotor() {
+        conveyorMotor.set(1);
+    }
 
-    
+    @Override
+    public void stopConveyorMotor() {
+        conveyorMotor.set(0);
+    }
+
 }

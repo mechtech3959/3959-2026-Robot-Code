@@ -10,8 +10,8 @@ public class FeedConfiguration {
 
     public FeedConfiguration() {
         feedMotorConfig.withCurrentLimits(new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(40.0)
-                        .withStatorCurrentLimitEnable(true))
+                .withStatorCurrentLimit(40.0)
+                .withStatorCurrentLimitEnable(true))
                 .withMotorOutput(new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Coast));
     }

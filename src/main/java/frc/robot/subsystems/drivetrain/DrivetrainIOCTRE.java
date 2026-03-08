@@ -1,6 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -23,7 +22,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.util.FieldBasedConstants;
 
 // Inspired by FRC 2910 
-public class DrivetrainIOCTRE extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> implements DrivetrainIO, AutoCloseable {
+public class DrivetrainIOCTRE extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>
+        implements DrivetrainIO, AutoCloseable {
     private static final double kSimLoopPeriod = 0.004; // 4 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -126,7 +126,8 @@ public class DrivetrainIOCTRE extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
     public void setPoseEstValues(Pose2d pose, double timestamp, Matrix<N3, N1> dev) {
         this.addVisionMeasurement(pose, timestamp, dev);
     }
-     @Override
+
+    @Override
     public void simulationInit() {
         startSimThread();
     }
