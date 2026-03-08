@@ -1,2 +1,2 @@
-[![wakatime](https://wakatime.com/badge/github/mechtech3959/2026.svg)](https://wakatime.com/badge/github/mechtech3959/2026) ![Build](https://github.com/mechtech3959/2026/actions/workflows/gradle.yml/badge.svg) 
+[![wakatime](https://wakatime.com/badge/github/mechtech3959/2026.svg)](https://wakatime.com/badge/github/mechtech3959/2026) ![Build](https://github.com/mechtech3959/2026/actions/workflows/gradle.yml/badge.svg) [![CodeQL](https://github.com/mechtech3959/2026/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/mechtech3959/2026/actions/workflows/github-code-scanning/codeql)
 # FRC Team Mech Tech #3959 2026 Rebuilt Competition Code
