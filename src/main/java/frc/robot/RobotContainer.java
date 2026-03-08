@@ -16,32 +16,35 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class RobotContainer {
   private final ShooterCTREIO shooterIO;
   private final ShooterSubsystem shooterSubsystem;
-  private final DrivetrainIOCTRE drivetrainIO;
-  private final DrivetrainSubsystem drivetrainSubsystem;
+//  private final DrivetrainIOCTRE drivetrainIO;
+  // private final DrivetrainSubsystem drivetrainSubsystem;
   private final CommandXboxController driverController = new CommandXboxController(0);
-  private final Auto autom;
+  // private final Auto autom;
 
   @SuppressWarnings("unchecked")
   public RobotContainer() {
     shooterIO = new ShooterCTREIO();
     shooterSubsystem = new ShooterSubsystem(shooterIO);
-    drivetrainIO = new DrivetrainIOCTRE(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
-        TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
-    drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO, driverController);
-    autom = new Auto(drivetrainSubsystem);
+    // drivetrainIO = new DrivetrainIOCTRE(TunerConstants.DrivetrainConstants,
+    // TunerConstants.FrontLeft,
+    // TunerConstants.FrontRight, TunerConstants.BackLeft,
+    // TunerConstants.BackRight);
+    // drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO,
+    // driverController);
+    // autom = new Auto(drivetrainSubsystem);
 
     configureBindings();
   }
 
   private void configureBindings() {
     driverController.a().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -55)));
+        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, 55)));
     driverController.b().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -50)));
+        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, 41)));
     driverController.x().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.UNKNOWN, 0)));
+        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.REST, 0)));
     driverController.y().onTrue(Commands.runOnce(
-        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, -60)));
+        () -> shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE, 40)));
   }
 
 }
