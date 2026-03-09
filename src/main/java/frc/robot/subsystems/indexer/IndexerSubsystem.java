@@ -2,10 +2,10 @@ package frc.robot.subsystems.indexer;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class FuelIndexingSubsystem extends SubsystemBase {
-    private final FuelIndexingIO fuelIndexingIO;
+public class IndexerSubsystem extends SubsystemBase {
+    private final IndexorIO fuelIndexingIO;
 
-    public FuelIndexingSubsystem(FuelIndexingIO io) {
+    public IndexerSubsystem(IndexorIO io) {
         this.fuelIndexingIO = io;
     }
 

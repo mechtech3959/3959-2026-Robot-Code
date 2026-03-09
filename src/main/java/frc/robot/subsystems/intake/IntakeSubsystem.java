@@ -48,14 +48,14 @@ public class IntakeSubsystem extends SubsystemBase {
         this.currentIntakeState = state;
     }
 
-    public void setIntakeState(IntakeStates state, FeedStates feedState) {
+    public void changeState(IntakeStates state, FeedStates feedState) {
         this.currentIntakeState = state;
-        this.feedSubsystem.setFeedState(feedState);
+        this.feedSubsystem.changeState(feedState);
     }
 
-    public void setIntakeState(IntakeStates state, FeedStates feedState, double feedSpeed) {
+    public void changeState(IntakeStates state, FeedStates feedState, double feedSpeed) {
         this.currentIntakeState = state;
-        this.feedSubsystem.setFeedState(feedState, feedSpeed);
+        this.feedSubsystem.changeState(feedState, feedSpeed);
     }
 
     @Override

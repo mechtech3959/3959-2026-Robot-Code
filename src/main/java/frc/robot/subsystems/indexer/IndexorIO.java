@@ -1,6 +1,6 @@
 package frc.robot.subsystems.indexer;
 
-public interface FuelIndexingIO {
+public interface IndexorIO {
     default void runFuelIndexingMotor() {
     }
 

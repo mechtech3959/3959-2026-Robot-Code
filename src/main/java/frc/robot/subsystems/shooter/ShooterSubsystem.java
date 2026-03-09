@@ -12,7 +12,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // TODO time longest possible time to shoot all balls / average time to shoot
     // all
     // balls, use this to determine auto shooting times
-    public enum ShooterState {
+    public enum ShooterActions {
         STOPPED,
         IDLE,
         SPINNING_UP,
@@ -20,11 +20,12 @@ public class ShooterSubsystem extends SubsystemBase {
         SHOOTING
     }
 
-    public enum ShooterMode {
+    public enum ShooterStates {
         KNOWN_CLOSE,
         KNOWN_FAR,
         REST,
-        UNKNOWN
+        UNKNOWN,
+        INPUTED
     }
 
     private double targetRPM;
@@ -32,17 +33,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
-    private ShooterState shooterState = ShooterState.IDLE;
-    private ShooterMode shooterMode = ShooterMode.UNKNOWN;
+    private ShooterActions ShooterStatus = ShooterActions.IDLE;
+    private ShooterStates ShooterState = ShooterStates.UNKNOWN;
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
 
     }
 
-    private void handleShooterState() {
+    private void handleState() {
 
-        switch (shooterMode) {
+        switch (ShooterState) {
             case KNOWN_CLOSE -> io.setShooterSpeed(targetRPM);
             case KNOWN_FAR -> {
                 // no-op for known far mode (configure if needed)
@@ -53,24 +54,24 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shooterStatus() {
-        if (shooterMode == ShooterMode.REST) {
-            shooterState = ShooterState.IDLE;
+        if (ShooterState == ShooterStates.REST) {
+            ShooterStatus = ShooterActions.IDLE;
         } else if (io.getShooterSpeed() == 0) {
-            shooterState = ShooterState.STOPPED;
+            ShooterStatus = ShooterActions.STOPPED;
         } else if (!io.isNearTargetSpeed()) {
-            shooterState = ShooterState.SPINNING_UP;
+            ShooterStatus = ShooterActions.SPINNING_UP;
         } else {
-            shooterState = ShooterState.AT_SPEED;
+            ShooterStatus = ShooterActions.AT_SPEED;
         }
     }
 
-    public void ChangeShooterState(ShooterState newState) {
-        shooterState = newState;
+    public void setShooterAction(ShooterActions newState) {
+        ShooterStatus = newState;
     }
 
-    public void ChangeShooterState(ShooterMode newState, double targetRPM) {
+    public void changeState(ShooterStates newState, double targetRPM) {
         this.targetRPM = targetRPM;
-        shooterMode = newState;
+        ShooterState = newState;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class ShooterSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);
         shooterStatus();
-        handleShooterState();
+        handleState();
     }
 
 }

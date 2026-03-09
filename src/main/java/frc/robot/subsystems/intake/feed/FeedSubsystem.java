@@ -30,10 +30,10 @@ public class FeedSubsystem extends SubsystemBase {
         }
     }
 
-    public void setFeedState(FeedStates state) {
+    public void changeState(FeedStates state) {
         this.currentFeedState = state;
     }
-        public void setFeedState(FeedStates state, double speed) {
+        public void changeState(FeedStates state, double speed) {
         this.currentFeedState = state;
         this.targetSpeed = speed;
     }

@@ -14,47 +14,34 @@ import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveState;
 import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.intake.IntakeSubsystem.IntakeStates;
 import frc.robot.subsystems.intake.feed.*;
 
 public class RobotContainer {
-  // private final ShooterCTREIO shooterIO;
-  // private final ShooterSubsystem shooterSubsystem;
   private final DrivetrainCTREIO drivetrainIO;
   private final DrivetrainSubsystem drivetrainSubsystem;
-  // private final ShooterCTREIO shooterIO;
-  // private final ShooterSubsystem shooterSubsystem;
-  // private final DrivetrainCTREIO drivetrainIO;
-  // private final DrivetrainSubsystem drivetrainSubsystem;
+   private final ShooterCTREIO shooterIO;
+   private final ShooterSubsystem shooterSubsystem;
   private final FeedCTREIO feedIO;
   private final FeedSubsystem feedSubsystem;
   private final IntakeREVIO intakeIO;
   private final IntakeSubsystem intakeSubsystem;
   private final CommandXboxController driverController = new CommandXboxController(0);
 
-  // private final Auto autom;
 
   public RobotContainer() {
-    // shooterIO = new ShooterCTREIO();
-    // shooterSubsystem = new ShooterSubsystem(shooterIO);
+
     drivetrainIO = new DrivetrainCTREIO(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
         TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
     drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO, driverController);
-   // autom = new Auto(drivetrainSubsystem);
-    //autom.configure();
-    // shooterIO = new ShooterCTREIO();
-    // shooterSubsystem = new ShooterSubsystem(shooterIO);
-    // drivetrainIO = new DrivetrainCTREIO(TunerConstants.DrivetrainConstants,
-    // TunerConstants.FrontLeft,
-    // TunerConstants.FrontRight, TunerConstants.BackLeft,
-    // TunerConstants.BackRight);
-    // drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO,
-    // driverController);
+
+    shooterIO = new ShooterCTREIO();
+     shooterSubsystem = new ShooterSubsystem(shooterIO);
+    
+  
     feedIO = new FeedCTREIO();
     feedSubsystem = new FeedSubsystem(feedIO);
     intakeIO = new IntakeREVIO();
     intakeSubsystem = new IntakeSubsystem(intakeIO, feedSubsystem);
-    // autom = new Auto(drivetrainSubsystem);
 
     configureBindings();
   }
