@@ -1,18 +1,24 @@
 package frc.robot.subsystems.intake;
 
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class IntakeConfiguration {
     private final SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
 
     public IntakeConfiguration() {
+        intakeMotorConfig.apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
+        intakeMotorConfig.idleMode(IdleMode.kBrake);
+        
         intakeMotorConfig.softLimit
                 .forwardSoftLimit(5.0)
                 .forwardSoftLimitEnabled(true)
                 .reverseSoftLimit(0.1)
                 .reverseSoftLimitEnabled(true);
 
-        intakeMotorConfig.closedLoop
+        intakeMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder)
                 .pid(2.0, 0.0, 0.0).feedForward
                 .kS(0.15)
                 .kV(0.12)

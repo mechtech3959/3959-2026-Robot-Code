@@ -6,20 +6,25 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 
-@SuppressWarnings("FieldCanBeLocal")
+import frc.robot.RobotMap;
+
 public class IntakeREVIO implements IntakeIO {
-    private final SparkMax intakeMotor = new SparkMax(0, SparkLowLevel.MotorType.kBrushless); // replace with proper
-                                                                                              // canID
+    private final SparkMax intakeMotor = new SparkMax(RobotMap.INTAKE.AXIS_MOTOR, SparkLowLevel.MotorType.kBrushless); // replace
+    private double target = 0; // with
+    // proper
+    // canID
 
     public IntakeREVIO() {
         IntakeConfiguration intakeMotorConfig = new IntakeConfiguration();
         intakeMotor.configure(intakeMotorConfig.getConfig(), ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
+
     }
 
     @Override
     public void setControl(double position) {
         intakeMotor.getClosedLoopController().setSetpoint(position, SparkBase.ControlType.kMAXMotionPositionControl);
+        target = position;
     }
 
     @Override
@@ -30,5 +35,15 @@ public class IntakeREVIO implements IntakeIO {
     @Override
     public double getPosition() {
         return intakeMotor.getEncoder().getPosition();
+    }
+
+    @Override
+    public void updateInputs(IntakeIOInputs inputs) {
+        inputs.axisPosition = intakeMotor.getEncoder().getPosition();
+        inputs.axisVelocity = intakeMotor.getEncoder().getVelocity();
+        inputs.axisTarget = target;
+        inputs.axisCurrent = intakeMotor.getOutputCurrent();
+        inputs.axisTemperature = intakeMotor.getMotorTemperature();
+        inputs.isAtTarget = Math.abs(target - getPosition()) < 0.1; // Adjust the tolerance as needed
     }
 }

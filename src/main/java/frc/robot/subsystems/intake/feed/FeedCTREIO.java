@@ -1,11 +1,11 @@
 package frc.robot.subsystems.intake.feed;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import frc.robot.RobotMap;
+
 public class FeedCTREIO implements FeedIO {
-    private final CANBus canBus = new CANBus("CanBus");
-    private final TalonFX feedMotor = new TalonFX(0, canBus);
+    private final TalonFX feedMotor = new TalonFX(RobotMap.INTAKE.FEED_MOTOR, RobotMap.CAN.SLOW_BUS);
 
     public FeedCTREIO() {
         FeedConfiguration feedMotorConfig = new FeedConfiguration();
@@ -20,5 +20,16 @@ public class FeedCTREIO implements FeedIO {
     @Override
     public void stopFeedMotor() {
         feedMotor.set(0.0);
+    }
+    @Override
+    public void setSpeed(double speed) {
+        feedMotor.set(speed);
+    }
+    @Override 
+    public void updateInputs(FeedIOInputs inputs) {
+        inputs.motorStaturCurrent = feedMotor.getStatorCurrent().getValueAsDouble();
+        inputs.motorSupplyCurrent = feedMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.motorTemperature = feedMotor.getDeviceTemp().getValueAsDouble();
+        inputs.motorVelocity = feedMotor.getVelocity().getValueAsDouble();
     }
 }
