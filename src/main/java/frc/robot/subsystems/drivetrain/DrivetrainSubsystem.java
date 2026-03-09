@@ -173,6 +173,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void resetPose(Pose2d pose) {
         io.resetRobotPose(pose);
     }
+    public void resetHeading(Rotation2d heading) {
+        io.resetHeading(heading);
+        
+    }
 
     public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot
