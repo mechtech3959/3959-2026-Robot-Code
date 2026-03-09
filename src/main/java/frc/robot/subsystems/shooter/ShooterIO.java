@@ -1,11 +1,24 @@
 package frc.robot.subsystems.shooter;
 
-public interface ShooterIO {
+import org.littletonrobotics.junction.AutoLog;
 
+public interface ShooterIO {
+    @AutoLog
     class ShooterIOInputs {
 
-        public double shooterSpeed = 0;
-        public double hoodAngle = 0;
+        public double leftShooterSpeedRPS = 0;
+        public double rightShooterSpeedRPS = 0;
+
+        public double leftShooterSpeedRPM = 0;
+        public double rightShooterSpeedRPM = 0;
+        public double targetSpeedRPS = 0;
+        public boolean atTargetSpeed = false;
+
+        public double LeftShooterCurrentStator = 0;
+        public double RightShooterCurrentStator = 0;
+        public double LeftShooterCurrentSupply = 0;
+        public double RightShooterCurrentSupply = 0;
+        public double hoodAngle = 50;
     }
 
     default void setShooterSpeed(double speed) {
