@@ -10,6 +10,7 @@ import frc.robot.auto.Auto;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.DrivetrainCTREIO;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveState;
 import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.intake.*;
@@ -17,6 +18,10 @@ import frc.robot.subsystems.intake.IntakeSubsystem.IntakeStates;
 import frc.robot.subsystems.intake.feed.*;
 
 public class RobotContainer {
+  // private final ShooterCTREIO shooterIO;
+  // private final ShooterSubsystem shooterSubsystem;
+  private final DrivetrainCTREIO drivetrainIO;
+  private final DrivetrainSubsystem drivetrainSubsystem;
   // private final ShooterCTREIO shooterIO;
   // private final ShooterSubsystem shooterSubsystem;
   // private final DrivetrainCTREIO drivetrainIO;
@@ -30,6 +35,13 @@ public class RobotContainer {
   // private final Auto autom;
 
   public RobotContainer() {
+    // shooterIO = new ShooterCTREIO();
+    // shooterSubsystem = new ShooterSubsystem(shooterIO);
+    drivetrainIO = new DrivetrainIOCTRE(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
+        TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
+    drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO, driverController);
+    autom = new Auto(drivetrainSubsystem);
+    autom.configure();
     // shooterIO = new ShooterCTREIO();
     // shooterSubsystem = new ShooterSubsystem(shooterIO);
     // drivetrainIO = new DrivetrainCTREIO(TunerConstants.DrivetrainConstants,
@@ -46,9 +58,41 @@ public class RobotContainer {
 
     configureBindings();
   }
-
+  public void endTransition() {
+    drivetrainSubsystem.changeState(SwerveState.TeleOp);
+  }
   private void configureBindings() {
-    driverController.a().onTrue(Commands.runOnce(
+    /*
+     * driverController.a().onTrue(Commands.runOnce(
+     * () ->
+     * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
+     * -55)));
+     * driverController.b().onTrue(Commands.runOnce(
+     * () ->
+     * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
+     * -50)));
+     * driverController.x().onTrue(Commands.runOnce(
+     * () ->
+     * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.UNKNOWN,
+     * 0)));
+     * driverController.y().onTrue(Commands.runOnce(
+     * () ->
+     * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
+     * -60)));
+     */
+    driverController.a().onChange(Commands.runOnce(() -> {
+      drivetrainSubsystem.changeState(SwerveState.Heading);
+    }));
+    driverController.b().onChange(Commands.runOnce(() -> {
+      drivetrainSubsystem.changeState(SwerveState.TeleOp);
+    }));
+    driverController.x().onChange(Commands.runOnce(() -> {
+      drivetrainSubsystem.changeState(SwerveState.Brake);
+    }));
+    driverController.y().onChange(Commands.runOnce(() -> {
+      drivetrainSubsystem.changeState(SwerveState.VisionHeading);
+    }));
+  /*   driverController.a().onTrue(Commands.runOnce(
         () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.25)));
     driverController.b().onTrue(Commands.runOnce(
         () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.5)));
@@ -56,6 +100,7 @@ public class RobotContainer {
         () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.75)));
     driverController.y().onTrue(Commands.runOnce(
         () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 1)));
+         */
   }
 
 }
