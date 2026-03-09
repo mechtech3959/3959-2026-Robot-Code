@@ -24,7 +24,7 @@ import frc.robot.util.FieldBasedConstants;
 // Inspired by FRC 2910 
 public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>
         implements DrivetrainIO {
-    private static final double sameimLoopPeriod = 0.004; // 4 ms
+    private static final double simLoopPeriod = 0.004; // 4 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
