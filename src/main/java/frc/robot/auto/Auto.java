@@ -15,8 +15,7 @@ import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 public class Auto {
     private final DrivetrainSubsystem drivetrain;
-    private final AutoFactory autoFactory;
-    private final AutoChooser autoChooser;
+    private final AutoFactory autoFactory;   private final AutoChooser autoChooser;
 
     public Auto(DrivetrainSubsystem drivetrain) {
         this.autoChooser = new AutoChooser();
@@ -42,7 +41,7 @@ public class Auto {
         routine.active().onTrue(
                 Commands.sequence(
                         Commands.print("Started the routine!"),
-                        test.resetOdometry(), // Reset pose to trajectory start
+                     //   test.resetOdometry(), // Reset pose to trajectory start
                         test.cmd() // Follow the trajectory
                 ));
 

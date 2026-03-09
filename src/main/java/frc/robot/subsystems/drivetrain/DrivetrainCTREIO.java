@@ -23,8 +23,8 @@ import frc.robot.util.FieldBasedConstants;
 
 // Inspired by FRC 2910 
 public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder>
-        implements DrivetrainIO, AutoCloseable {
-    private static final double kSimLoopPeriod = 0.004; // 4 ms
+        implements DrivetrainIO {
+    private static final double sameimLoopPeriod = 0.004; // 4 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
@@ -110,7 +110,7 @@ public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
             /* use the measured time delta, get battery voltage from WPILib */
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
+        m_simNotifier.startPeriodic(simLoopPeriod);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
 
     @Override
     public void simulationPeriodic() {
-        this.updateSimState(kSimLoopPeriod, RobotController.getBatteryVoltage());
+        this.updateSimState(simLoopPeriod, RobotController.getBatteryVoltage());
         // This method can be used to add additional simulation code if needed.
     }
 }
