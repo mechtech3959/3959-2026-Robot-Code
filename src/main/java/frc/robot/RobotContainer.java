@@ -37,7 +37,7 @@ public class RobotContainer {
   public RobotContainer() {
     // shooterIO = new ShooterCTREIO();
     // shooterSubsystem = new ShooterSubsystem(shooterIO);
-    drivetrainIO = new DrivetrainIOCTRE(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
+    drivetrainIO = new DrivetrainCTREIO(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
         TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
     drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO, driverController);
     autom = new Auto(drivetrainSubsystem);
