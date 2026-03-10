@@ -6,15 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.auto.Auto;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drivetrain.DrivetrainCTREIO;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveState;
+import frc.robot.subsystems.intake.IntakeREVIO;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.feed.FeedCTREIO;
+import frc.robot.subsystems.intake.feed.FeedSubsystem;
 import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.intake.feed.*;
 
 public class RobotContainer {
   private final DrivetrainCTREIO drivetrainIO;
