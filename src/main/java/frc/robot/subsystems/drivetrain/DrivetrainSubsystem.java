@@ -62,8 +62,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final ModuleIO[] modules = new ModuleIO[4];
 
-    private static final double maxSpeed = 10.0; // meters per second, placeholder value - adjust based on your robot's capabilities
-    private static final double maxAngSpeed = Math.PI; // radians per second, placeholder value - adjust based on your robot's capabilities
+    private static final double maxSpeed = 8.0; // meters per second, placeholder value - adjust based on your robot's capabilities
+    private static final double maxAngSpeed = 3; // radians per second, placeholder value - adjust based on your robot's capabilities
 
     public DrivetrainSubsystem(DrivetrainIO io, CommandXboxController controller) {
 

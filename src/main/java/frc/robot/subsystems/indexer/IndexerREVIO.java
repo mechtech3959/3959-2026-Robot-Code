@@ -16,7 +16,7 @@ public class IndexerREVIO implements IndexorIO {
 
     @Override
     public void runFuelIndexingMotor() {
-        fuelIndexingMotor.set(1);
+        fuelIndexingMotor.set(0.5);
     }
 
     @Override

@@ -1,12 +1,8 @@
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.RPM;
-
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.shooter.ShooterIO.ShooterIOInputs;
 
 public class ShooterSubsystem extends SubsystemBase {
     // TODO time longest possible time to shoot all balls / average time to shoot
@@ -24,12 +20,11 @@ public class ShooterSubsystem extends SubsystemBase {
         KNOWN_CLOSE,
         KNOWN_FAR,
         REST,
-        UNKNOWN,
-        INPUTED
+        UNKNOWN
     }
 
     private double targetRPM;
-    private double targetAngle = 0;
+    private double targetAngle = 50; // fixed angle
 
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
@@ -53,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
         }
     }
 
-    public void shooterStatus() {
+    public void handleShooterStatus() {
         if (ShooterState == ShooterStates.REST) {
             ShooterStatus = ShooterActions.IDLE;
         } else if (io.getShooterSpeed() == 0) {
@@ -80,7 +75,8 @@ public class ShooterSubsystem extends SubsystemBase {
         io.periodic();
         io.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);
-        shooterStatus();
+        Logger.recordOutput(getName()+ "ShooterStatus", ShooterStatus);
+        handleShooterStatus();
         handleState();
     }
 
