@@ -41,8 +41,7 @@ public class ClimberConfiguration {
 
         climberMotorConfig.closedLoop.maxMotion
                 .cruiseVelocity(1.5)       // 1.5 radians per second
-                .maxAcceleration(3)      // 0.5 sec to reach top speed
-                .allowedProfileError(0.5); // Deadband
+                .maxAcceleration(3);      // 0.5 sec to reach top speed
     }
 
     public SparkMaxConfig getClimberMotorConfig() {
