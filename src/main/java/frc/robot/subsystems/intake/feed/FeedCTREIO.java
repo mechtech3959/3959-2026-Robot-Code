@@ -14,7 +14,7 @@ public class FeedCTREIO implements FeedIO {
 
     @Override
     public void runFeedMotor() {
-        feedMotor.set(1.0);
+        feedMotor.set(0.75);
     }
 
     @Override

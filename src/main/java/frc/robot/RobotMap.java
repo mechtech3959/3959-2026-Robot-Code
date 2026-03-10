@@ -16,5 +16,7 @@ public class RobotMap {
     public static class INTAKE {
         public static final int FEED_MOTOR = 14;
         public static final int AXIS_MOTOR = 19;
+        //DO NOT USE THIS CAN ID, IT IS FOR TESTING PURPOSES ONLY. REPLACE WITH PROPER CAN ID BEFORE COMPETITION
+        public static final int ENCODER = 44;
     }
 }

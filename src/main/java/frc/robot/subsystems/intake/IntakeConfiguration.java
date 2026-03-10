@@ -2,23 +2,24 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkFlexConfig;
 
 public class IntakeConfiguration {
-    private final SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
-
+     private final SparkFlexConfig intakeConfig = new SparkFlexConfig();
     public IntakeConfiguration() {
-        intakeMotorConfig.apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
-        intakeMotorConfig.idleMode(IdleMode.kBrake);
+        intakeConfig.smartCurrentLimit(40); // Set the smart current limit to 40 amps
+        intakeConfig.apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
+        intakeConfig.idleMode(IdleMode.kBrake);
         
-        intakeMotorConfig.softLimit
+        intakeConfig.softLimit
                 .forwardSoftLimit(5.0)
                 .forwardSoftLimitEnabled(true)
                 .reverseSoftLimit(0.1)
                 .reverseSoftLimitEnabled(true);
-
-        intakeMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder)
+      //  intakeConfig.limitSwitch.forwardLimitSwitchTriggerBehavior(LimitSwitchConfig.Behavior.kStopMovingMotorAndSetPosition).reverseLimitSwitchTriggerBehavior(LimitSwitchConfig.Behavior.kStopMovingMotorAndSetPosition).limitSwitchPositionSensor(FeedbackSensor.kAnalogSensor);
+              
+        intakeConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder)
                 .pid(2.0, 0.0, 0.0).feedForward
                 .kS(0.15)
                 .kV(0.12)
@@ -26,13 +27,13 @@ public class IntakeConfiguration {
                 // kCosRatio = (Gear Ratio) * (2 * PI) = converts Rotations to Radians
                 .kCosRatio(9.0 * 2.0 * Math.PI);
 
-        intakeMotorConfig.closedLoop.maxMotion
-                .cruiseVelocity(2000) // 2000 rpm
-                .maxAcceleration(4000) // 2000/4000 = 0.5 sec to reach 2000 rpm
+        intakeConfig.closedLoop.maxMotion
+                .cruiseVelocity(1.5) // 1.5 RAD/s = 14.3 rpm
+                .maxAcceleration(3) //  0.5 sec to reach 1.5 RAD/s
                 .allowedProfileError(0.01); // Deadband
     }
 
-    public SparkMaxConfig getConfig() {
-        return intakeMotorConfig;
+    public SparkFlexConfig getConfig() {
+        return intakeConfig;
     }
 }

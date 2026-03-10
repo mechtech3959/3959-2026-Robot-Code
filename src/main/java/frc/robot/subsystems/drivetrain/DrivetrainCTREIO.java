@@ -30,14 +30,15 @@ public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
 
     public DrivetrainCTREIO(SwerveDrivetrainConstants constants,
             @SuppressWarnings("unchecked") SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>... moduleConstants) {
+                
 
-        super(TalonFX::new, TalonFX::new, CANcoder::new, constants, moduleConstants);
-
+        super(TalonFX::new, TalonFX::new, CANcoder::new, constants, 250,moduleConstants);
+                
         this.resetRotation(FieldBasedConstants.isBlueAlliance() ? Rotation2d.kZero : Rotation2d.k180deg);
         if (Utils.isSimulation()) {
             startSimThread();
         }
-
+        
     }
 
     @Override

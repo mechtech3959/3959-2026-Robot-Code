@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
@@ -39,8 +40,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
-            .withHeadingPID(3, 0, 0)
-            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+            .withHeadingPID(7, 0, 0.5)
+            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
     private final PIDController autoXController = new PIDController(7, 0, 0);
     private final PIDController autoYController = new PIDController(7, 0, 0);
     private final PIDController autoHeadingController = new PIDController(7, 0, 0);
@@ -69,7 +70,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         this.io = io;
         this.controller = controller;
-
+        headingDrive.HeadingController = new PhoenixPIDController(7, 0, 0);
+        headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
         for (int i = 0; i < 4; i++) {
             modules[i] = new ModuleCTREIO(io.getSwerveModule(i));
             modules[i].updateInputs(moduleInputs[i]);
@@ -108,11 +110,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         applyState();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             // Read fresh data from hardware
             modules[i].updateInputs(moduleInputs[i]);
             // Send to dashboard
-            Logger.processInputs("Drive/Module " + i, moduleInputs[i]);
+            Logger.processInputs(getName() + "/Module " + i, moduleInputs[i]);
         }
 
     }

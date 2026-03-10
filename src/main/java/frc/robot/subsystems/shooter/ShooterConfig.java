@@ -14,14 +14,14 @@ public class ShooterConfig {
                                 .withMotionMagic(motionMagic)
                                 .withMotorOutput(new MotorOutputConfigs()
                                                 .withInverted(InvertedValue.CounterClockwise_Positive)
-                                                .withNeutralMode(NeutralModeValue.Coast));
+                                                .withNeutralMode(NeutralModeValue.Coast).withControlTimesyncFreqHz(0));
         }
 
         public static TalonFXConfiguration rightShooterConfiguration() {
                 return new TalonFXConfiguration().withCurrentLimits(currentLimits).withSlot0(slot0Configs)
                                 .withMotionMagic(motionMagic)
                                 .withMotorOutput(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive)
-                                                .withNeutralMode(NeutralModeValue.Coast));
+                                                .withNeutralMode(NeutralModeValue.Coast).withControlTimesyncFreqHz(0));
         }
 
         static CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs().withStatorCurrentLimit(100)

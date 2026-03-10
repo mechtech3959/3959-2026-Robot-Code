@@ -1,6 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -27,7 +26,9 @@ public class ShooterCTREIO implements ShooterIO {
     @Override
     public void setShooterSpeed(double speed) {
         if (target != speed) {
-            rightShooter.setControl(velocityVoltage.withVelocity(speed));
+            rightShooter.setControl(velocityVoltage.withVelocity(speed).withUseTimesync(true));
+            leftShooter.setControl(new StrictFollower(rightShooter.getDeviceID()).withUpdateFreqHz(0));
+
             target = speed;
         }
     }
