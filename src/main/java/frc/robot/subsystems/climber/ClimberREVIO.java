@@ -8,7 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.util.Units;
 
 public class ClimberREVIO implements ClimberIO {
-    private final SparkMax climberMotor = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
+    private final SparkMax climberMotor = new SparkMax(21, SparkLowLevel.MotorType.kBrushless);
     ClimberConfiguration climberConfig = new ClimberConfiguration();
 
     public ClimberREVIO() {

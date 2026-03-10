@@ -12,21 +12,25 @@ public class ClimberConfiguration {
         climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
 
         // Add to release hook, subtract to raise hook
-        climberMotorConfig.softLimit.forwardSoftLimit(200.0)
+        climberMotorConfig.softLimit.forwardSoftLimit(4.0) // 6.28 radians is one full rotation
                 .forwardSoftLimitEnabled(true)
-                .reverseSoftLimit(1.0)
+                .reverseSoftLimit(1.0) // Leaving room so the hooks don't collide with anything else
                 .reverseSoftLimitEnabled(true);
 
-        climberMotorConfig.alternateEncoder
+        climberMotorConfig.absoluteEncoder
                 .inverted(false)
-                // 1 Rotation = 2 * PI Radians
+                // Convert rotations (0-1) to radians
                 .positionConversionFactor(2.0 * Math.PI)
                 // 1 RPM = (2 * PI) / 60 Radians per Second
                 .velocityConversionFactor((2.0 * Math.PI) / 60.0);
 
+        // Telling closed loop to use the absolute encoder
         climberMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                 .outputRange(-1.0, 1.0);
+
+        // Help prevent jumping and skipping
+        climberMotorConfig.absoluteEncoder.averageDepth(16);
 
         // Use small numbers for the high ratio
         climberMotorConfig.closedLoop.pid(0.01, 0.0, 0.01)
@@ -36,8 +40,8 @@ public class ClimberConfiguration {
                 .kCosRatio(1.0); // Using 1.0 because the code is programed with radians
 
         climberMotorConfig.closedLoop.maxMotion
-                .cruiseVelocity(2000)       // 2000 rpm
-                .maxAcceleration(1000)      // 2000/1000 = 2 sec to reach 2000 rpm
+                .cruiseVelocity(1.5)       // 1.5 radians per second
+                .maxAcceleration(3)      // 0.5 sec to reach top speed
                 .allowedProfileError(0.5); // Deadband
     }
 

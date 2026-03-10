@@ -4,4 +4,24 @@
 
 package frc.robot;
 
-public class RobotContainer {}
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.climber.ClimberREVIO;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+
+public class RobotContainer {
+
+    private final CommandXboxController driver = new CommandXboxController(0);
+    private final ClimberREVIO climberIO = new ClimberREVIO();
+    private final ClimberSubsystem climber = new ClimberSubsystem(climberIO);
+
+    public RobotContainer() {
+        configureBindings();
+    }
+
+    private void configureBindings() {
+        driver.a().onTrue(climber.runOnce(() -> climber.setClimberState(ClimberSubsystem.ClimberStates.HOME)));
+        driver.b().onTrue(climber.runOnce(() -> climber.setClimberState(ClimberSubsystem.ClimberStates.CLEAR_INTAKE)));
+        driver.x().onTrue(climber.runOnce(() -> climber.setClimberState(ClimberSubsystem.ClimberStates.CLIMB)));
+    }
+
+}
