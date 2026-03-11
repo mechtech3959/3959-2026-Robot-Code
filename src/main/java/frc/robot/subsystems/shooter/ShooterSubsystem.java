@@ -20,6 +20,7 @@ public class ShooterSubsystem extends SubsystemBase {
         KNOWN_CLOSE,
         KNOWN_FAR,
         REST,
+        INTAKE,
         UNKNOWN
     }
 
@@ -45,6 +46,7 @@ public class ShooterSubsystem extends SubsystemBase {
             }
             case REST -> io.setShooterNeutral();
             case UNKNOWN -> io.setShooterSpeed(0);
+            case INTAKE -> io.setShooterSpeed(10);
         }
     }
 
@@ -64,6 +66,9 @@ public class ShooterSubsystem extends SubsystemBase {
         ShooterStatus = newState;
     }
 
+    public void changeState(ShooterStates newState) {
+        ShooterState = newState;
+    }
     public void changeState(ShooterStates newState, double targetRPM) {
         this.targetRPM = targetRPM;
         ShooterState = newState;

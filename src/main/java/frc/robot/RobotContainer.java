@@ -68,6 +68,7 @@ public class RobotContainer {
      * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
      * -60)));
      */
+    /* 
     driverController.a().onChange(Commands.runOnce(() -> {
       drivetrainSubsystem.changeState(SwerveState.Heading);
     }));
@@ -79,7 +80,7 @@ public class RobotContainer {
     }));
     driverController.y().onChange(Commands.runOnce(() -> {
       drivetrainSubsystem.changeState(SwerveState.VisionHeading);
-    }));
+    }));*/
   /*   driverController.a().onTrue(Commands.runOnce(
         () -> intakeSubsystem.setIntakeState(IntakeStates.TEST, FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.25)));
     driverController.b().onTrue(Commands.runOnce(

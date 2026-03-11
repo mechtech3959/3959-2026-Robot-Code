@@ -13,21 +13,15 @@ public class ConveyorSubsystem extends SubsystemBase {
 
     private void applyState() {
         switch (currentConveyorState) {
-            case RUN:
-                conveyorIO.runConveyorMotor();
-                break;
-            case STOP:
-                conveyorIO.stopConveyorMotor();
-                break;
-            default:
-                System.out.println(
+            case RUN -> conveyorIO.runConveyorMotor();
+            case STOP -> conveyorIO.stopConveyorMotor();
+            default -> System.out.println(
                         "Error in Conveyor Subsystem: State applied to " + "non-existing option/undefined error.");
-                break;
 
         }
     }
 
-    public void setConveyorState(ConveyorStates state) {
+    public void changeState(ConveyorStates state) {
         this.currentConveyorState = state;
     }
 

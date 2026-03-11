@@ -13,6 +13,7 @@ import static frc.robot.subsystems.shooter.ShooterSubsystem.ShooterStates;
 import static frc.robot.subsystems.intake.IntakeSubsystem.IntakeStates;
 import static frc.robot.subsystems.climber.ClimberSubsystem.ClimberStates;
 import static frc.robot.subsystems.conveyor.ConveyorSubsystem.ConveyorStates;
+import static frc.robot.subsystems.indexer.IndexerSubsystem.IndexerStates;
 
 public class SuperStructureSubsystem extends SubsystemBase {
   public enum SuperStructureState {
@@ -21,8 +22,8 @@ public class SuperStructureSubsystem extends SubsystemBase {
     SHOOTING_AUTO,
     SHOOTING__TELEOP,
     TRAVEL,
-
-    CLIMBING
+    CLIMBING,
+    TEST
   }
 
   private final ConveyorSubsystem conveyor;
@@ -46,17 +47,43 @@ public class SuperStructureSubsystem extends SubsystemBase {
   }
 
   private void applyState() {
+
     switch (currentSuperStructureState) {
-      case IDLE -> {}
-      case INTAKING -> {}
-      case SHOOTING_AUTO -> {}
-      case SHOOTING__TELEOP -> {}
-      case TRAVEL -> {}
-      case CLIMBING -> {}
+
+      case IDLE -> {
+        intake.changeState(IntakeStates.INTAKE, FeedStates.STOP);
+          conveyor.changeState(ConveyorStates.STOP);
+          indexer.changeState(IndexerStates.STOP);
+          shooter.changeState(ShooterStates.REST);
+      }
+      case INTAKING -> {
+
+      }
+      case SHOOTING_AUTO -> {
+      }
+      case SHOOTING__TELEOP -> {
+      }
+      case TRAVEL -> {
+      }
+      case CLIMBING -> {
+      }
+      case TEST -> {
+        intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.75);
+        conveyor.changeState(ConveyorStates.RUN);
+        indexer.changeState(IndexerStates.RUN);
+        shooter.changeState(ShooterStates.INTAKE);
+      }
+      default -> System.out.println("Error in SuperStructure Subsystem: State applied to "
+          + "non-existing option/undefined error.");
     }
+  }
+  public void changeState(SuperStructureState newState) {
+    this.requestedSuperStructureState = newState;
+    this.currentSuperStructureState = requestedSuperStructureState;
   }
 
   @Override
   public void periodic() {
+    applyState();
   }
 }

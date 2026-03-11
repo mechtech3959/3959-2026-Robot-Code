@@ -3,21 +3,21 @@ package frc.robot.subsystems.indexer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
-    private final IndexorIO fuelIndexingIO;
+    private final IndexorIO indexerIO;
 
     public IndexerSubsystem(IndexorIO io) {
-        this.fuelIndexingIO = io;
+        this.indexerIO = io;
     }
 
-    private FuelIndexingStates currentFuelIndexingState = FuelIndexingStates.STOP;
+    private IndexerStates currentIndexingState = IndexerStates.STOP;
 
     private void applyState() {
-        switch (currentFuelIndexingState) {
+        switch (currentIndexingState) {
             case RUN:
-                fuelIndexingIO.runFuelIndexingMotor();
+                indexerIO.runFuelIndexingMotor();
                 break;
             case STOP:
-                fuelIndexingIO.stopFuelIndexingMotor();
+                indexerIO.stopFuelIndexingMotor();
                 break;
             default:
                 System.out.println(
@@ -26,8 +26,8 @@ public class IndexerSubsystem extends SubsystemBase {
         }
     }
 
-    public void setFuelIndexingState(FuelIndexingStates state) {
-        this.currentFuelIndexingState = state;
+    public void changeState(IndexerStates state) {
+        this.currentIndexingState = state;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class IndexerSubsystem extends SubsystemBase {
         applyState();
     }
 
-    public enum FuelIndexingStates {
+    public enum IndexerStates {
         RUN,
         STOP
     }
