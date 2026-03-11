@@ -5,13 +5,13 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.climber.ClimberCTRE;
+import frc.robot.subsystems.climber.ClimberCTREIO;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 
 public class RobotContainer {
 
     private final CommandXboxController driver = new CommandXboxController(0);
-    private final ClimberCTRE climberIO = new ClimberCTRE();
+    private final ClimberCTREIO climberIO = new ClimberCTREIO();
     private final ClimberSubsystem climber = new ClimberSubsystem(climberIO);
 
     public RobotContainer() {
