@@ -17,7 +17,7 @@ public class ClimberREVIO implements ClimberIO {
 
     @Override
     public void setPosition(double position) {
-        climberMotor.getClosedLoopController().setSetpoint(position, SparkBase.ControlType.kMAXMotionPositionControl);
+        climberMotor.getClosedLoopController().setSetpoint(position, SparkBase.ControlType.kPosition);
     }
 
     @Override

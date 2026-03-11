@@ -1,5 +1,6 @@
 package frc.robot.subsystems.climber;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,9 +22,9 @@ public class ClimberSubsystem extends SubsystemBase {
     case HOME ->
       climberIO.setPosition(0);
     case CLEAR_INTAKE ->
-      climberIO.setPosition(0.6);
+      climberIO.setPosition(10);
     case CLIMB ->
-      climberIO.setPosition(0.5);
+      climberIO.setPosition(Units.degreesToRadians(90));
     case CAMERA_CUSTOM ->
       climberIO.setPosition(cameraCustomPosition);
       // May not work how I think it will, but use the controller thumbstick

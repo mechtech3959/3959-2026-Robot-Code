@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
 import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -10,14 +11,15 @@ public class ClimberConfiguration {
     public ClimberConfiguration() {
         climberMotorConfig.smartCurrentLimit(40, 20);
         climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-
         // Add to release hook, subtract to raise hook
         climberMotorConfig.softLimit.forwardSoftLimit(4.0) // 6.28 radians is one full rotation
-                .forwardSoftLimitEnabled(true)
+                .forwardSoftLimitEnabled(false)
                 .reverseSoftLimit(1.0) // Leaving room so the hooks don't collide with anything else
-                .reverseSoftLimitEnabled(true);
+                .reverseSoftLimitEnabled(false);
 
         climberMotorConfig.absoluteEncoder
+                .apply(AbsoluteEncoderConfig.Presets.REV_ThroughBoreEncoderV2)
+                .setSparkMaxDataPortConfig()
                 .inverted(false)
                 // Convert rotations (0-1) to radians
                 .positionConversionFactor(2.0 * Math.PI)
@@ -27,13 +29,9 @@ public class ClimberConfiguration {
         // Telling closed loop to use the absolute encoder
         climberMotorConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .outputRange(-1.0, 1.0);
-
-        // Help prevent jumping and skipping
-        climberMotorConfig.absoluteEncoder.averageDepth(16);
-
-        // Use small numbers for the high ratio
-        climberMotorConfig.closedLoop.pid(0.01, 0.0, 0.01)
+                .outputRange(-1.0, 1.0)
+                // Use small numbers for the high ratio
+                .pid(0.01, 0.0, 0.01)
                 .feedForward.kS(0.15)
                 .kV(0.12)
                 .kCos(0.2)
