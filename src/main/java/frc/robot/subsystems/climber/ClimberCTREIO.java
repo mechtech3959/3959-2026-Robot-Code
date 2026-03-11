@@ -1,13 +1,9 @@
 package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.util.Units;
 
@@ -16,6 +12,8 @@ public class ClimberCTREIO implements ClimberIO {
     MotionMagicVoltage request = new MotionMagicVoltage(0);
 
     public ClimberCTREIO() {
+        TalonFXConfiguration climberMotorConfig = new ClimberConfiguration().getClimberMotorConfig();
+        climberMotor.getConfigurator().apply(climberMotorConfig);
     }
 
     @Override
@@ -39,6 +37,5 @@ public class ClimberCTREIO implements ClimberIO {
         inputs.appliedVolts = climberMotor.getMotorVoltage().getValueAsDouble();
         inputs.currentAmps = climberMotor.getSupplyCurrent().getValueAsDouble();
         inputs.tempCelsius = climberMotor.getDeviceTemp().getValue().magnitude();
-        
     }
 }
