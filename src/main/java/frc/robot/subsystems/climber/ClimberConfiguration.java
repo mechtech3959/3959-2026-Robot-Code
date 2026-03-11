@@ -27,7 +27,7 @@ public class ClimberConfiguration {
         FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
                 .withFeedbackRemoteSensorID(19)
                 .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-                .withSensorToMechanismRatio(((double) 28 / 15))
+                .withSensorToMechanismRatio(28.0 / 12.0)
                 .withRotorToSensorRatio(135);
 
         CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs()
