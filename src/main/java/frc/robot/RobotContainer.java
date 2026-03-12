@@ -18,8 +18,8 @@ import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
-  private final DrivetrainCTREIO drivetrainIO;
-  private final DrivetrainSubsystem drivetrainSubsystem;
+ // private final DrivetrainCTREIO drivetrainIO;
+ // private final DrivetrainSubsystem drivetrainSubsystem;
    private final ShooterCTREIO shooterIO;
    private final ShooterSubsystem shooterSubsystem;
   private final FeedCTREIO feedIO;
@@ -31,9 +31,9 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    drivetrainIO = new DrivetrainCTREIO(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
-        TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
-    drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO, driverController);
+   // drivetrainIO = new DrivetrainCTREIO(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft,
+     //   TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
+  //  drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO, driverController);
 
     shooterIO = new ShooterCTREIO();
      shooterSubsystem = new ShooterSubsystem(shooterIO);
@@ -47,7 +47,7 @@ public class RobotContainer {
     configureBindings();
   }
   public void endTransition() {
-    drivetrainSubsystem.changeState(SwerveState.TeleOp);
+   // drivetrainSubsystem.changeState(SwerveState.TeleOp);
   }
   private void configureBindings() {
     /*
@@ -68,6 +68,15 @@ public class RobotContainer {
      * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
      * -60)));
      */
+        driverController.a().onChange(Commands.runOnce(() -> {
+      intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.INTAKE);
+    }));
+     driverController.b().onChange(Commands.runOnce(() -> {
+      intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.MID_STOW);
+    }));
+     driverController.x().onChange(Commands.runOnce(() -> {
+      intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
+    }));
     /* 
     driverController.a().onChange(Commands.runOnce(() -> {
       drivetrainSubsystem.changeState(SwerveState.Heading);

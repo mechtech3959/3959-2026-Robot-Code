@@ -1,8 +1,8 @@
 package frc.robot.subsystems.intake;
 
-
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
 import frc.robot.subsystems.intake.feed.FeedSubsystem;
@@ -25,22 +25,23 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem(IntakeIO io, FeedSubsystem feedSubsystem) {
         this.intakeIO = io;
         this.feedSubsystem = feedSubsystem;
-        
+
     }
 
     private void applyState() {
         // TODO WATCH THIS AND CHANGE BEFORE APPLICATION
         switch (currentIntakeState) {
             case STOW ->
-                intakeIO.setControl(0);
+                intakeIO.setControl(0.7);
 
             case MID_STOW ->
-                intakeIO.setControl(0);
+                intakeIO.setControl(0.8);
             case INTAKE ->
-                intakeIO.setControl(0);
-            case TEST ->{}
-            default -> System.out.println("Error in Intake Subsystem: State applied to "
-                    + "non-existing option/undefined error.");
+                intakeIO.setControl(1);
+            case TEST -> {
+            }
+            case START ->{}
+            default -> {}
         }
     }
 

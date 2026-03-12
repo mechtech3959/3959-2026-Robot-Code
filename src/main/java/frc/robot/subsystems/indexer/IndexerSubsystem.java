@@ -3,9 +3,9 @@ package frc.robot.subsystems.indexer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
-    private final IndexorIO indexerIO;
+    private final IndexerIO indexerIO;
 
-    public IndexerSubsystem(IndexorIO io) {
+    public IndexerSubsystem(IndexerIO io) {
         this.indexerIO = io;
     }
 
@@ -14,10 +14,10 @@ public class IndexerSubsystem extends SubsystemBase {
     private void applyState() {
         switch (currentIndexingState) {
             case RUN:
-                indexerIO.runFuelIndexingMotor();
+                indexerIO.runForwardMotor();
                 break;
             case STOP:
-                indexerIO.stopFuelIndexingMotor();
+                indexerIO.stopMotor();
                 break;
             default:
                 System.out.println(
