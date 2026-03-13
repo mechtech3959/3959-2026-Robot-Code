@@ -7,7 +7,7 @@ public class ConveyorConfiguration {
 
     public ConveyorConfiguration() {
         conveyorMotorConfig.smartCurrentLimit(15, 10);
-        conveyorMotorConfig.inverted(true);
+        conveyorMotorConfig.inverted(false);
         conveyorMotorConfig.idleMode(SparkMaxConfig.IdleMode.kCoast);
     }
 

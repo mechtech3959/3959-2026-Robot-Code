@@ -10,9 +10,14 @@ import edu.wpi.first.units.measure.*;
  * DO NOT MODIFY THIS FILE YOURSELF; instead, change these values
  * in the Choreo GUI.
  */
-@SuppressWarnings("unused")
 public final class ChoreoVars {
 
-    private ChoreoVars() {
+    public static final class Poses {
+        public static final Pose2d BLBumpSharedSide = new Pose2d(5.6, 5.7, Rotation2d.kZero);
+        public static final Pose2d BLBumpAllianceSide = new Pose2d(3.5, 5.7, Rotation2d.kZero);
+
+        private Poses() {}
     }
+
+    private ChoreoVars() {}
 }

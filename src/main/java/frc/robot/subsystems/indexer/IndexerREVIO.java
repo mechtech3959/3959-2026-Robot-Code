@@ -5,10 +5,14 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import frc.robot.RobotMap;
+
 public class IndexerREVIO implements IndexerIO {
-    private final SparkMax fuelIndexingMotor = new SparkMax(30, MotorType.kBrushless);
+    
+    private final SparkMax fuelIndexingMotor = new SparkMax(RobotMap.INDEXER.INDEXER_MOTOR, MotorType.kBrushless);
 
     public IndexerREVIO() {
+        
         IndexerConfiguration fuelIndexingMotorConfig = new IndexerConfiguration();
         fuelIndexingMotor.configure(fuelIndexingMotorConfig.getConfig(), ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
@@ -16,7 +20,7 @@ public class IndexerREVIO implements IndexerIO {
 
     @Override
     public void runForwardMotor() {
-        fuelIndexingMotor.set(0.5);
+        fuelIndexingMotor.set(1);
     }
 
     @Override

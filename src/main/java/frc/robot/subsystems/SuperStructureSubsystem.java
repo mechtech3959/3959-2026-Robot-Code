@@ -30,20 +30,20 @@ public class SuperStructureSubsystem extends SubsystemBase {
   private final IndexerSubsystem indexer;
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
-  private final ClimberSubsystem climber;
-  private final DrivetrainSubsystem drivetrain;
+  // private final ClimberSubsystem climber;
+  // private final DrivetrainSubsystem drivetrain;
 
   private SuperStructureState currentSuperStructureState = SuperStructureState.IDLE;
   private SuperStructureState requestedSuperStructureState = SuperStructureState.IDLE;
 
   public SuperStructureSubsystem(ConveyorSubsystem conveyor, ShooterSubsystem shooter, IntakeSubsystem intake,
-      ClimberSubsystem climber, IndexerSubsystem indexer, DrivetrainSubsystem drivetrain) {
+      IndexerSubsystem indexer) {
     this.conveyor = conveyor;
     this.shooter = shooter;
     this.intake = intake;
-    this.climber = climber;
+    // this.climber = climber;
     this.indexer = indexer;
-    this.drivetrain = drivetrain;
+    // this.drivetrain = drivetrain;
   }
 
   private void applyState() {
@@ -52,12 +52,15 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
       case IDLE -> {
         intake.changeState(IntakeStates.INTAKE, FeedStates.STOP);
-          conveyor.changeState(ConveyorStates.STOP);
-          indexer.changeState(IndexerStates.STOP);
-          shooter.changeState(ShooterStates.REST);
+        conveyor.changeState(ConveyorStates.STOP);
+        indexer.changeState(IndexerStates.STOP);
+        shooter.changeState(ShooterStates.REST);
       }
       case INTAKING -> {
-
+        intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.5);
+        conveyor.changeState(ConveyorStates.RUN);
+        indexer.changeState(IndexerStates.RUN);
+        shooter.changeState(ShooterStates.INTAKE);
       }
       case SHOOTING_AUTO -> {
       }
@@ -68,15 +71,16 @@ public class SuperStructureSubsystem extends SubsystemBase {
       case CLIMBING -> {
       }
       case TEST -> {
-        intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.75);
+        intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.0);
         conveyor.changeState(ConveyorStates.RUN);
         indexer.changeState(IndexerStates.RUN);
-        shooter.changeState(ShooterStates.INTAKE);
+        shooter.changeState(ShooterStates.KNOWN_FAR);
       }
       default -> System.out.println("Error in SuperStructure Subsystem: State applied to "
           + "non-existing option/undefined error.");
     }
   }
+
   public void changeState(SuperStructureState newState) {
     this.requestedSuperStructureState = newState;
     this.currentSuperStructureState = requestedSuperStructureState;

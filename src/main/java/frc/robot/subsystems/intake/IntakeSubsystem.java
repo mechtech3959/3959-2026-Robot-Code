@@ -32,12 +32,12 @@ public class IntakeSubsystem extends SubsystemBase {
         // TODO WATCH THIS AND CHANGE BEFORE APPLICATION
         switch (currentIntakeState) {
             case STOW ->
-                intakeIO.setControl(0.7);
+                intakeIO.setControl(0.0);
 
             case MID_STOW ->
-                intakeIO.setControl(0.8);
+                intakeIO.setControl(0.1);
             case INTAKE ->
-                intakeIO.setControl(1);
+                intakeIO.setControl(0.3);
             case TEST -> {
             }
             case START ->{}

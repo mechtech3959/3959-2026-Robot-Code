@@ -11,6 +11,7 @@ public class ShooterCTREIO implements ShooterIO {
     private final TalonFX leftShooter;
     private final TalonFX rightShooter;
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+    
     private final NeutralOut neutralOut = new NeutralOut();
 
     private double target = 0;
@@ -26,9 +27,14 @@ public class ShooterCTREIO implements ShooterIO {
     @Override
     public void setShooterSpeed(double speed) {
         if (target != speed) {
-            rightShooter.setControl(velocityVoltage.withVelocity(speed).withUseTimesync(true));
+            if(speed <=20){
+                  rightShooter.setControl(velocityVoltage.withVelocity(speed).withUseTimesync(true).withSlot(1));
             leftShooter.setControl(new StrictFollower(rightShooter.getDeviceID()).withUpdateFreqHz(0));
-
+            }
+            else{
+            rightShooter.setControl(velocityVoltage.withVelocity(speed).withUseTimesync(true).withSlot(0));
+            leftShooter.setControl(new StrictFollower(rightShooter.getDeviceID()).withUpdateFreqHz(0));
+            }
             target = speed;
         }
     }

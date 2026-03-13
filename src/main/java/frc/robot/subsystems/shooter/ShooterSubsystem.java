@@ -40,13 +40,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private void handleState() {
 
         switch (ShooterState) {
-            case KNOWN_CLOSE -> io.setShooterSpeed(targetRPM);
-            case KNOWN_FAR -> {
-                // no-op for known far mode (configure if needed)
-            }
+            case KNOWN_CLOSE -> io.setShooterSpeed(42);
+            case KNOWN_FAR -> io.setShooterSpeed(55);
             case REST -> io.setShooterNeutral();
             case UNKNOWN -> io.setShooterSpeed(0);
-            case INTAKE -> io.setShooterSpeed(10);
+            case INTAKE -> io.setShooterSpeed(15);
         }
     }
 
@@ -69,6 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void changeState(ShooterStates newState) {
         ShooterState = newState;
     }
+
     public void changeState(ShooterStates newState, double targetRPM) {
         this.targetRPM = targetRPM;
         ShooterState = newState;
@@ -80,7 +79,7 @@ public class ShooterSubsystem extends SubsystemBase {
         io.periodic();
         io.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);
-        Logger.recordOutput(getName()+ "ShooterStatus", ShooterStatus);
+        Logger.recordOutput(getName() + "ShooterStatus", ShooterStatus);
         handleShooterStatus();
         handleState();
     }

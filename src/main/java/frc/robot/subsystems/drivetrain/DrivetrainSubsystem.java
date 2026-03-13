@@ -63,8 +63,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final ModuleIO[] modules = new ModuleIO[4];
 
-    private static final double maxSpeed = 8.0; // meters per second, placeholder value - adjust based on your robot's capabilities
-    private static final double maxAngSpeed = 3; // radians per second, placeholder value - adjust based on your robot's capabilities
+    private final double maxSpeed = 8.0; // meters per second, placeholder value - adjust based on your robot's
+                                         // capabilities
+    private final double maxAngSpeed = 3; // radians per second, placeholder value - adjust based on your robot's
+                                          // capabilities
 
     public DrivetrainSubsystem(DrivetrainIO io, CommandXboxController controller) {
 
@@ -83,11 +85,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
         SmartDashboard.putData("Swerve Drive", (SendableBuilder builder) -> {
             builder.setSmartDashboardType("SwerveDrive");
-            
+
             builder.addDoubleProperty("Front Left Angle", () -> moduleInputs[0].steerAbsolutePositionRad, null);
             builder.addDoubleProperty("Front Left Velocity", () -> moduleInputs[0].driveVelocityRadPerSec / 30,
                     null);
-            
+
             builder.addDoubleProperty("Front Right Angle", () -> moduleInputs[1].steerAbsolutePositionRad, null);
             builder.addDoubleProperty("Front Right Velocity", () -> moduleInputs[1].driveVelocityRadPerSec / 30,
                     null);
@@ -147,9 +149,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 
-        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? -xMagnitude * maxSpeed : xMagnitude * maxSpeed)
+        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : -xMagnitude * maxSpeed)
                 * ramp;
-        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? -yMagnitude * maxSpeed : yMagnitude * maxSpeed)
+        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
                 * ramp;
         double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
 
@@ -163,9 +165,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         return ChassisSpeeds.fromRobotRelativeSpeeds(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
-                        new ChassisSpeeds(xVelocity, yVelocity, -angularVelocity),
+                        new ChassisSpeeds(xVelocity, yVelocity, angularVelocity),
                         swerveInputs.Pose.getRotation()),
-                swerveInputs.Pose.getRotation().plus(skewCompensationFactor));
+                swerveInputs.Pose.getRotation());
 
     }
 
@@ -176,9 +178,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void resetPose(Pose2d pose) {
         io.resetRobotPose(pose);
     }
+
     public void resetHeading(Rotation2d heading) {
         io.resetHeading(heading);
-        
+
     }
 
     public void followTrajectory(SwerveSample sample) {
@@ -206,7 +209,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void disable() {
-        
+
     }
 
     public void headingDrive() {
@@ -261,5 +264,4 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
     }
 
-   
 }
