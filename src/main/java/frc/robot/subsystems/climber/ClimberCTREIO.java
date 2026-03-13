@@ -8,7 +8,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import edu.wpi.first.math.util.Units;
 
 public class ClimberCTREIO implements ClimberIO {
-    TalonFX climberMotor = new TalonFX(19, new CANBus("Super"));
+    TalonFX climberMotor = new TalonFX(18, new CANBus("rio"));
     MotionMagicVoltage request = new MotionMagicVoltage(0);
 
     public ClimberCTREIO() {
