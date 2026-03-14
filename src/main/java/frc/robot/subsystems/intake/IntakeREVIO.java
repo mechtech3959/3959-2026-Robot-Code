@@ -2,8 +2,6 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.encoder.SplineEncoder;
-import com.revrobotics.encoder.config.DetachedEncoderConfig;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
@@ -79,12 +77,12 @@ public class IntakeREVIO implements IntakeIO {
 
     @Override
     public double getPosition() {
-        return intakeMotor.getEncoder().getPosition();
+        return intakeMotor.getAbsoluteEncoder().getPosition();
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.axisPosition = intakeMotor.getEncoder().getPosition();
+        inputs.axisPosition = intakeMotor.getAbsoluteEncoder().getPosition();
         inputs.axisVelocity = intakeMotor.getEncoder().getVelocity();
         inputs.axisTarget = target;
         inputs.axisCurrent = intakeMotor.getOutputCurrent();
