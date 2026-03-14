@@ -1,6 +1,11 @@
 package frc.robot.subsystems.shooter;
 
+import java.io.Console;
+
+import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -21,6 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
         KNOWN_FAR,
         REST,
         INTAKE,
+        TUNING,
         UNKNOWN
     }
 
@@ -31,10 +37,11 @@ public class ShooterSubsystem extends SubsystemBase {
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
     private ShooterActions ShooterStatus = ShooterActions.IDLE;
     private ShooterStates ShooterState = ShooterStates.UNKNOWN;
+    LoggedNetworkNumber tuningRPS;
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
-
+        this.tuningRPS = new LoggedNetworkNumber("/Tuning/RPS", 0.0);
     }
 
     private void handleState() {
@@ -45,6 +52,7 @@ public class ShooterSubsystem extends SubsystemBase {
             case REST -> io.setShooterNeutral();
             case UNKNOWN -> io.setShooterSpeed(0);
             case INTAKE -> io.setShooterSpeed(15);
+            case TUNING -> io.setShooterSpeed(tuningRPS.get());
         }
     }
 
@@ -75,7 +83,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         io.periodic();
         io.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);

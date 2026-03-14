@@ -18,9 +18,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private final IntakeIO intakeIO;
     private final FeedSubsystem feedSubsystem;
-    private IntakeStates currentIntakeState = IntakeStates.START;
+    private IntakeStates currentIntakeState = IntakeStates.INTAKE;
 
     private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+
 
     public IntakeSubsystem(IntakeIO io, FeedSubsystem feedSubsystem) {
         this.intakeIO = io;

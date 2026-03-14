@@ -119,12 +119,12 @@ public class RobotContainer {
     }));
     driverController.y().onChange(Commands.runOnce(() -> {
       superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
-      // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
+      // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.MID_STOW);
     }));
     ;
     driverController.x().onChange(Commands.runOnce(() -> {
       superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TEST);
-      // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
+      // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.INTAKE);
     }));
     /*
      * driverController.a().onChange(Commands.runOnce(() -> {

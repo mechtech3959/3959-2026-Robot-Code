@@ -14,30 +14,30 @@ import frc.robot.RobotMap;
 public class IntakeREVIO implements IntakeIO {
     private final SparkFlex intakeMotor = new SparkFlex(RobotMap.INTAKE.AXIS_MOTOR, SparkLowLevel.MotorType.kBrushless);
     private final SparkFlexConfig sparkMotorConfig = new SparkFlexConfig();
-
-    // private final SplineEncoder intakeEncoder = new
-    // SplineEncoder(RobotMap.INTAKE.ENCODER);
+    
+   // private final SplineEncoder intakeEncoder = new
+   //  SplineEncoder(RobotMap.INTAKE.ENCODER);
     private double target = 0;
     // proper
     // canID
 
     public IntakeREVIO() {
         sparkMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder,43)
-        .pid(5.0, 0.0, 0.15).feedForward.kS(0.15).kV(0.12).kCosRatio(2.0 * Math.PI);
-        sparkMotorConfig.smartCurrentLimit(40, 20);
+        .pid(1.0, 0.0, 0.1).feedForward.kS(0.1).kV(0.12).kCosRatio(2.0 * Math.PI);
+        sparkMotorConfig.smartCurrentLimit(20, 40);
 
         // intakeEncoder.configure(en, ResetMode.kResetSafeParameters,
         // PersistMode.kPersistParameters);
         // sparkMotorConfig.apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
         
         sparkMotorConfig.idleMode(IdleMode.kBrake);
-        sparkMotorConfig.inverted(false);
+        sparkMotorConfig.inverted(true);
         // sparkMotorConfig.signals.absoluteEncoderPositionAlwaysOn(true);
         // sparkMotorConfig.absoluteEncoder.setSparkMaxDataPortConfig()
         // .apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
 
         sparkMotorConfig.softLimit
-                .forwardSoftLimit(0.315)
+                .forwardSoftLimit(0.314)
                 .forwardSoftLimitEnabled(true)
                 .reverseSoftLimit(0.0)
                 .reverseSoftLimitEnabled(true);
@@ -49,7 +49,7 @@ public class IntakeREVIO implements IntakeIO {
                 // removed 9
 
         sparkMotorConfig.closedLoop.maxMotion
-                .cruiseVelocity(5) // 1.5 RAD/s = 14.3 rpm
+                .cruiseVelocity(10) // 1.5 RAD/s = 14.3 rpm
                 .maxAcceleration(5) // 0.5 sec to reach 1.5 RAD/s
                 .allowedProfileError(1); // Deadband
         // IntakeConfiguration intakeMotorConfig = new IntakeConfiguration();
