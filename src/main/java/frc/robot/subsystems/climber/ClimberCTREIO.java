@@ -10,6 +10,7 @@ import edu.wpi.first.math.util.Units;
 public class ClimberCTREIO implements ClimberIO {
     TalonFX climberMotor = new TalonFX(18, new CANBus("rio"));
     MotionMagicVoltage request = new MotionMagicVoltage(0);
+    private double target = 0;
 
     public ClimberCTREIO() {
         TalonFXConfiguration climberMotorConfig = new ClimberConfiguration().getClimberMotorConfig();
@@ -18,7 +19,10 @@ public class ClimberCTREIO implements ClimberIO {
 
     @Override
     public void setPosition(double position) {
-        climberMotor.setControl(request.withPosition(Units.degreesToRotations(position)));
+        if (position != target) {
+            climberMotor.setControl(request.withPosition(Units.degreesToRotations(position)));
+            target = position;
+        }
     }
 
     @Override
@@ -37,5 +41,6 @@ public class ClimberCTREIO implements ClimberIO {
         inputs.appliedVolts = climberMotor.getMotorVoltage().getValueAsDouble();
         inputs.currentAmps = climberMotor.getSupplyCurrent().getValueAsDouble();
         inputs.tempCelsius = climberMotor.getDeviceTemp().getValue().magnitude();
+        inputs.target = target;
     }
 }
