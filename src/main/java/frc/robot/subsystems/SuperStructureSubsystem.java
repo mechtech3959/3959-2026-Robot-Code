@@ -16,78 +16,82 @@ import static frc.robot.subsystems.conveyor.ConveyorSubsystem.ConveyorStates;
 import static frc.robot.subsystems.indexer.IndexerSubsystem.IndexerStates;
 
 public class SuperStructureSubsystem extends SubsystemBase {
-  public enum SuperStructureState {
-    IDLE,
-    INTAKING,
-    SHOOTING_AUTO,
-    SHOOTING__TELEOP,
-    TRAVEL,
-    CLIMBING,
-    TEST
-  }
-
-  private final ConveyorSubsystem conveyor;
-  private final IndexerSubsystem indexer;
-  private final ShooterSubsystem shooter;
-  private final IntakeSubsystem intake;
-  // private final ClimberSubsystem climber;
-  // private final DrivetrainSubsystem drivetrain;
-
-  private SuperStructureState currentSuperStructureState = SuperStructureState.IDLE;
-  private SuperStructureState requestedSuperStructureState = SuperStructureState.IDLE;
-
-  public SuperStructureSubsystem(ConveyorSubsystem conveyor, ShooterSubsystem shooter, IntakeSubsystem intake,
-      IndexerSubsystem indexer) {
-    this.conveyor = conveyor;
-    this.shooter = shooter;
-    this.intake = intake;
-    // this.climber = climber;
-    this.indexer = indexer;
-    // this.drivetrain = drivetrain;
-  }
-
-  private void applyState() {
-
-    switch (currentSuperStructureState) {
-
-      case IDLE -> {
-        intake.changeState(IntakeStates.INTAKE, FeedStates.STOP);
-        conveyor.changeState(ConveyorStates.STOP);
-        indexer.changeState(IndexerStates.STOP);
-        shooter.changeState(ShooterStates.REST);
-      }
-      case INTAKING -> {
-        intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.5);
-        conveyor.changeState(ConveyorStates.RUN);
-        indexer.changeState(IndexerStates.RUN);
-        shooter.changeState(ShooterStates.INTAKE);
-      }
-      case SHOOTING_AUTO -> {
-      }
-      case SHOOTING__TELEOP -> {
-      }
-      case TRAVEL -> {
-      }
-      case CLIMBING -> {
-      }
-      case TEST -> {
-        intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.0);
-        conveyor.changeState(ConveyorStates.RUN);
-        indexer.changeState(IndexerStates.RUN);
-        shooter.changeState(ShooterStates.KNOWN_FAR);
-      }
-      default -> System.out.println("Error in SuperStructure Subsystem: State applied to "
-          + "non-existing option/undefined error.");
+    public enum SuperStructureState {
+        IDLE,
+        INTAKING,
+        SHOOTING_AUTO,
+        SHOOTING__TELEOP,
+        TRAVEL,
+        CLIMBING,
+        TEST
     }
-  }
 
-  public void changeState(SuperStructureState newState) {
-    this.requestedSuperStructureState = newState;
-    this.currentSuperStructureState = requestedSuperStructureState;
-  }
+    private final ConveyorSubsystem conveyor;
+    private final IndexerSubsystem indexer;
+    private final ShooterSubsystem shooter;
+    private final IntakeSubsystem intake;
+    // private final ClimberSubsystem climber;
+    // private final DrivetrainSubsystem drivetrain;
 
-  @Override
-  public void periodic() {
-    applyState();
-  }
+    private SuperStructureState currentSuperStructureState = SuperStructureState.IDLE;
+    private SuperStructureState requestedSuperStructureState = SuperStructureState.IDLE;
+
+    public SuperStructureSubsystem(ConveyorSubsystem conveyor, ShooterSubsystem shooter, IntakeSubsystem intake,
+            IndexerSubsystem indexer) {
+        this.conveyor = conveyor;
+        this.shooter = shooter;
+        this.intake = intake;
+        // this.climber = climber;
+        this.indexer = indexer;
+        // this.drivetrain = drivetrain;
+    }
+
+    private void applyState() {
+
+        switch (currentSuperStructureState) {
+
+            case IDLE -> {
+                intake.changeState(IntakeStates.INTAKE, FeedStates.STOP);
+                conveyor.changeState(ConveyorStates.STOP);
+                indexer.changeState(IndexerStates.STOP);
+                shooter.changeState(ShooterStates.REST);
+            }
+            case INTAKING -> {
+                intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.5);
+                conveyor.changeState(ConveyorStates.RUN);
+                // indexer.changeState(IndexerStates.RUN);
+                // shooter.changeState(ShooterStates.INTAKE);
+            }
+            case SHOOTING_AUTO -> {
+            }
+            case SHOOTING__TELEOP -> {
+            }
+            case TRAVEL -> {
+                intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+                conveyor.changeState(ConveyorStates.STOP);
+                indexer.changeState(IndexerStates.STOP);
+                shooter.changeState(ShooterStates.REST);
+            }
+            case CLIMBING -> {
+            }
+            case TEST -> {
+                intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.0);
+                conveyor.changeState(ConveyorStates.RUN);
+                indexer.changeState(IndexerStates.RUN);
+                shooter.changeState(ShooterStates.KNOWN_CLOSE);
+            }
+            default -> System.out.println("Error in SuperStructure Subsystem: State applied to "
+                    + "non-existing option/undefined error.");
+        }
+    }
+
+    public void changeState(SuperStructureState newState) {
+        this.requestedSuperStructureState = newState;
+        this.currentSuperStructureState = requestedSuperStructureState;
+    }
+
+    @Override
+    public void periodic() {
+        applyState();
+    }
 }
