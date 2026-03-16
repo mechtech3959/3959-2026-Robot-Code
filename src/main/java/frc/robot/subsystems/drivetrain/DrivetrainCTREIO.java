@@ -35,7 +35,7 @@ public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
         super(TalonFX::new, TalonFX::new, CANcoder::new, constants, 250,moduleConstants);
                 
         this.resetRotation(FieldBasedConstants.isBlueAlliance() ? Rotation2d.kZero : Rotation2d.k180deg);
-        if (Utils.isSimulation()) {
+         if (Utils.isSimulation()) {
             startSimThread();
         }
         
@@ -69,6 +69,7 @@ public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
     public void setSwerveState(SwerveRequest req) {
         this.setControl(req);
     }
+
 
     @Override
     public void resetHeading(Rotation2d Heading) {

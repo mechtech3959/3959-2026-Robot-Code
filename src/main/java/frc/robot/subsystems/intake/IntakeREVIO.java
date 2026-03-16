@@ -18,24 +18,16 @@ public class IntakeREVIO implements IntakeIO {
    // private final SplineEncoder intakeEncoder = new
    //  SplineEncoder(RobotMap.INTAKE.ENCODER);
     private double target = 0;
-    // proper
-    // canID
-
+ 
     public IntakeREVIO() {
         sparkMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder,43)
         .pid(1.0, 0.0, 0.1).feedForward.kS(0.1).kV(0.12).kCosRatio(2.0 * Math.PI);
         sparkMotorConfig.smartCurrentLimit(20, 40);
-
-        // intakeEncoder.configure(en, ResetMode.kResetSafeParameters,
-        // PersistMode.kPersistParameters);
-        // sparkMotorConfig.apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
+ 
         
         sparkMotorConfig.idleMode(IdleMode.kBrake);
         sparkMotorConfig.inverted(true);
-        // sparkMotorConfig.signals.absoluteEncoderPositionAlwaysOn(true);
-        // sparkMotorConfig.absoluteEncoder.setSparkMaxDataPortConfig()
-        // .apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
-
+ 
         sparkMotorConfig.softLimit
                 .forwardSoftLimit(0.314)
                 .forwardSoftLimitEnabled(true)
@@ -43,10 +35,7 @@ public class IntakeREVIO implements IntakeIO {
                 .reverseSoftLimitEnabled(true);
        
 
-                // .kCos(0.2)
-                // kCosRatio = (Gear Ratio) * (2 * PI) = converts Rotations to Radians
-
-                // removed 9
+            
 
         sparkMotorConfig.closedLoop.maxMotion
                 .cruiseVelocity(10) // 1.5 RAD/s = 14.3 rpm
@@ -55,8 +44,7 @@ public class IntakeREVIO implements IntakeIO {
         // IntakeConfiguration intakeMotorConfig = new IntakeConfiguration();
         intakeMotor.configure(sparkMotorConfig, ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-        // intakeEncoder.setPosition(1);
-
+ 
     }
 
     @Override
@@ -64,7 +52,7 @@ public class IntakeREVIO implements IntakeIO {
         if (position == target) {
             return; // No need to update if we're already at the target
         }
-    
+        
         intakeMotor.getClosedLoopController().setSetpoint(position, SparkBase.ControlType.kMAXMotionPositionControl);
 
         target = position;
@@ -77,7 +65,7 @@ public class IntakeREVIO implements IntakeIO {
 
     @Override
     public double getPosition() {
-        return intakeMotor.getAbsoluteEncoder().getPosition();
+        return intakeMotor.getExternalEncoder().getPosition();
     }
 
     @Override

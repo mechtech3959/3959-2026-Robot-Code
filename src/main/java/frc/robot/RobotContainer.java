@@ -4,14 +4,19 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.conveyor.ConveyorREVIO;
 import frc.robot.subsystems.conveyor.ConveyorSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainCTREIO;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
-import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveState;
+import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveStates;
 import frc.robot.subsystems.indexer.IndexerREVIO;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeREVIO;
@@ -20,7 +25,6 @@ import frc.robot.subsystems.intake.feed.FeedCTREIO;
 import frc.robot.subsystems.intake.feed.FeedSubsystem;
 import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.SuperStructureSubsystem;
 
 public class RobotContainer {
     private final DrivetrainCTREIO drivetrainIO;
@@ -38,13 +42,18 @@ public class RobotContainer {
     private final ConveyorSubsystem conveyorSubsystem;
     private final SuperStructureSubsystem superStructureSubsystem;
     private final CommandXboxController driverController = new CommandXboxController(0);
+    
 
     public RobotContainer() {
 
-        drivetrainIO = new DrivetrainCTREIO(TunerConstants.DrivetrainConstants,
+        @SuppressWarnings("unchecked")
+        SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>[] modules = new SwerveModuleConstants[] {
                 TunerConstants.FrontLeft,
-                TunerConstants.FrontRight, TunerConstants.BackLeft,
-                TunerConstants.BackRight);
+                TunerConstants.FrontRight,
+                TunerConstants.BackLeft,
+                TunerConstants.BackRight
+        };
+        drivetrainIO = new DrivetrainCTREIO(TunerConstants.DrivetrainConstants, modules);
         drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO,
                 driverController);
 
@@ -67,7 +76,7 @@ public class RobotContainer {
     }
 
     public void endTransition() {
-        // drivetrainSubsystem.changeState(SwerveState.TeleOp);
+         drivetrainSubsystem.changeState(SwerveStates.TeleOp);
     }
 
     private void configureBindings() {

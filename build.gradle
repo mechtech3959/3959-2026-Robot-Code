@@ -118,8 +118,7 @@ compileJava {
     
     options.errorprone.excludedPaths = ".*/build/generated/.*"
    // options.errorprone.excludedFiles = ".*/src/main/java/frc/robot/subsystems/vision/LimeLightHelpers.java"
-    options.errorprone.disable "UnusedVariable"
-}
+ }
 // Configure jar and deploy tasks
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)

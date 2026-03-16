@@ -1,9 +1,5 @@
 package frc.robot.subsystems.drivetrain;
 
-import frc.robot.subsystems.drivetrain.modules.ModuleIO;
-import frc.robot.subsystems.drivetrain.modules.ModuleCTREIO;
-import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
@@ -25,23 +21,28 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.drivetrain.modules.ModuleCTREIO;
+import frc.robot.subsystems.drivetrain.modules.ModuleIO;
+import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
-    public enum SwerveState {
+    public enum SwerveStates {
         Disabled,
         Brake,
         ChoreoTrajectory,
         TeleOp,
         Heading,
-        VisionHeading
+        VisionHeading,
+        climb
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
             .withHeadingPID(7, 0, 0.5)
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    private final ClimbRequest climbRequest = new ClimbRequest();
     private final PIDController autoXController = new PIDController(7, 0, 0);
     private final PIDController autoYController = new PIDController(7, 0, 0);
     private final PIDController autoHeadingController = new PIDController(7, 0, 0);
@@ -49,10 +50,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
 
-    private SwerveState currentDriveState = SwerveState.TeleOp;
+    private SwerveStates currentDriveState = SwerveStates.TeleOp;
     private final CommandXboxController controller;
-    private DrivetrainIO io = new DrivetrainIO() {
-    };
+    private DrivetrainIO io;
     final DrivetrainIOInputsAutoLogged swerveInputs = new DrivetrainIOInputsAutoLogged();
     private final ModuleIOInputsAutoLogged[] moduleInputs = new ModuleIOInputsAutoLogged[] {
             new ModuleIOInputsAutoLogged(), // FL (Index 0)
@@ -65,7 +65,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final double maxSpeed = 8.0; // meters per second, placeholder value - adjust based on your robot's
                                          // capabilities
-    private final double maxAngSpeed = 3; // radians per second, placeholder value - adjust based on your robot's
+    private final double maxAngSpeed = 6; // radians per second, placeholder value - adjust based on your robot's
                                           // capabilities
 
     public DrivetrainSubsystem(DrivetrainIO io, CommandXboxController controller) {
@@ -74,11 +74,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
         this.controller = controller;
         headingDrive.HeadingController = new PhoenixPIDController(7, 0, 0);
         headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-        for (int i = 0; i < 4; i++) {
-            modules[i] = new ModuleCTREIO(io.getSwerveModule(i));
-            modules[i].updateInputs(moduleInputs[i]);
 
-        }
+        modules[0] = new ModuleCTREIO(io.getSwerveModule(0));
+        modules[1] = new ModuleCTREIO(io.getSwerveModule(1));
+        modules[2] = new ModuleCTREIO(io.getSwerveModule(2));
+        modules[3] = new ModuleCTREIO(io.getSwerveModule(3));
+
+        modules[0].updateInputs(moduleInputs[0]);
+        modules[1].updateInputs(moduleInputs[1]);
+        modules[2].updateInputs(moduleInputs[2]);
+        modules[3].updateInputs(moduleInputs[3]);
 
         io.registerDrivetrainTelemetry(swerveInputs);
 
@@ -107,17 +112,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
+        applyState();
+
         io.updateDrivetrainData(swerveInputs);
         Logger.processInputs(getName(), swerveInputs);
 
-        applyState();
+        // Read fresh data from hardware
+        modules[0].updateInputs(moduleInputs[0]);
+        modules[1].updateInputs(moduleInputs[1]);
+        modules[2].updateInputs(moduleInputs[2]);
+        modules[3].updateInputs(moduleInputs[3]);
 
-        for (int i = 0; i < 3; i++) {
-            // Read fresh data from hardware
-            modules[i].updateInputs(moduleInputs[i]);
-            // Send to dashboard
-            Logger.processInputs(getName() + "/Module " + i, moduleInputs[i]);
-        }
+        // Send to dashboard
+        Logger.processInputs(getName() + "/Module " + 0, moduleInputs[0]);
+        Logger.processInputs(getName() + "/Module " + 1, moduleInputs[1]);
+        Logger.processInputs(getName() + "/Module " + 2, moduleInputs[2]);
+        Logger.processInputs(getName() + "/Module " + 3, moduleInputs[3]);
 
     }
 
@@ -149,16 +159,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 
-        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : -xMagnitude * maxSpeed)
+        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? -xMagnitude * maxSpeed : xMagnitude * maxSpeed)
                 * ramp;
-        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
+        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? -yMagnitude * maxSpeed : yMagnitude * maxSpeed)
                 * ramp;
         double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
 
         // Empirical time offset (−0.02 s) used to compensate for rotational skew:
         // we rotate the pose estimate by omega * dt to account for ~20 ms latency
         // between measured pose and applied chassis speeds.
-        final double SKEW_COMPENSATION_TIME_S = -0.02;
+        final double SKEW_COMPENSATION_TIME_S = -0.03;
 
         Rotation2d skewCompensationFactor = Rotation2d
                 .fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * SKEW_COMPENSATION_TIME_S);
@@ -167,7 +177,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 ChassisSpeeds.fromFieldRelativeSpeeds(
                         new ChassisSpeeds(xVelocity, yVelocity, angularVelocity),
                         swerveInputs.Pose.getRotation()),
-                swerveInputs.Pose.getRotation());
+                swerveInputs.Pose.getRotation().plus(skewCompensationFactor));
+        // return ChassisSpeeds.fromFieldRelativeSpeeds(
+        // new ChassisSpeeds(xVelocity, yVelocity, angularVelocity),
+        // swerveInputs.Pose.getRotation());
 
     }
 
@@ -208,6 +221,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         io.setSwerveState(new SwerveRequest.SwerveDriveBrake());
     }
 
+    public void climb() {
+
+        io.setSwerveState(climbRequest);
+    }
+
     public void disable() {
 
     }
@@ -243,13 +261,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
-    public void changeState(SwerveState wanted) {
+    public void changeState(SwerveStates wanted) {
         currentDriveState = wanted;
     }
 
     public void stageTrajectory(SwerveSample sample) {
         this.trajectorySample = sample;
-        currentDriveState = SwerveState.ChoreoTrajectory;
+        currentDriveState = SwerveStates.ChoreoTrajectory;
     }
 
     public Rotation2d getHeading() {
