@@ -34,12 +34,12 @@ public class IntakeConfiguration {
                 .kCosRatio( 2.0 * Math.PI);
 
         sparkMotorConfig.closedLoop.maxMotion
-                .cruiseVelocity(1.5) // 1.5 RAD/s = 14.3 rpm
-                .maxAcceleration(3) // 0.5 sec to reach 1.5 RAD/s
+                .cruiseVelocity(10) // 1.5 RAD/s = 14.3 rpm
+                .maxAcceleration(8) // 0.5 sec to reach 1.5 RAD/s
                 .allowedProfileError(0.01); // Deadband
 
-        intakeConfig.smartCurrentLimit(40); // Set the smart current limit to 40 amps
-        intakeConfig.apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
+     //   intakeConfig.smartCurrentLimit(40); // Set the smart current limit to 40 amps
+    //    intakeConfig.apply(AbsoluteEncoderConfig.Presets.REV_SplineEncoder);
         intakeConfig.idleMode(IdleMode.kBrake);
 
         intakeConfig.softLimit

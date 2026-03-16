@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.generated.LimelightHelpers;
 import frc.robot.util.FieldBasedConstants;
@@ -21,35 +23,40 @@ public class VisionLimelightIO implements VisionIO {
     private double targetHeight;
     private double limelightHeight;
     private double limelightAngle;
-    private int[] redHubTags = {2,3,4,5,8,9,10,11};
-    private int[] blueHubTags = {18,19,20,21,24,25,26,27};
-    
+    private int[] redHubTags = { 2, 3, 4, 5, 8, 9, 10, 11 };
+    private int[] blueHubTags = { 18, 19, 20, 21, 24, 25, 26, 27 };
+    private LimelightHelpers.RawFiducial[] detectedTags;
 
-    public VisionLimelightIO(String pipeLine,String cameraType, double limelightHeight, double limelightAngle) {
+    public VisionLimelightIO(String pipeLine, String cameraType, double limelightHeight, double limelightAngle) {
         this.pipeLine = pipeLine;
         this.cameraType = cameraType;
         this.limelightHeight = limelightHeight;
         this.limelightAngle = limelightAngle;
         this.targetHeight = TagMap.getTagHeight(2);
+        // this.detectedTags = new int[0];
+
     }
 
     @Override
     public LimelightHelpers.PoseEstimate getPoseEstimate() {
         return limelightMeasurement;
     }
+
     @Override
     public double estimatedDistanceToTarget() {
-     
-        if(FieldBasedConstants.isBlueAlliance() ){
+        LimelightHelpers.setPipelineIndex(pipeLine, 1);
+
+        if (FieldBasedConstants.isBlueAlliance()) {
             LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, blueHubTags);
-        }else{
+        } else {
             LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, redHubTags);
         }
-           if (!TV) {
+        if (!TV) {
             return -1;
         }
         double angleToTargetDegrees = limelightAngle + TY;
-        double angleToTargetRadians = Math.toRadians(angleToTargetDegrees);
+        double angleToTargetRadians = Math.toRadians(
+                angleToTargetDegrees);
         distanceEstimate = (targetHeight - limelightHeight) / Math.tan(angleToTargetRadians);
         return distanceEstimate;
     }
@@ -72,6 +79,7 @@ public class VisionLimelightIO implements VisionIO {
             foundPosition = limelightMeasurement.pose;
             timeStamp = limelightMeasurement.timestampSeconds;
         }
+
     }
 
     @Override
@@ -96,4 +104,7 @@ public class VisionLimelightIO implements VisionIO {
         }
     }
 
+    public void setPipeline(int index) {
+        LimelightHelpers.setPipelineIndex(pipeLine, index);
+    }
 }

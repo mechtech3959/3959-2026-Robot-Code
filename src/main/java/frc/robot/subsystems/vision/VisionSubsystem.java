@@ -25,16 +25,23 @@ public class VisionSubsystem extends SubsystemBase {
     public void periodic() {
         double yaw = drivetrain.getHeading().getDegrees();
 
-        for (int i = 0; i < cameras.length; i++) {
-            // Set orientation first
-            cameras[i].updateTracking(drivetrain.getHeading().getDegrees());
-            // Update
-            cameras[i].periodic();
-            cameras[i].updateInputs(inputs[i]);
-            Logger.processInputs("Vision/Camera" + i, inputs[i]);
-            // Feed to drivetrain
-            updatePoseEstimate(cameras[i]);
-        }
+        // Set orientation first
+        cameras[0].updateTracking(drivetrain.getHeading().getDegrees());
+        // Update
+        cameras[0].periodic();
+        cameras[0].updateInputs(inputs[0]);
+        Logger.processInputs("Vision/Camera" + 0, inputs[0]);
+        // Feed to drivetrain
+        updatePoseEstimate(cameras[0]);
+        // Set orientation first
+        cameras[1].updateTracking(drivetrain.getHeading().getDegrees());
+        // Update
+        cameras[1].periodic();
+        cameras[1].updateInputs(inputs[1]);
+        Logger.processInputs("Vision/Camera" + 1, inputs[1]);
+        // Feed to drivetrain
+        updatePoseEstimate(cameras[1]);
+
     }
 
     private void updatePoseEstimate(VisionIO camera) {
@@ -65,6 +72,10 @@ public class VisionSubsystem extends SubsystemBase {
                 measurement.pose,
                 measurement.timestampSeconds,
                 VecBuilder.fill(stdDev, stdDev, 9999));
+    }
+
+    public double getDistanceToTarget() {
+        return cameras[0].estimatedDistanceToTarget();
     }
 
 }

@@ -21,7 +21,7 @@ public class IntakeREVIO implements IntakeIO {
  
     public IntakeREVIO() {
         sparkMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder,43)
-        .pid(1.0, 0.0, 0.1).feedForward.kS(0.1).kV(0.12).kCosRatio(2.0 * Math.PI);
+        .pid(3.0, 0.0, 0.6).feedForward.kS(0.1).kV(0.12).kCosRatio(2.0 * Math.PI);
         sparkMotorConfig.smartCurrentLimit(20, 40);
  
         
@@ -38,8 +38,8 @@ public class IntakeREVIO implements IntakeIO {
             
 
         sparkMotorConfig.closedLoop.maxMotion
-                .cruiseVelocity(10) // 1.5 RAD/s = 14.3 rpm
-                .maxAcceleration(5) // 0.5 sec to reach 1.5 RAD/s
+                .cruiseVelocity(20) // 1.5 RAD/s = 14.3 rpm
+                .maxAcceleration(15) // 0.5 sec to reach 1.5 RAD/s
                 .allowedProfileError(1); // Deadband
         // IntakeConfiguration intakeMotorConfig = new IntakeConfiguration();
         intakeMotor.configure(sparkMotorConfig, ResetMode.kResetSafeParameters,
