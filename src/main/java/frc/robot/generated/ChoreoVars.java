@@ -13,8 +13,8 @@ import edu.wpi.first.units.measure.*;
 public final class ChoreoVars {
 
     public static final class Poses {
-        public static final Pose2d BLBumpSharedSide = new Pose2d(5.6, 5.7, Rotation2d.kZero);
         public static final Pose2d BLBumpAllianceSide = new Pose2d(3.5, 5.7, Rotation2d.kZero);
+        public static final Pose2d BLBumpSharedSide = new Pose2d(5.6, 5.7, Rotation2d.kZero);
 
         private Poses() {}
     }
