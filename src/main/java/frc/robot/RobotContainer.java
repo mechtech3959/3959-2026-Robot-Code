@@ -22,6 +22,8 @@ public class RobotContainer {
         driver.a().onTrue(climber.runOnce(() -> climber.setClimberState(ClimberSubsystem.ClimberStates.HOME)));
         driver.b().onTrue(climber.runOnce(() -> climber.setClimberState(ClimberSubsystem.ClimberStates.CLEAR_INTAKE)));
         driver.x().onTrue(climber.runOnce(() -> climber.setClimberState(ClimberSubsystem.ClimberStates.CLIMB)));
+        driver.y().onTrue(climber.runOnce(() -> climber.setClimberState(ClimberSubsystem.ClimberStates.STARTING_CONFIG)));
+
     }
 
 }

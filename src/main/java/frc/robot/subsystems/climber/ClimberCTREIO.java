@@ -2,8 +2,8 @@ package frc.robot.subsystems.climber;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.util.Units;
 
@@ -19,10 +19,10 @@ public class ClimberCTREIO implements ClimberIO {
 
     @Override
     public void setPosition(double position) {
-        if (position != target) {
+       // if (position != target) {
             climberMotor.setControl(request.withPosition(Units.degreesToRotations(position)));
             target = position;
-        }
+      //  }
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ClimberCTREIO implements ClimberIO {
 
     @Override
     public void updateInputs(ClimberIOInputs inputs) {
-        inputs.position = climberMotor.getPosition().getValueAsDouble();
+        inputs.position = Units.rotationsToDegrees(climberMotor.getPosition().getValueAsDouble());
         inputs.appliedVolts = climberMotor.getMotorVoltage().getValueAsDouble();
         inputs.currentAmps = climberMotor.getSupplyCurrent().getValueAsDouble();
         inputs.tempCelsius = climberMotor.getDeviceTemp().getValue().magnitude();

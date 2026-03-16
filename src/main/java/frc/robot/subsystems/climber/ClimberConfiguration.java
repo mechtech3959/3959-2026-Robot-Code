@@ -1,7 +1,18 @@
 package frc.robot.subsystems.climber;
 
-import com.ctre.phoenix6.configs.*;
-import com.ctre.phoenix6.signals.*;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import edu.wpi.first.math.util.Units;
+
 
 public class ClimberConfiguration {
     private final TalonFXConfiguration talonConfig = new TalonFXConfiguration();
@@ -13,8 +24,8 @@ public class ClimberConfiguration {
                 .withKS(0)   // Static voltage to move
                 .withKV(0.1) // Cruising voltage
                 .withKP(50)   // Present error
-                .withKI(0)   // Past error
-                .withKD(0.1) // Future error
+                .withKI(1)   // Past error
+                .withKD(1) // Future error
                 .withStaticFeedforwardSign(
                         StaticFeedforwardSignValue.UseClosedLoopSign);
 
@@ -46,9 +57,9 @@ public class ClimberConfiguration {
         SoftwareLimitSwitchConfigs softwareLimits =
                 new SoftwareLimitSwitchConfigs()
                         .withForwardSoftLimitEnable(true) // Disabled for testing
-                        .withForwardSoftLimitThreshold(230.5)
+                        .withForwardSoftLimitThreshold(Units.degreesToRotations(200))
                         .withReverseSoftLimitEnable(true) // Disabled for testing
-                        .withReverseSoftLimitThreshold(-0.5);
+                        .withReverseSoftLimitThreshold(Units.degreesToRotations(-60));
 
         talonConfig.withSlot0(slot0)
                 .withMotionMagic(motionMagicConfig)
