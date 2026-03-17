@@ -43,15 +43,16 @@ public class TunerConstants {
         // The steer motor uses any SwerveModule.SteerRequestType control request with
         // the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
-        //D1.7852
-        //kv 1.5268
-        // ks 0.35037
+        // P 50
+        // D1.7852 2 
+        // kv 1.5268
+        // ks 0.35037   
         // p 44.149
         // 0.042834
         // ks 0.08
-        //kv 1.5
+        // kv 1.5
         private static final Slot0Configs steerGains = new Slot0Configs()
-                        .withKP(50).withKI(0).withKD(2)
+                        .withKP(40).withKI(0).withKD(1.5)
                         .withKS(0.2).withKV(1.45).withKA(0)
                         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
         // When using closed-loop control, the drive motor uses the control
@@ -90,12 +91,7 @@ public class TunerConstants {
         private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
                         .withCurrentLimits(
                                         new CurrentLimitsConfigs()
-                                                        // Swerve azimuth does not require much torque output, so we can
-                                                        // set a
-                                                        // relatively low
-                                                        // stator current limit to help avoid brownouts without
-                                                        // impacting performance.
-                                                        .withStatorCurrentLimit(Amps.of(60))
+                                                withStatorCurrentLimit(Amps.of(60))
                                                         .withStatorCurrentLimitEnable(true));
         private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
         // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
@@ -115,7 +111,8 @@ public class TunerConstants {
 
         private static final double kDriveGearRatio = 5.8909090909090915;
         private static final double kSteerGearRatio = 12.1;
-        private static final Distance kWheelRadius = Inches.of(4);
+        //diameter is 4in
+        private static final Distance kWheelRadius = Inches.of(2);
 
         private static final boolean kInvertLeftSide = false;
         private static final boolean kInvertRightSide = true;

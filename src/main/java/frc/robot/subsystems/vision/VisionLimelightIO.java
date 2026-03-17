@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.generated.LimelightHelpers;
 import frc.robot.util.FieldBasedConstants;
 import frc.robot.util.TagMap;
@@ -25,7 +26,7 @@ public class VisionLimelightIO implements VisionIO {
     private double limelightAngle;
     private int[] redHubTags = { 2, 3, 4, 5, 8, 9, 10, 11 };
     private int[] blueHubTags = { 18, 19, 20, 21, 24, 25, 26, 27 };
-    private double goalHeight = 1.2395;
+    private double goalHeight = Units.inchesToMeters(44.25);
     private LimelightHelpers.RawFiducial[] detectedTags;
 
     public VisionLimelightIO(String pipeLine, String cameraType, double limelightHeight, double limelightAngle) {

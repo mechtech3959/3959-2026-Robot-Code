@@ -59,7 +59,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (measurement.avgTagDist > 4.0)
             return;
 
-        if (drivetrain.getLinearVelocity() > 1.5 || Math.abs(drivetrain.getAngularVelocity()) > 0.5) {
+        if (Math.abs(drivetrain.getAngularVelocity()) > 2) {
             // Don't trust measurements that are very far from our current estimate
             return;
         }

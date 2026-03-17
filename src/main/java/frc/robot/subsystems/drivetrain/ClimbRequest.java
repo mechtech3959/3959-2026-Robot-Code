@@ -3,13 +3,11 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 
 public class ClimbRequest implements SwerveRequest {
     private  final PositionVoltage m_TurnRequest = new PositionVoltage(0);
