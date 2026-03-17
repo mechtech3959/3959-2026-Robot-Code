@@ -22,7 +22,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
         SHOOTING_AUTO,
         SHOOTING__TELEOP,
         TRAVEL,
+        PREP_CLIMB,
         CLIMBING,
+        STARTING_CONFIG,
         TEST
     }
 
@@ -30,18 +32,18 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private final IndexerSubsystem indexer;
     private final ShooterSubsystem shooter;
     private final IntakeSubsystem intake;
-    // private final ClimberSubsystem climber;
+    private final ClimberSubsystem climber;
     // private final DrivetrainSubsystem drivetrain;
 
     private SuperStructureState currentSuperStructureState = SuperStructureState.IDLE;
     private SuperStructureState requestedSuperStructureState = SuperStructureState.IDLE;
 
     public SuperStructureSubsystem(ConveyorSubsystem conveyor, ShooterSubsystem shooter, IntakeSubsystem intake,
-            IndexerSubsystem indexer) {
+            IndexerSubsystem indexer, ClimberSubsystem climber) {
         this.conveyor = conveyor;
         this.shooter = shooter;
         this.intake = intake;
-        // this.climber = climber;
+        this.climber = climber;
         this.indexer = indexer;
         // this.drivetrain = drivetrain;
     }
@@ -73,6 +75,27 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 shooter.changeState(ShooterStates.REST);
             }
             case CLIMBING -> {
+                intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+                conveyor.changeState(ConveyorStates.STOP);
+                indexer.changeState(IndexerStates.STOP);
+                shooter.changeState(ShooterStates.REST);
+                climber.changeState(ClimberStates.CLIMB);
+
+            }
+            case PREP_CLIMB -> {
+                climber.changeState(ClimberStates.CLEAR_INTAKE);
+                intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+                conveyor.changeState(ConveyorStates.STOP);
+                indexer.changeState(IndexerStates.STOP);
+                shooter.changeState(ShooterStates.REST);
+
+            }
+            case STARTING_CONFIG -> {
+                 climber.changeState(ClimberStates.STARTING_CONFIG);
+                intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+                conveyor.changeState(ConveyorStates.STOP);
+                indexer.changeState(IndexerStates.STOP);
+                shooter.changeState(ShooterStates.REST);
             }
             case TEST -> {
                 intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.0);

@@ -3,12 +3,16 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class ClimbRequest implements SwerveRequest {
-    private  final PositionVoltage m_TurnRequest = new PositionVoltage(0);
+    private  final MotionMagicVoltage m_TurnRequest = new MotionMagicVoltage(0);
     private final CoastOut m_driveRequest = new CoastOut();
     public ClimbRequest() {
     }
@@ -27,7 +31,7 @@ public class ClimbRequest implements SwerveRequest {
              // Or whatever logic you need
 
             // Apply the calculated request to the module
-            module.apply(m_driveRequest, m_TurnRequest.withPosition(180));
+            module.apply(m_driveRequest, m_TurnRequest.withPosition(0));
         }
         return StatusCode.OK;
     }

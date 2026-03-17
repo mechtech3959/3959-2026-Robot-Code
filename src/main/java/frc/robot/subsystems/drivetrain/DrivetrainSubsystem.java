@@ -159,9 +159,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 
-        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? -xMagnitude * maxSpeed : xMagnitude * maxSpeed)
+        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : xMagnitude * maxSpeed)
                 * ramp;
-        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? -yMagnitude * maxSpeed : yMagnitude * maxSpeed)
+        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : yMagnitude * maxSpeed)
                 * ramp;
         double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
 

@@ -26,7 +26,7 @@ public class VisionSubsystem extends SubsystemBase {
         double yaw = drivetrain.getHeading().getDegrees();
 
         // Set orientation first
-        cameras[0].updateTracking(drivetrain.getHeading().getDegrees());
+        cameras[0].updateTracking(yaw);
         // Update
         cameras[0].periodic();
         cameras[0].updateInputs(inputs[0]);
@@ -34,7 +34,7 @@ public class VisionSubsystem extends SubsystemBase {
         // Feed to drivetrain
         updatePoseEstimate(cameras[0]);
         // Set orientation first
-        cameras[1].updateTracking(drivetrain.getHeading().getDegrees());
+        cameras[1].updateTracking(yaw);
         // Update
         cameras[1].periodic();
         cameras[1].updateInputs(inputs[1]);
@@ -67,7 +67,7 @@ public class VisionSubsystem extends SubsystemBase {
         double stdDev = measurement.tagCount > 1 ? 0.3 : 1.0;
         stdDev *= (measurement.avgTagDist / 2.0); // scale by distance
         stdDev = Math.max(stdDev, 0.2); // don't go below 0.2 std dev
-
+       Logger.recordOutput("PoseEst", measurement.pose);
         drivetrain.poseEst(
                 measurement.pose,
                 measurement.timestampSeconds,

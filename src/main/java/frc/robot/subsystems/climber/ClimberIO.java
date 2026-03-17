@@ -1,16 +1,24 @@
 package frc.robot.subsystems.climber;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface ClimberIO {
-    default void setPosition(double position) {
+    @AutoLog
+    class ClimberIOInputs {
+        public double position = 0; // Encoder position
+        public double appliedVolts = 0; // Attempted volts
+        public double currentAmps = 0; // Current amps being drawn
+        public double tempCelsius = 0; // Current motor temperature
+        public double velocity = 0; // Current motor temperature
+        public double target = 0;
     }
 
-    default void stop() {
+    default void updateInputs(ClimberIOInputs inputs) {
     }
 
-    default double getPosition() {
-        return 0;
-    }
+    void setPosition(double position);
 
-    default void climb() {
-    }
+    void stop();
+
+    double getPosition();
 }

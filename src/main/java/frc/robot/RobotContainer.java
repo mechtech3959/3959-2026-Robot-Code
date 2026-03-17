@@ -8,10 +8,13 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SuperStructureSubsystem;
+import frc.robot.subsystems.climber.ClimberCTREIO;
 import frc.robot.subsystems.conveyor.ConveyorREVIO;
 import frc.robot.subsystems.conveyor.ConveyorSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainCTREIO;
@@ -27,25 +30,29 @@ import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionLimelightIO;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.climber.ClimberCTREIO;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 
 public class RobotContainer {
     private final DrivetrainCTREIO drivetrainIO;
     private final DrivetrainSubsystem drivetrainSubsystem;
-    // private final ShooterCTREIO shooterIO;
-    // private final ShooterSubsystem shooterSubsystem;
+    private final ShooterCTREIO shooterIO;
+    private final ShooterSubsystem shooterSubsystem;
     private final FeedCTREIO feedIO;
     private final FeedSubsystem feedSubsystem;
     private final IntakeREVIO intakeIO;
     private final IntakeSubsystem intakeSubsystem;
-    // private final IndexerREVIO indexerIO;
-    // private final IndexerSubsystem indexerSubsystem;
-    // private final ConveyorREVIO conveyorIO;
+    private final IndexerREVIO indexerIO;
+    private final IndexerSubsystem indexerSubsystem;
+    private final ConveyorREVIO conveyorIO;
     private final VisionLimelightIO visionLimelightFront;
     private final VisionLimelightIO visionLimelightBack;
     private final VisionSubsystem visionSubsystem;
+    private final ClimberCTREIO climberIO;
+    private final ClimberSubsystem climberSubsystem;
 
-    // private final ConveyorSubsystem conveyorSubsystem;
-    // private final SuperStructureSubsystem superStructureSubsystem;
+    private final ConveyorSubsystem conveyorSubsystem;
+    private final SuperStructureSubsystem superStructureSubsystem;
     private final CommandXboxController driverController = new CommandXboxController(0);
 
     public RobotContainer() {
@@ -62,32 +69,40 @@ public class RobotContainer {
                 modules);
         drivetrainSubsystem = new DrivetrainSubsystem(drivetrainIO,
                 driverController);
-        /*
-         * /
-         * indexerIO = new IndexerREVIO();
-         * indexerSubsystem = new IndexerSubsystem(indexerIO);
-         * conveyorIO = new ConveyorREVIO();
-         * 
-         * conveyorSubsystem = new ConveyorSubsystem(conveyorIO);
-         * 
-         * shooterIO = new ShooterCTREIO();
-         * shooterSubsystem = new ShooterSubsystem(shooterIO);
-         */
+
+        indexerIO = new IndexerREVIO();
+        indexerSubsystem = new IndexerSubsystem(indexerIO);
+        conveyorIO = new ConveyorREVIO();
+
+        conveyorSubsystem = new ConveyorSubsystem(conveyorIO);
+
+        shooterIO = new ShooterCTREIO();
+        shooterSubsystem = new ShooterSubsystem(shooterIO);
+
         feedIO = new FeedCTREIO();
         feedSubsystem = new FeedSubsystem(feedIO);
         intakeIO = new IntakeREVIO();
         intakeSubsystem = new IntakeSubsystem(intakeIO, feedSubsystem);
-        // superStructureSubsystem = new SuperStructureSubsystem(conveyorSubsystem,
-        // shooterSubsystem, intakeSubsystem,
-        // indexerSubsystem);
+
         visionLimelightFront = new VisionLimelightIO("limelight-front", "LL4", 0.7112, 25.0);
         visionLimelightBack = new VisionLimelightIO("limelight-back", "LL2+", 0.8, 0.0);
+
         visionSubsystem = new VisionSubsystem(drivetrainSubsystem, visionLimelightFront, visionLimelightBack);
+        climberIO = new ClimberCTREIO();
+        climberSubsystem = new ClimberSubsystem(climberIO);
+        superStructureSubsystem = new SuperStructureSubsystem(conveyorSubsystem,
+                shooterSubsystem, intakeSubsystem,
+                indexerSubsystem,climberSubsystem);
         configureBindings();
     }
 
     public void endTransition() {
         // drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+    }
+
+    public void seeDist() {
+        Logger.recordOutput("distance from tag", visionSubsystem.getDistanceToTarget());
+
     }
 
     private void configureBindings() {
@@ -135,17 +150,27 @@ public class RobotContainer {
          */
         driverController.a().onChange(Commands.runOnce(() -> {
             // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
-            intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
+           // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
+           drivetrainSubsystem.changeState(SwerveStates.climb);
+           superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
         }));
         driverController.y().onChange(Commands.runOnce(() -> {
             // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
-            intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.MID_STOW);
+          //  intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.MID_STOW);
+                   drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+
         }));
         ;
         driverController.x().onChange(Commands.runOnce(() -> {
+              drivetrainSubsystem.changeState(SwerveStates.climb);
+           superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
             // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TEST);
-            intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.INTAKE);
+         //   intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.INTAKE);
         }));
+        // driverController.b().onChange(Commands.runOnce(() -> {
+        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TEST);
+        // }));
+
         /*
          * driverController.a().onChange(Commands.runOnce(() -> {
          * drivetrainSubsystem.changeState(SwerveState.Heading);

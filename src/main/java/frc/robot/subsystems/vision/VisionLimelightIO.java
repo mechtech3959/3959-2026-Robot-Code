@@ -25,6 +25,7 @@ public class VisionLimelightIO implements VisionIO {
     private double limelightAngle;
     private int[] redHubTags = { 2, 3, 4, 5, 8, 9, 10, 11 };
     private int[] blueHubTags = { 18, 19, 20, 21, 24, 25, 26, 27 };
+    private double goalHeight = 1.2395;
     private LimelightHelpers.RawFiducial[] detectedTags;
 
     public VisionLimelightIO(String pipeLine, String cameraType, double limelightHeight, double limelightAngle) {
@@ -51,25 +52,15 @@ public class VisionLimelightIO implements VisionIO {
         } else {
             LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, redHubTags);
         }
-        if (!TV) {
-            return -1;
-        }
-        double angleToTargetDegrees = limelightAngle + TY;
+      //  if (!TV) {
+        //    return -1;
+       // }
+        double angleToTargetDegrees = limelightAngle;
         double angleToTargetRadians = Math.toRadians(
                 angleToTargetDegrees);
-        distanceEstimate = (targetHeight - limelightHeight) / Math.tan(angleToTargetRadians);
-        return distanceEstimate;
+        return (goalHeight - limelightHeight) / Math.tan(angleToTargetRadians+TY);
     }
 
-    @Override
-    public void setVisionNeutral() {
-        TX = 0;
-        TY = 0;
-        TA = 0;
-        TV = false;
-        foundPosition = new Pose2d();
-        timeStamp = 0;
-    }
 
     @Override
     public void updateTracking(double yawDegrees) {
