@@ -36,7 +36,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         TeleOp,
         Heading,
         VisionHeading,
-        climb
+        Climb
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
@@ -254,6 +254,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
+            case Climb -> climb();
 
             default -> {
             }

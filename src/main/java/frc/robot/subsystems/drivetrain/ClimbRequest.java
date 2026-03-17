@@ -12,7 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class ClimbRequest implements SwerveRequest {
-    private  final MotionMagicVoltage m_TurnRequest = new MotionMagicVoltage(0);
+    private  final PositionVoltage m_TurnRequest = new PositionVoltage(0);
     private final CoastOut m_driveRequest = new CoastOut();
     public ClimbRequest() {
     }

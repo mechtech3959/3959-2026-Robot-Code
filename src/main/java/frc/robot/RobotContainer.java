@@ -151,7 +151,7 @@ public class RobotContainer {
         driverController.a().onChange(Commands.runOnce(() -> {
             // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
            // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
-           drivetrainSubsystem.changeState(SwerveStates.climb);
+           drivetrainSubsystem.changeState(SwerveStates.Climb);
            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
         }));
         driverController.y().onChange(Commands.runOnce(() -> {
@@ -162,7 +162,7 @@ public class RobotContainer {
         }));
         ;
         driverController.x().onChange(Commands.runOnce(() -> {
-              drivetrainSubsystem.changeState(SwerveStates.climb);
+              drivetrainSubsystem.changeState(SwerveStates.Climb);
            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
             // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TEST);
          //   intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.INTAKE);
