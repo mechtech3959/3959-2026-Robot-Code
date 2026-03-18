@@ -7,6 +7,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+import org.littletonrobotics.junction.Logger;
 
 import static frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
 import static frc.robot.subsystems.shooter.ShooterSubsystem.ShooterStates;
@@ -20,7 +21,8 @@ public class SuperStructureSubsystem extends SubsystemBase {
         IDLE,
         INTAKING,
         SHOOTING_AUTO,
-        SHOOTING__TELEOP,
+        SHOOTING__CLOSE,
+        SHOOTING__FAR,
         TRAVEL,
         PREP_CLIMB,
         CLIMBING,
@@ -33,19 +35,20 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private final ShooterSubsystem shooter;
     private final IntakeSubsystem intake;
     private final ClimberSubsystem climber;
-    // private final DrivetrainSubsystem drivetrain;
+    private final DrivetrainSubsystem drivetrain;
 
     private SuperStructureState currentSuperStructureState = SuperStructureState.IDLE;
-    private SuperStructureState requestedSuperStructureState = SuperStructureState.IDLE;
+    // private SuperStructureState requestedSuperStructureState =
+    // SuperStructureState.IDLE;
 
     public SuperStructureSubsystem(ConveyorSubsystem conveyor, ShooterSubsystem shooter, IntakeSubsystem intake,
-            IndexerSubsystem indexer, ClimberSubsystem climber) {
+            IndexerSubsystem indexer, ClimberSubsystem climber, DrivetrainSubsystem drivetrain) {
         this.conveyor = conveyor;
         this.shooter = shooter;
         this.intake = intake;
         this.climber = climber;
         this.indexer = indexer;
-        // this.drivetrain = drivetrain;
+        this.drivetrain = drivetrain;
     }
 
     private void applyState() {
@@ -53,50 +56,22 @@ public class SuperStructureSubsystem extends SubsystemBase {
         switch (currentSuperStructureState) {
 
             case IDLE -> {
-                intake.changeState(IntakeStates.INTAKE, FeedStates.STOP);
+                intake.changeState(FeedStates.STOP);
                 conveyor.changeState(ConveyorStates.STOP);
                 indexer.changeState(IndexerStates.STOP);
                 shooter.changeState(ShooterStates.REST);
             }
-            case INTAKING -> {
-                intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.5);
-                conveyor.changeState(ConveyorStates.RUN);
-                // indexer.changeState(IndexerStates.RUN);
-                // shooter.changeState(ShooterStates.INTAKE);
-            }
+            case INTAKING -> intaking();
             case SHOOTING_AUTO -> {
             }
-            case SHOOTING__TELEOP -> {
-            }
-            case TRAVEL -> {
-                intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
-                conveyor.changeState(ConveyorStates.STOP);
-                indexer.changeState(IndexerStates.STOP);
-                shooter.changeState(ShooterStates.REST);
-            }
-            case CLIMBING -> {
-                intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-                conveyor.changeState(ConveyorStates.STOP);
-                indexer.changeState(IndexerStates.STOP);
-                shooter.changeState(ShooterStates.REST);
-                climber.changeState(ClimberStates.CLIMB);
+            case SHOOTING__CLOSE -> closeShoot();
+            case SHOOTING__FAR -> farShoot();
+            case TRAVEL -> travel();
+            case CLIMBING -> climbing();
+            case PREP_CLIMB -> prep_Climb();
+            case STARTING_CONFIG ->
+                starting_Config();
 
-            }
-            case PREP_CLIMB -> {
-                climber.changeState(ClimberStates.CLEAR_INTAKE);
-                intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-                conveyor.changeState(ConveyorStates.STOP);
-                indexer.changeState(IndexerStates.STOP);
-                shooter.changeState(ShooterStates.REST);
-
-            }
-            case STARTING_CONFIG -> {
-                 climber.changeState(ClimberStates.STARTING_CONFIG);
-                intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-                conveyor.changeState(ConveyorStates.STOP);
-                indexer.changeState(IndexerStates.STOP);
-                shooter.changeState(ShooterStates.REST);
-            }
             case TEST -> {
                 intake.changeState(IntakeStates.INTAKE, FeedStates.PERCENTOUTPUT, 0.0);
                 conveyor.changeState(ConveyorStates.RUN);
@@ -108,13 +83,119 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
     }
 
+    public void intaking() {
+        if (intake.getState() == IntakeStates.INTAKE) {
+            return;
+        }
+        if (climber.getState() != ClimberStates.HOME)
+            climber.changeState(ClimberStates.HOME);
+        if (climber.getPosition() <= 85) {
+            intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.5);
+
+        } else {
+            intaking();
+        }
+
+    }
+
+    public void starting_Config() {
+        if (intake.getState() == IntakeStates.STOW && climber.getState() == ClimberStates.STARTING_CONFIG) {
+            return;
+        }
+        indexer.changeState(IndexerStates.STOP);
+        conveyor.changeState(ConveyorStates.STOP);
+        if (intake.getPosition() > 0.1 && climber.getPosition() < 85) {
+            intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+
+        } else if (intake.getPosition() < 0.05 && (climber.getState() != ClimberStates.STARTING_CONFIG)) {
+            climber.changeState(ClimberStates.STARTING_CONFIG);
+        } else if (intake.getPosition() > 0.05 && climber.getPosition() > 90) {
+            climber.changeState(ClimberStates.HOME);
+        } else {
+            starting_Config();
+        }
+
+    }
+
+    public void travel() {
+        if (intake.getState() == IntakeStates.MID_STOW) {
+            return;
+        }
+        indexer.changeState(IndexerStates.STOP);
+        conveyor.changeState(ConveyorStates.STOP);
+        if (climber.getState() != ClimberStates.HOME)
+            climber.changeState(ClimberStates.HOME);
+        if (climber.getPosition() <= 85) {
+            intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        } else {
+            travel();
+        }
+
+    }
+
+    public void prep_Climb() {
+        if (intake.getState() == IntakeStates.STOW && climber.getState() == ClimberStates.CLEAR_INTAKE) {
+            return;
+        }
+        indexer.changeState(IndexerStates.STOP);
+        conveyor.changeState(ConveyorStates.STOP);
+        climber.changeState(ClimberStates.CLEAR_INTAKE);
+        if (climber.isAtTarget()) {
+            intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+        } else {
+            prep_Climb();
+        }
+    }
+
+    public void climbing() {
+        if (climber.getState() == ClimberStates.CLIMB) {
+            return;
+        }
+        indexer.changeState(IndexerStates.STOP);
+        conveyor.changeState(ConveyorStates.STOP);
+        shooter.changeState(ShooterStates.REST);
+        drivetrain.changeState(DrivetrainSubsystem.SwerveStates.Climb);
+
+        if (intake.getState() == IntakeStates.STOW) {
+            climber.changeState(ClimberStates.CLIMB);
+        }
+
+        else {
+            climbing();
+        }
+    }
+
+    public void autoShoot() {
+        intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        indexer.changeState(IndexerStates.RUN);
+        conveyor.changeState(ConveyorStates.RUN);
+        shooter.changeState(ShooterStates.AUTO);
+    }
+
+    public void closeShoot() {
+        intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        indexer.changeState(IndexerStates.RUN);
+        conveyor.changeState(ConveyorStates.RUN);
+        shooter.changeState(ShooterStates.KNOWN_CLOSE);
+
+    }
+
+    public void farShoot() {
+        intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        indexer.changeState(IndexerStates.RUN);
+        conveyor.changeState(ConveyorStates.RUN);
+        shooter.changeState(ShooterStates.KNOWN_FAR);
+
+    }
+
     public void changeState(SuperStructureState newState) {
-        this.requestedSuperStructureState = newState;
-        this.currentSuperStructureState = requestedSuperStructureState;
+        // this.requestedSuperStructureState = newState;
+        this.currentSuperStructureState = newState;
     }
 
     @Override
     public void periodic() {
+        Logger.recordOutput("SuperStructure State", currentSuperStructureState);
         applyState();
     }
 }

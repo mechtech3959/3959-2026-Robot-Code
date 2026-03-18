@@ -42,6 +42,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
             .withHeadingPID(7, 0, 0.5)
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0, 0, 0);
+    private final SwerveRequest.ApplyFieldSpeeds fieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
+    private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
     private final ClimbRequest climbRequest = new ClimbRequest();
     private final PIDController autoXController = new PIDController(7, 0, 0);
     private final PIDController autoYController = new PIDController(7, 0, 0);
@@ -52,7 +55,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private SwerveStates currentDriveState = SwerveStates.TeleOp;
     private final CommandXboxController controller;
-    private DrivetrainIO io;
+    private final DrivetrainIO io;
     final DrivetrainIOInputsAutoLogged swerveInputs = new DrivetrainIOInputsAutoLogged();
     private final ModuleIOInputsAutoLogged[] moduleInputs = new ModuleIOInputsAutoLogged[] {
             new ModuleIOInputsAutoLogged(), // FL (Index 0)
@@ -149,7 +152,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ChassisSpeeds calculateSpeedsBasedOnJoystickInputs() {
         // was .isEmpty() but threw error for some reason
         if (!DriverStation.getAlliance().isPresent()) {
-            return new ChassisSpeeds(0, 0, 0);
+            return emptySpeed;
         }
 
         double xMagnitude = MathUtil.applyDeadband(controller.getLeftY(), 0.1);
@@ -159,9 +162,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 
-        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : xMagnitude * maxSpeed)
+        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : -xMagnitude * maxSpeed)
                 * ramp;
-        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : yMagnitude * maxSpeed)
+        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
                 * ramp;
         double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
 
@@ -212,13 +215,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void teleopDrive() {
-        io.setSwerveState(new SwerveRequest.ApplyFieldSpeeds()
+
+        io.setSwerveState(fieldSpeeds
                 .withSpeeds(calculateSpeedsBasedOnJoystickInputs())
                 .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage));
     }
 
     public void brake() {
-        io.setSwerveState(new SwerveRequest.SwerveDriveBrake());
+        io.setSwerveState(brakeRequest);
     }
 
     public void climb() {

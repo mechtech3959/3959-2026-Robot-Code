@@ -44,8 +44,19 @@ public class ClimberSubsystem extends SubsystemBase {
         return Units.rotationsToDegrees(climberIO.getPosition());
     }
 
+    public boolean isAtTarget() {
+
+        return climberIO.isAtTarget();
+    }
+
+    public ClimberStates getState() {
+        return currentClimberState;
+    }
+
     @Override
     public void periodic() {
+        Logger.recordOutput(" Climber State", currentClimberState.toString());
+
         applyState();
         climberIO.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);

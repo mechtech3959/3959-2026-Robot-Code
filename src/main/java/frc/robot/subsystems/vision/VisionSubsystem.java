@@ -29,16 +29,32 @@ public class VisionSubsystem extends SubsystemBase {
         cameras[0].updateTracking(yaw);
         // Update
         cameras[0].periodic();
-        cameras[0].updateInputs(inputs[0]);
-        Logger.processInputs("Vision/Camera" + 0, inputs[0]);
+                        var measurement_0 = cameras[0].getPoseEstimate();
+        if (measurement_0 != null) {
+            Logger.recordOutput("Vision/Camera" + 0 + "/Pose", measurement_0.pose);
+            Logger.recordOutput("Vision/Camera" + 0 + "/TagCount", measurement_0.tagCount);
+            Logger.recordOutput("Vision/Camera" + 0 + "/AvgTagDist", measurement_0.avgTagDist);
+            Logger.recordOutput("Vision/Camera" + 0 + "/Timestamp", measurement_0.timestampSeconds);
+        }
+      //  cameras[0].updateInputs(inputs[0]);
+      //  Logger.processInputs("Vision/Camera" + 0, inputs[0]);
         // Feed to drivetrain
         updatePoseEstimate(cameras[0]);
         // Set orientation first
         cameras[1].updateTracking(yaw);
         // Update
         cameras[1].periodic();
-        cameras[1].updateInputs(inputs[1]);
-        Logger.processInputs("Vision/Camera" + 1, inputs[1]);
+      //  cameras[1].updateInputs(inputs[1]);
+    //    Logger.processInputs("Vision/Camera" + 1, inputs[1]);
+                var measurement_1 = cameras[1].getPoseEstimate();
+        if (measurement_1 != null) {
+            Logger.recordOutput("Vision/Camera" + 1 + "/Pose", measurement_1.pose);
+            Logger.recordOutput("Vision/Camera" + 1 + "/TagCount", measurement_1.tagCount);
+            Logger.recordOutput("Vision/Camera" + 1 + "/AvgTagDist", measurement_1.avgTagDist);
+            Logger.recordOutput("Vision/Camera" + 1 + "/Timestamp", measurement_1.timestampSeconds);
+        }
+        
+        
         // Feed to drivetrain
         updatePoseEstimate(cameras[1]);
 
@@ -67,7 +83,9 @@ public class VisionSubsystem extends SubsystemBase {
         double stdDev = measurement.tagCount > 1 ? 0.3 : 1.0;
         stdDev *= (measurement.avgTagDist / 2.0); // scale by distance
         stdDev = Math.max(stdDev, 0.2); // don't go below 0.2 std dev
-       Logger.recordOutput("PoseEst", measurement.pose);
+        Logger.recordOutput("PoseEst", measurement.pose);
+        Logger.recordOutput("PoseEstTIME", measurement.timestampSeconds);
+
         drivetrain.poseEst(
                 measurement.pose,
                 measurement.timestampSeconds,

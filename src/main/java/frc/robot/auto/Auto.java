@@ -11,18 +11,21 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import static frc.robot.generated.ChoreoTraj.Test;
 import static frc.robot.generated.ChoreoTraj.TestAcc;
+import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 public class Auto {
-   // private final SuperStructureSubsystem superStructure;
+    // private final SuperStructureSubsystem superStructure;
     private final DrivetrainSubsystem drivetrain;
+    private final SuperStructureSubsystem superStructureSubsystem;
     private final AutoFactory autoFactory;
     private final AutoChooser autoChooser;
 
-    public Auto(DrivetrainSubsystem drivetrain) {
+    public Auto(DrivetrainSubsystem drivetrain, SuperStructureSubsystem superStructureSubsystem) {
         this.autoChooser = new AutoChooser();
 
         this.drivetrain = drivetrain;
+        this.superStructureSubsystem = superStructureSubsystem;
 
         this.autoFactory = drivetrain.makeAutoFactory();
     }
@@ -32,6 +35,10 @@ public class Auto {
         autoChooser.addRoutine("Test", this::testRoutine);
         autoChooser.addRoutine("Blue Middle", this::BlueMiddleRoutine);
 
+
+        autoFactory.bind("testCMD", Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
+        }));
         SmartDashboard.putData("Auto Chooser", autoChooser);
         RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
     }
@@ -62,6 +69,22 @@ public class Auto {
                 Commands.sequence(
                         Commands.print("Started the routine!"),
                         test.resetOdometry(), // Reset pose to trajectory start
+                        test.cmd() // Follow the trajectory
+                ));
+
+        return routine;
+    }
+ public AutoRoutine testCMDRoutine() {
+        final AutoRoutine routine = autoFactory.newRoutine("testRoutine");
+        final AutoTrajectory test = Test.asAutoTraj(routine);
+        Logger.recordOutput("Auto", test.getRawTrajectory().getPoses());
+
+        // When the routine becomes active, reset odometry then follow the trajectory
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Started the routine!"),
+                        test.resetOdometry(), // Reset pose to trajectory start
+                        
                         test.cmd() // Follow the trajectory
                 ));
 

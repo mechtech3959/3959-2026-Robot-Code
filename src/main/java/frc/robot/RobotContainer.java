@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
@@ -30,10 +31,14 @@ import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionLimelightIO;
 import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.subsystems.climber.ClimberCTREIO;
 import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.auto.Auto;
+import frc.robot.util.ShooterMap;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class RobotContainer {
+    private final Auto auton;
+
     private final DrivetrainCTREIO drivetrainIO;
     private final DrivetrainSubsystem drivetrainSubsystem;
     private final ShooterCTREIO shooterIO;
@@ -50,7 +55,7 @@ public class RobotContainer {
     private final VisionSubsystem visionSubsystem;
     private final ClimberCTREIO climberIO;
     private final ClimberSubsystem climberSubsystem;
-
+    private final ShooterMap shooterMap;
     private final ConveyorSubsystem conveyorSubsystem;
     private final SuperStructureSubsystem superStructureSubsystem;
     private final CommandXboxController driverController = new CommandXboxController(0);
@@ -83,90 +88,78 @@ public class RobotContainer {
         feedSubsystem = new FeedSubsystem(feedIO);
         intakeIO = new IntakeREVIO();
         intakeSubsystem = new IntakeSubsystem(intakeIO, feedSubsystem);
-
-        visionLimelightFront = new VisionLimelightIO("limelight-front", "LL4", 0.7112, 25.0);
-        visionLimelightBack = new VisionLimelightIO("limelight-back", "LL2+", 0.8, 0.0);
+        // 22, 0.703
+        visionLimelightFront = new VisionLimelightIO("limelight-front", "LL4", 0.703, 20.0, 0);
+        visionLimelightBack = new VisionLimelightIO("limelight-back", "LL2+", 0.8, 0.0, 180);
 
         visionSubsystem = new VisionSubsystem(drivetrainSubsystem, visionLimelightFront, visionLimelightBack);
         climberIO = new ClimberCTREIO();
         climberSubsystem = new ClimberSubsystem(climberIO);
         superStructureSubsystem = new SuperStructureSubsystem(conveyorSubsystem,
                 shooterSubsystem, intakeSubsystem,
-                indexerSubsystem,climberSubsystem);
+                indexerSubsystem, climberSubsystem, drivetrainSubsystem);
+        auton = new Auto(drivetrainSubsystem, superStructureSubsystem);
+        shooterMap = new ShooterMap();
+
         configureBindings();
     }
 
     public void endTransition() {
-        // drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+        drivetrainSubsystem.changeState(SwerveStates.TeleOp);
     }
 
-    public void seeDist() {
-        Logger.recordOutput("distance from tag", visionSubsystem.getDistanceToTarget());
+    public void estimatedDistance() {
+        double distance = visionSubsystem.getDistanceToTarget();
+        Logger.recordOutput("distance from tag", distance);
+        shooterSubsystem.setEstimatedRPS(shooterMap.getShooterSpeedForDistance(distance));
 
+    }
+
+    private Command controllerRumbleCommand() {
+        return Commands.startEnd(
+                () -> {
+                    driverController.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+                },
+                () -> {
+                    driverController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+                });
+    }
+
+    private Command controllerDoubleRumbleCommand() {
+        return controllerRumbleCommand().withTimeout(0.5).andThen(controllerRumbleCommand().withTimeout(0.5));
     }
 
     private void configureBindings() {
-        /*
-         * driverController.a().onTrue(Commands.runOnce(
-         * () ->
-         * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
-         * -55)));
-         * driverController.b().onTrue(Commands.runOnce(
-         * () ->
-         * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
-         * -50)));
-         * driverController.x().onTrue(Commands.runOnce(
-         * () ->
-         * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.UNKNOWN,
-         * 0)));
-         * driverController.y().onTrue(Commands.runOnce(
-         * () ->
-         * shooterSubsystem.ChangeShooterState(ShooterSubsystem.ShooterMode.KNOWN_CLOSE,
-         * -60)));
-         */
-        // driverController.a().onChange(Commands.runOnce(() -> {
-        // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.INTAKE);
 
-        // }));
-        /*
-         * driverController.b().onChange(Commands.runOnce(() -> {
-         * // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.MID_STOW);
-         * conveyorSubsystem.changeState(ConveyorSubsystem.ConveyorStates.RUN);
-         * }));
-         * driverController.x().onChange(Commands.runOnce(() -> {
-         * conveyorSubsystem.changeState(ConveyorSubsystem.ConveyorStates.STOP);
-         * 
-         * // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
-         * }));
-         * driverController.y().onChange(Commands.runOnce(() -> {
-         * indexerSubsystem.changeState(IndexerSubsystem.IndexerStates.RUN);
-         * 
-         * // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
-         * }));
-         * driverController.a().onChange(Commands.runOnce(() -> {
-         * indexerSubsystem.changeState(IndexerSubsystem.IndexerStates.STOP);
-         * // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
-         * }));
-         */
-        driverController.a().onChange(Commands.runOnce(() -> {
-            // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
-           // intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.STOW);
-           drivetrainSubsystem.changeState(SwerveStates.Climb);
-           superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
-        }));
-        driverController.y().onChange(Commands.runOnce(() -> {
-            // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
-          //  intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.MID_STOW);
-                   drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+        auton.configure();
 
-        }));
-        ;
         driverController.x().onChange(Commands.runOnce(() -> {
-              drivetrainSubsystem.changeState(SwerveStates.Climb);
-           superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
-            // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TEST);
-         //   intakeSubsystem.changeState(IntakeSubsystem.IntakeStates.INTAKE);
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.STARTING_CONFIG);
+
         }));
+        driverController.leftBumper().onTrue(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
+
+        }).alongWith(controllerRumbleCommand())).onFalse(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
+
+        }).alongWith(controllerDoubleRumbleCommand()));
+        driverController.rightBumper().toggleOnTrue(Commands.runOnce(() -> {
+            drivetrainSubsystem.changeState(SwerveStates.Heading);
+        })).toggleOnFalse(Commands.runOnce(() -> {
+            drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+        }));
+        // Single press B = prep climb
+        driverController.y().onTrue(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
+        }));
+
+        // Double press B = actual climb
+        driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
+            // drivetrainSubsystem.changeState(SwerveStates.climb);
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
+        }));
+
         // driverController.b().onChange(Commands.runOnce(() -> {
         // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TEST);
         // }));

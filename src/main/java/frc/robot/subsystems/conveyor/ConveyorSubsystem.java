@@ -1,5 +1,7 @@
 package frc.robot.subsystems.conveyor;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ConveyorSubsystem extends SubsystemBase {
@@ -16,7 +18,7 @@ public class ConveyorSubsystem extends SubsystemBase {
             case RUN -> conveyorIO.runConveyorMotor();
             case STOP -> conveyorIO.stopConveyorMotor();
             default -> System.out.println(
-                        "Error in Conveyor Subsystem: State applied to " + "non-existing option/undefined error.");
+                    "Error in Conveyor Subsystem: State applied to " + "non-existing option/undefined error.");
 
         }
     }
@@ -27,6 +29,7 @@ public class ConveyorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        Logger.recordOutput(" Conveyor State", currentConveyorState.toString());
         applyState();
     }
 

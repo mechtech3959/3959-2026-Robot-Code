@@ -41,7 +41,7 @@ public record ChoreoTraj(
 	public static final ChoreoTraj TestAcc = new ChoreoTraj(
 	    "TestAcc",
 	    OptionalInt.empty(),
-	    5.96099,
+	    4.61011,
 	    new Pose2d(3.6, 4, Rotation2d.fromRadians(0)),
 	    new Pose2d(3.6, 4, Rotation2d.fromRadians(0))
 	);
@@ -55,8 +55,8 @@ public record ChoreoTraj(
 	public static final ChoreoTraj Test = new ChoreoTraj(
 	    "Test",
 	    OptionalInt.empty(),
-	    0.79195,
-	    new Pose2d(0, 0, Rotation2d.fromRadians(0)),
+	    0.13411,
+	    new Pose2d(1.026, 0.992, Rotation2d.fromRadians(0)),
 	    new Pose2d(1, 1, Rotation2d.fromRadians(0))
 	);
 	public static final ChoreoTraj LeftIntakeCorralShoot = new ChoreoTraj(

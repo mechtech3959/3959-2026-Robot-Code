@@ -11,6 +11,7 @@ public class ClimberCTREIO implements ClimberIO {
     TalonFX climberMotor = new TalonFX(18, new CANBus("rio"));
     MotionMagicVoltage request = new MotionMagicVoltage(0);
     private double target = 0;
+    private static final double POSITION_TOLERANCE_DEGREES = 0.5;
 
     public ClimberCTREIO() {
         TalonFXConfiguration climberMotorConfig = new ClimberConfiguration().getClimberMotorConfig();
@@ -19,10 +20,10 @@ public class ClimberCTREIO implements ClimberIO {
 
     @Override
     public void setPosition(double position) {
-       // if (position != target) {
-            climberMotor.setControl(request.withPosition(Units.degreesToRotations(position)));
-            target = position;
-      //  }
+         if (position != target) {
+        climberMotor.setControl(request.withPosition(Units.degreesToRotations(position)));
+        target = position;
+         }
     }
 
     @Override
@@ -33,6 +34,13 @@ public class ClimberCTREIO implements ClimberIO {
     @Override
     public double getPosition() {
         return climberMotor.getPosition().getValueAsDouble();
+    }
+
+    @Override
+    public boolean isAtTarget() {
+        // Convert motor position (rotations) to degrees to match stored target units
+        double positionDegrees = Units.rotationsToDegrees(climberMotor.getPosition().getValueAsDouble());
+        return Math.abs(positionDegrees - target) <= POSITION_TOLERANCE_DEGREES;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.indexer;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
@@ -32,6 +34,8 @@ public class IndexerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        Logger.recordOutput("Indexer State", currentIndexingState.toString());
+
         applyState();
     }
 

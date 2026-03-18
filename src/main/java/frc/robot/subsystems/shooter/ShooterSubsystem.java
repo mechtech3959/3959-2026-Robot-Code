@@ -27,11 +27,13 @@ public class ShooterSubsystem extends SubsystemBase {
         REST,
         INTAKE,
         TUNING,
+        AUTO,
         UNKNOWN
     }
 
-    private double targetRPM;
-    private double targetAngle = 50; // fixed angle
+    private double targetRPS =0;
+   // private double targetAngle = 50; // fixed angle
+    
 
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
@@ -76,9 +78,13 @@ public class ShooterSubsystem extends SubsystemBase {
         ShooterState = newState;
     }
 
-    public void changeState(ShooterStates newState, double targetRPM) {
-        this.targetRPM = targetRPM;
+    public void changeState(ShooterStates newState, double targetRPS) {
+        this.targetRPS = targetRPS;
         ShooterState = newState;
+    }
+    public void setEstimatedRPS(double rps){
+        this.targetRPS = rps;
+
     }
 
     @Override

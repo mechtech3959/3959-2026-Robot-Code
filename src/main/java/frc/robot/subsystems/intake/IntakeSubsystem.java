@@ -47,8 +47,20 @@ public class IntakeSubsystem extends SubsystemBase {
         }
     }
 
+    public double getPosition() {
+        return intakeIO.getPosition();
+    }
+
+    public IntakeStates getState() {
+        return currentIntakeState;
+    }
+
     public void changeState(IntakeStates state) {
         this.currentIntakeState = state;
+    }
+
+    public void changeState(FeedStates state) {
+        this.feedSubsystem.changeState(state);
     }
 
     public void changeState(IntakeStates state, FeedStates feedState) {
@@ -63,6 +75,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        Logger.recordOutput(" Intake State", currentIntakeState.toString());
         intakeIO.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);
         applyState();

@@ -16,9 +16,17 @@ public interface ClimberIO {
     default void updateInputs(ClimberIOInputs inputs) {
     }
 
-    void setPosition(double position);
+    default void setPosition(double position) {
+    }
 
-    void stop();
+    default void stop() {
+    }
 
-    double getPosition();
+    default boolean isAtTarget() {
+        return false;
+    }
+
+    default double getPosition() {
+        return 0;
+    }
 }
