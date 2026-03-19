@@ -20,10 +20,10 @@ public class ClimberCTREIO implements ClimberIO {
 
     @Override
     public void setPosition(double position) {
-         if (position != target) {
+        // if (position != target) {
         climberMotor.setControl(request.withPosition(Units.degreesToRotations(position)));
         target = position;
-         }
+       //  }
     }
 
     @Override

@@ -133,20 +133,20 @@ public class RobotContainer {
 
         auton.configure();
 
-        driverController.x().onChange(Commands.runOnce(() -> {
+        driverController.start().onChange(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.STARTING_CONFIG);
 
         }));
-        driverController.leftBumper().onTrue(Commands.runOnce(() -> {
+        driverController.leftBumper().whileTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
 
         }).alongWith(controllerRumbleCommand())).onFalse(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
 
-        }).alongWith(controllerDoubleRumbleCommand()));
+        }));
         driverController.rightBumper().toggleOnTrue(Commands.runOnce(() -> {
             drivetrainSubsystem.changeState(SwerveStates.Heading);
-        })).toggleOnFalse(Commands.runOnce(() -> {
+        })).toggleOnTrue(Commands.runOnce(() -> {
             drivetrainSubsystem.changeState(SwerveStates.TeleOp);
         }));
         // Single press B = prep climb
@@ -158,6 +158,14 @@ public class RobotContainer {
         driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
             // drivetrainSubsystem.changeState(SwerveStates.climb);
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
+        }));
+              driverController.b().onTrue(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
+        }));
+          driverController.a().onTrue(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
+        }));  driverController.x().onTrue(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
         }));
 
         // driverController.b().onChange(Commands.runOnce(() -> {

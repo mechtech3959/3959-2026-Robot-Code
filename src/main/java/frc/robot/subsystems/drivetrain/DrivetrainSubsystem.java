@@ -40,9 +40,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
-            .withHeadingPID(7, 0, 0.5)
+            .withHeadingPID(3, 0.0, 0.00)
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
-    private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0, 0, 0);
+    private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0, 
+        0, 0);
     private final SwerveRequest.ApplyFieldSpeeds fieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
     private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
     private final ClimbRequest climbRequest = new ClimbRequest();
@@ -75,7 +76,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         this.io = io;
         this.controller = controller;
-        headingDrive.HeadingController = new PhoenixPIDController(7, 0, 0);
+        headingDrive.HeadingController = new PhoenixPIDController(3, 0, 0);
         headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         modules[0] = new ModuleCTREIO(io.getSwerveModule(0));
@@ -236,7 +237,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void headingDrive() {
         ChassisSpeeds joystickSpeeds = calculateSpeedsBasedOnJoystickInputs();
-        io.setSwerveState(headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose))
+        io.setSwerveState(headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose)).withDeadband(0.1)
                 .withVelocityX(joystickSpeeds.vxMetersPerSecond)
                 .withVelocityY(joystickSpeeds.vyMetersPerSecond));
 

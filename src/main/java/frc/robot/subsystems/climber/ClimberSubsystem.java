@@ -24,9 +24,9 @@ public class ClimberSubsystem extends SubsystemBase {
             case HOME ->
                 climberIO.setPosition(0);
             case CLEAR_INTAKE ->
-                climberIO.setPosition(90);
+                climberIO.setPosition(150);
             case CLIMB ->
-                climberIO.setPosition(-50);
+                climberIO.setPosition(-30);
             case STARTING_CONFIG ->
                 climberIO.setPosition(180);
             case CAMERA_CUSTOM ->

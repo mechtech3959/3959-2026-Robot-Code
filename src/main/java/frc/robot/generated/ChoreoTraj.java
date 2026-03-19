@@ -24,7 +24,28 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj BLTraverseBLR = new ChoreoTraj(
+    public static final ChoreoTraj BLBallToShoot = new ChoreoTraj(
+	    "BLBallToShoot",
+	    OptionalInt.empty(),
+	    2.6431,
+	    new Pose2d(0.98, 5.99, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(0.943, 7.073, Rotation2d.fromRadians(-0.694))
+	);
+	public static final ChoreoTraj BLeftTrenchFlip = new ChoreoTraj(
+	    "BLeftTrenchFlip",
+	    OptionalInt.empty(),
+	    1.14836,
+	    new Pose2d(3.569, 7.259, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.6, 7.1, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj BLTFlipToBalls = new ChoreoTraj(
+	    "BLTFlipToBalls",
+	    OptionalInt.empty(),
+	    2.70867,
+	    new Pose2d(2.6, 7.1, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(0.98, 5.99, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj BLTraverseBLR = new ChoreoTraj(
 	    "BLTraverseBLR",
 	    OptionalInt.empty(),
 	    9.69324,
@@ -38,27 +59,6 @@ public record ChoreoTraj(
 	    new Pose2d(2.659, 4.173, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(1.56, 4.182, Rotation2d.fromRadians(3.142))
 	);
-	public static final ChoreoTraj TestAcc = new ChoreoTraj(
-	    "TestAcc",
-	    OptionalInt.empty(),
-	    4.61011,
-	    new Pose2d(3.6, 4, Rotation2d.fromRadians(0)),
-	    new Pose2d(3.6, 4, Rotation2d.fromRadians(0))
-	);
-	public static final ChoreoTraj PathGEn = new ChoreoTraj(
-	    "PathGEn",
-	    OptionalInt.empty(),
-	    0.1173,
-	    new Pose2d(6.438, 2.183, Rotation2d.fromRadians(0)),
-	    new Pose2d(6.458, 2.203, Rotation2d.fromRadians(0))
-	);
-	public static final ChoreoTraj Test = new ChoreoTraj(
-	    "Test",
-	    OptionalInt.empty(),
-	    0.13411,
-	    new Pose2d(1.026, 0.992, Rotation2d.fromRadians(0)),
-	    new Pose2d(1, 1, Rotation2d.fromRadians(0))
-	);
 	public static final ChoreoTraj LeftIntakeCorralShoot = new ChoreoTraj(
 	    "LeftIntakeCorralShoot",
 	    OptionalInt.empty(),
@@ -66,18 +66,50 @@ public record ChoreoTraj(
 	    new Pose2d(3.591, 7.537, Rotation2d.fromRadians(0)),
 	    new Pose2d(0.877, 7.385, Rotation2d.fromRadians(-0.745))
 	);
+	public static final ChoreoTraj PathGEn = new ChoreoTraj(
+	    "PathGEn",
+	    OptionalInt.empty(),
+	    0.14305,
+	    new Pose2d(6.438, 2.183, Rotation2d.fromRadians(0)),
+	    new Pose2d(6.458, 2.203, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj Test = new ChoreoTraj(
+	    "Test",
+	    OptionalInt.empty(),
+	    0.81531,
+	    new Pose2d(1.026, 0.992, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.021, 0.972, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj TestAcc = new ChoreoTraj(
+	    "TestAcc",
+	    OptionalInt.empty(),
+	    4.61011,
+	    new Pose2d(3.6, 4, Rotation2d.fromRadians(0)),
+	    new Pose2d(3.6, 4, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj BCenterBackup = new ChoreoTraj(
+	    "BCenterBackup",
+	    OptionalInt.empty(),
+	    0.9819,
+	    new Pose2d(3.543, 4.028, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.083, 4.047, Rotation2d.fromRadians(0))
+	);
 
     /**
      * A map between trajectory names and their corresponding data.
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-    	Map.entry("BLTraverseBLR", BLTraverseBLR),
+    	Map.entry("BLBallToShoot", BLBallToShoot),
+		Map.entry("BLeftTrenchFlip", BLeftTrenchFlip),
+		Map.entry("BLTFlipToBalls", BLTFlipToBalls),
+		Map.entry("BLTraverseBLR", BLTraverseBLR),
 		Map.entry("Climb", Climb),
-		Map.entry("TestAcc", TestAcc),
+		Map.entry("LeftIntakeCorralShoot", LeftIntakeCorralShoot),
 		Map.entry("PathGEn", PathGEn),
 		Map.entry("Test", Test),
-		Map.entry("LeftIntakeCorralShoot", LeftIntakeCorralShoot)
+		Map.entry("TestAcc", TestAcc),
+		Map.entry("BCenterBackup", BCenterBackup)
     );
 
     /**

@@ -21,7 +21,8 @@ public class IntakeREVIO implements IntakeIO {
 
     public IntakeREVIO() {
         sparkMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, 43)
-                .pid(3.0, 0.0, 0.6).feedForward.kS(0.1).kV(0.12).kCosRatio(2.0 * Math.PI);
+                .pid(1.65, 0.0005, 0).iZone(0.03)
+                .iMaxAccum(0.05).feedForward.kS(0.1).kV(0.12); //.kCosRatio(2.0 * Math.PI);
         sparkMotorConfig.smartCurrentLimit(20, 40);
 
         sparkMotorConfig.idleMode(IdleMode.kBrake);
@@ -30,7 +31,7 @@ public class IntakeREVIO implements IntakeIO {
         sparkMotorConfig.softLimit
                 .forwardSoftLimit(0.314)
                 .forwardSoftLimitEnabled(true)
-                .reverseSoftLimit(0.0)
+                .reverseSoftLimit(0.001)
                 .reverseSoftLimitEnabled(true);
 
         sparkMotorConfig.closedLoop.maxMotion
@@ -45,9 +46,9 @@ public class IntakeREVIO implements IntakeIO {
 
     @Override
     public void setControl(double position) {
-      //  if (position == target) {
-        //    return; // No need to update if we're already at the target
-      //  }
+        // if (position == target) {
+        // return; // No need to update if we're already at the target
+        // }
 
         intakeMotor.getClosedLoopController().setSetpoint(position, SparkBase.ControlType.kMAXMotionPositionControl);
 

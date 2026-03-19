@@ -23,7 +23,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
         SHOOTING_AUTO,
         SHOOTING__CLOSE,
         SHOOTING__FAR,
+        SHOOTING_STOP,
         TRAVEL,
+
         PREP_CLIMB,
         CLIMBING,
         STARTING_CONFIG,
@@ -66,6 +68,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
             }
             case SHOOTING__CLOSE -> closeShoot();
             case SHOOTING__FAR -> farShoot();
+            case SHOOTING_STOP -> stopShooting();
             case TRAVEL -> travel();
             case CLIMBING -> climbing();
             case PREP_CLIMB -> prep_Climb();
@@ -89,12 +92,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
         if (climber.getState() != ClimberStates.HOME)
             climber.changeState(ClimberStates.HOME);
-        if (climber.getPosition() <= 85) {
+        if (climber.getPosition() < 90) {
             intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.5);
 
-        } else {
-            intaking();
         }
+        // if (intake.getState() != IntakeStates.INTAKE)
+        // intaking();
 
     }
 
@@ -104,7 +107,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
-        if (intake.getPosition() > 0.1 && climber.getPosition() < 85) {
+        if (intake.getPosition() > 0.1 && climber.getPosition() < 90) {
             intake.changeState(IntakeStates.STOW, FeedStates.STOP);
 
         } else if (intake.getPosition() < 0.05 && (climber.getState() != ClimberStates.STARTING_CONFIG)) {
@@ -112,7 +115,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         } else if (intake.getPosition() > 0.05 && climber.getPosition() > 90) {
             climber.changeState(ClimberStates.HOME);
         } else {
-            starting_Config();
+            // starting_Config();
         }
 
     }
@@ -125,11 +128,10 @@ public class SuperStructureSubsystem extends SubsystemBase {
         conveyor.changeState(ConveyorStates.STOP);
         if (climber.getState() != ClimberStates.HOME)
             climber.changeState(ClimberStates.HOME);
-        if (climber.getPosition() <= 85) {
+        if (climber.getPosition() < 90) {
             intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
-        } else {
-            travel();
         }
+        // travel();
 
     }
 
@@ -140,11 +142,13 @@ public class SuperStructureSubsystem extends SubsystemBase {
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
         climber.changeState(ClimberStates.CLEAR_INTAKE);
-        if (climber.isAtTarget()) {
-            intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-        } else {
-            prep_Climb();
-        }
+        if (intake.getState() != IntakeStates.STOW && climber.getPosition() < 90)
+            intake.changeState(IntakeStates.STOW,FeedStates.STOP);
+     //   if (climber.isAtTarget()) {
+         //   intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+       // } // else {
+          // prep_Climb();
+        // }
     }
 
     public void climbing() {
@@ -160,9 +164,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
             climber.changeState(ClimberStates.CLIMB);
         }
 
-        else {
-            climbing();
-        }
+        // else {
+        // climbing();
+        // }
     }
 
     public void autoShoot() {
@@ -187,6 +191,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
         shooter.changeState(ShooterStates.KNOWN_FAR);
 
     }
+   public void stopShooting(){
+      intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        indexer.changeState(IndexerStates.STOP);
+        conveyor.changeState(ConveyorStates.STOP);
+        shooter.changeState(ShooterStates.REST);
+   }
 
     public void changeState(SuperStructureState newState) {
         // this.requestedSuperStructureState = newState;
