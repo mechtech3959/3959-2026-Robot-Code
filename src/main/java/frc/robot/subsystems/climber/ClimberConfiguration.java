@@ -1,33 +1,69 @@
 package frc.robot.subsystems.climber;
 
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+import edu.wpi.first.math.util.Units;
 
 public class ClimberConfiguration {
-    private SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
+    private final TalonFXConfiguration talonConfig = new TalonFXConfiguration();
 
     public ClimberConfiguration() {
-        climberMotorConfig.smartCurrentLimit(40, 20);
-        climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        Slot0Configs slot0 = new Slot0Configs()
+                .withGravityType(GravityTypeValue.Arm_Cosine)
+                .withKG(0.1) // Voltage to overcome gravity
+                .withKS(0) // Static voltage to move
+                .withKV(0.1) // Cruising voltage
+                .withKP(50) // Present error
+                .withKI(1) // Past error
+                .withKD(1) // Future error
+                .withStaticFeedforwardSign(
+                        StaticFeedforwardSignValue.UseClosedLoopSign);
 
-        climberMotorConfig.softLimit.forwardSoftLimit(1)
-                .forwardSoftLimitEnabled(true)
-                .reverseSoftLimit(0.1)
-                .reverseSoftLimitEnabled(true);
+        MotionMagicConfigs motionMagicConfig = new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(160) // 80 rps
+                .withMotionMagicAcceleration(320) // Reach 80 rps in 0.5 seconds
+                .withMotionMagicJerk(3200); // S-Curve
 
-        climberMotorConfig.closedLoop.pid(15.0, 0.0, 0.0).feedForward.kS(0.15)
-                .kV(0.12)
-                .kCos(0.2)
-                // kCosRatio = (Gear Ratio) * (2 * PI) = converts Rotations to Radians
-                .kCosRatio(9.0 * 2.0 * Math.PI);
+        FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
+                .withFeedbackRemoteSensorID(23)
+                .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+                .withSensorToMechanismRatio(28.0 / 12.0)
+                .withRotorToSensorRatio(135);
 
-        climberMotorConfig.closedLoop.maxMotion
-                .cruiseVelocity(2000) // 2000 rpm
-                .maxAcceleration(4000) // 2000/4000 = 0.5 sec to reach 2000 rpm
-                .allowedProfileError(0.01); // Deadband
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
+                // .withInverted(InvertedValue.Clockwise_Positive)
+                .withNeutralMode(NeutralModeValue.Brake);
+
+        CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs()
+                .withStatorCurrentLimit(100)
+                .withStatorCurrentLimitEnable(true)
+                .withSupplyCurrentLimit(50)
+                .withSupplyCurrentLimitEnable(true);
+
+        SoftwareLimitSwitchConfigs softwareLimits = new SoftwareLimitSwitchConfigs()
+                .withForwardSoftLimitEnable(true) // Disabled for testing
+                .withForwardSoftLimitThreshold(Units.degreesToRotations(200))
+                .withReverseSoftLimitEnable(true) // Disabled for testing
+                .withReverseSoftLimitThreshold(Units.degreesToRotations(-60));
+
+        talonConfig.withSlot0(slot0)
+                .withMotionMagic(motionMagicConfig)
+                .withFeedback(feedbackConfigs)
+                .withMotorOutput(motorOutputConfigs)
+                .withCurrentLimits(currentLimits)
+                .withSoftwareLimitSwitch(softwareLimits);
     }
 
-    public SparkMaxConfig getClimberMotorConfig() {
-        return climberMotorConfig;
+    public TalonFXConfiguration getClimberMotorConfig() {
+        return talonConfig;
     }
 }

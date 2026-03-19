@@ -42,7 +42,9 @@ public interface VisionIO {
     default boolean isPoseEstimateValid() {
         return false;
     }
-
+    default double distanceEstimate(double TY) {
+        return -1;
+    }
     default void updateTracking(double yawDegrees) {
     }
 

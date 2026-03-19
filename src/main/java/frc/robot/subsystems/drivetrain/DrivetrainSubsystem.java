@@ -1,13 +1,10 @@
 package frc.robot.subsystems.drivetrain;
 
-import frc.robot.subsystems.drivetrain.modules.ModuleIO;
-import frc.robot.subsystems.drivetrain.modules.ModuleCTREIO;
-import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
@@ -24,23 +21,32 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.drivetrain.modules.ModuleCTREIO;
+import frc.robot.subsystems.drivetrain.modules.ModuleIO;
+import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
-    public enum SwerveState {
+    public enum SwerveStates {
         Disabled,
         Brake,
         ChoreoTrajectory,
         TeleOp,
         Heading,
-        VisionHeading
+        VisionHeading,
+        Climb
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
-            .withHeadingPID(3, 0, 0)
-            .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage);
+            .withHeadingPID(3, 0.0, 0.00)
+            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0, 
+        0, 0);
+    private final SwerveRequest.ApplyFieldSpeeds fieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
+    private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
+    private final ClimbRequest climbRequest = new ClimbRequest();
     private final PIDController autoXController = new PIDController(7, 0, 0);
     private final PIDController autoYController = new PIDController(7, 0, 0);
     private final PIDController autoHeadingController = new PIDController(7, 0, 0);
@@ -48,10 +54,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
 
-    private SwerveState currentDriveState = SwerveState.TeleOp;
+    private SwerveStates currentDriveState = SwerveStates.TeleOp;
     private final CommandXboxController controller;
-    private DrivetrainIO io = new DrivetrainIO() {
-    };
+    private final DrivetrainIO io;
     final DrivetrainIOInputsAutoLogged swerveInputs = new DrivetrainIOInputsAutoLogged();
     private final ModuleIOInputsAutoLogged[] moduleInputs = new ModuleIOInputsAutoLogged[] {
             new ModuleIOInputsAutoLogged(), // FL (Index 0)
@@ -62,30 +67,38 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final ModuleIO[] modules = new ModuleIO[4];
 
-    private static final double maxSpeed = 10.0; // meters per second, placeholder value - adjust based on your robot's capabilities
-    private static final double maxAngSpeed = Math.PI; // radians per second, placeholder value - adjust based on your robot's capabilities
+    private final double maxSpeed = 8.0; // meters per second, placeholder value - adjust based on your robot's
+                                         // capabilities
+    private final double maxAngSpeed = 6; // radians per second, placeholder value - adjust based on your robot's
+                                          // capabilities
 
     public DrivetrainSubsystem(DrivetrainIO io, CommandXboxController controller) {
 
         this.io = io;
         this.controller = controller;
+        headingDrive.HeadingController = new PhoenixPIDController(3, 0, 0);
+        headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
-        for (int i = 0; i < 4; i++) {
-            modules[i] = new ModuleCTREIO(io.getSwerveModule(i));
-            modules[i].updateInputs(moduleInputs[i]);
+        modules[0] = new ModuleCTREIO(io.getSwerveModule(0));
+        modules[1] = new ModuleCTREIO(io.getSwerveModule(1));
+        modules[2] = new ModuleCTREIO(io.getSwerveModule(2));
+        modules[3] = new ModuleCTREIO(io.getSwerveModule(3));
 
-        }
+        modules[0].updateInputs(moduleInputs[0]);
+        modules[1].updateInputs(moduleInputs[1]);
+        modules[2].updateInputs(moduleInputs[2]);
+        modules[3].updateInputs(moduleInputs[3]);
 
         io.registerDrivetrainTelemetry(swerveInputs);
 
         autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
         SmartDashboard.putData("Swerve Drive", (SendableBuilder builder) -> {
             builder.setSmartDashboardType("SwerveDrive");
-            
+
             builder.addDoubleProperty("Front Left Angle", () -> moduleInputs[0].steerAbsolutePositionRad, null);
             builder.addDoubleProperty("Front Left Velocity", () -> moduleInputs[0].driveVelocityRadPerSec / 30,
                     null);
-            
+
             builder.addDoubleProperty("Front Right Angle", () -> moduleInputs[1].steerAbsolutePositionRad, null);
             builder.addDoubleProperty("Front Right Velocity", () -> moduleInputs[1].driveVelocityRadPerSec / 30,
                     null);
@@ -103,17 +116,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
+        applyState();
+
         io.updateDrivetrainData(swerveInputs);
         Logger.processInputs(getName(), swerveInputs);
 
-        applyState();
+        // Read fresh data from hardware
+        modules[0].updateInputs(moduleInputs[0]);
+        modules[1].updateInputs(moduleInputs[1]);
+        modules[2].updateInputs(moduleInputs[2]);
+        modules[3].updateInputs(moduleInputs[3]);
 
-        for (int i = 0; i < 4; i++) {
-            // Read fresh data from hardware
-            modules[i].updateInputs(moduleInputs[i]);
-            // Send to dashboard
-            Logger.processInputs("Drive/Module " + i, moduleInputs[i]);
-        }
+        // Send to dashboard
+        Logger.processInputs(getName() + "/Module " + 0, moduleInputs[0]);
+        Logger.processInputs(getName() + "/Module " + 1, moduleInputs[1]);
+        Logger.processInputs(getName() + "/Module " + 2, moduleInputs[2]);
+        Logger.processInputs(getName() + "/Module " + 3, moduleInputs[3]);
 
     }
 
@@ -135,7 +153,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ChassisSpeeds calculateSpeedsBasedOnJoystickInputs() {
         // was .isEmpty() but threw error for some reason
         if (!DriverStation.getAlliance().isPresent()) {
-            return new ChassisSpeeds(0, 0, 0);
+            return emptySpeed;
         }
 
         double xMagnitude = MathUtil.applyDeadband(controller.getLeftY(), 0.1);
@@ -145,25 +163,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 
-        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? -xMagnitude * maxSpeed : xMagnitude * maxSpeed)
+        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : -xMagnitude * maxSpeed)
                 * ramp;
-        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? -yMagnitude * maxSpeed : yMagnitude * maxSpeed)
+        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
                 * ramp;
         double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
 
         // Empirical time offset (−0.02 s) used to compensate for rotational skew:
         // we rotate the pose estimate by omega * dt to account for ~20 ms latency
         // between measured pose and applied chassis speeds.
-        final double SKEW_COMPENSATION_TIME_S = -0.02;
+        final double SKEW_COMPENSATION_TIME_S = -0.03;
 
         Rotation2d skewCompensationFactor = Rotation2d
                 .fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * SKEW_COMPENSATION_TIME_S);
 
         return ChassisSpeeds.fromRobotRelativeSpeeds(
                 ChassisSpeeds.fromFieldRelativeSpeeds(
-                        new ChassisSpeeds(xVelocity, yVelocity, -angularVelocity),
+                        new ChassisSpeeds(xVelocity, yVelocity, angularVelocity),
                         swerveInputs.Pose.getRotation()),
                 swerveInputs.Pose.getRotation().plus(skewCompensationFactor));
+        // return ChassisSpeeds.fromFieldRelativeSpeeds(
+        // new ChassisSpeeds(xVelocity, yVelocity, angularVelocity),
+        // swerveInputs.Pose.getRotation());
 
     }
 
@@ -174,9 +195,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void resetPose(Pose2d pose) {
         io.resetRobotPose(pose);
     }
+
     public void resetHeading(Rotation2d heading) {
         io.resetHeading(heading);
-        
+
     }
 
     public void followTrajectory(SwerveSample sample) {
@@ -194,22 +216,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void teleopDrive() {
-        io.setSwerveState(new SwerveRequest.ApplyFieldSpeeds()
+
+        io.setSwerveState(fieldSpeeds
                 .withSpeeds(calculateSpeedsBasedOnJoystickInputs())
                 .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage));
     }
 
     public void brake() {
-        io.setSwerveState(new SwerveRequest.SwerveDriveBrake());
+        io.setSwerveState(brakeRequest);
+    }
+
+    public void climb() {
+
+        io.setSwerveState(climbRequest);
     }
 
     public void disable() {
-        
+
     }
 
     public void headingDrive() {
         ChassisSpeeds joystickSpeeds = calculateSpeedsBasedOnJoystickInputs();
-        io.setSwerveState(headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose))
+        io.setSwerveState(headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose)).withDeadband(0.1)
                 .withVelocityX(joystickSpeeds.vxMetersPerSecond)
                 .withVelocityY(joystickSpeeds.vyMetersPerSecond));
 
@@ -231,6 +259,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
+            case Climb -> climb();
 
             default -> {
             }
@@ -238,13 +267,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
-    public void changeState(SwerveState wanted) {
+    public void changeState(SwerveStates wanted) {
         currentDriveState = wanted;
     }
 
     public void stageTrajectory(SwerveSample sample) {
         this.trajectorySample = sample;
-        currentDriveState = SwerveState.ChoreoTrajectory;
+        currentDriveState = SwerveStates.ChoreoTrajectory;
     }
 
     public Rotation2d getHeading() {
@@ -259,5 +288,4 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
     }
 
-   
 }

@@ -4,52 +4,123 @@
  "type":"Swerve",
  "variables":{
   "expressions":{},
-  "poses":{}
+  "poses":{
+   "BBALLIntaking":{
+    "x":{
+     "exp":"0.98 m",
+     "val":0.98
+    },
+    "y":{
+     "exp":"5.99 m",
+     "val":5.99
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
+    }
+   },
+   "BLBumpAllianceSide":{
+    "x":{
+     "exp":"3.5 m",
+     "val":3.5
+    },
+    "y":{
+     "exp":"5.7 m",
+     "val":5.7
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "BLBumpSharedSide":{
+    "x":{
+     "exp":"5.6 m",
+     "val":5.6
+    },
+    "y":{
+     "exp":"5.7 m",
+     "val":5.7
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "BLFarShooting":{
+    "x":{
+     "exp":"0.94288569688797 m",
+     "val":0.94288569688797
+    },
+    "y":{
+     "exp":"7.07279634475708 m",
+     "val":7.07279634475708
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
+    }
+   },
+   "BLTFLIP":{
+    "x":{
+     "exp":"2.6 m",
+     "val":2.6
+    },
+    "y":{
+     "exp":"7.1 m",
+     "val":7.1
+    },
+    "heading":{
+     "exp":"180 deg",
+     "val":3.141592653589793
+    }
+   }
+  }
  },
  "config":{
   "frontLeft":{
    "x":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"13.25 in",
+    "val":0.33654999999999996
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"-13.25 in",
+    "val":-0.33654999999999996
    }
   },
   "backLeft":{
    "x":{
-    "exp":"-11 in",
-    "val":-0.2794
+    "exp":"-13.25 in",
+    "val":-0.33654999999999996
    },
    "y":{
-    "exp":"11 in",
-    "val":0.2794
+    "exp":"13.25 in",
+    "val":0.33654999999999996
    }
   },
   "mass":{
-   "exp":"150 lbs",
-   "val":68.0388555
+   "exp":"135 lbs",
+   "val":61.23496995
   },
   "inertia":{
-   "exp":"6 kg m ^ 2",
-   "val":6.0
+   "exp":"3 kg m ^ 2",
+   "val":3.0
   },
   "gearing":{
-   "exp":"6.5",
-   "val":6.5
+   "exp":"4.29",
+   "val":4.29
   },
   "radius":{
    "exp":"2 in",
    "val":0.0508
   },
   "vmax":{
-   "exp":"6000 RPM",
-   "val":628.3185307179587
+   "exp":"4640 RPM",
+   "val":485.8996637552213
   },
   "tmax":{
-   "exp":"1.2 N * m",
-   "val":1.2
+   "exp":"1.1 N * m",
+   "val":1.1
   },
   "cof":{
    "exp":"1.5",
@@ -57,16 +128,16 @@
   },
   "bumper":{
    "front":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17 in",
+    "val":0.4318
    },
    "side":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17 in",
+    "val":0.4318
    },
    "back":{
-    "exp":"16 in",
-    "val":0.4064
+    "exp":"17 in",
+    "val":0.4318
    }
   },
   "differentialTrackWidth":{
@@ -76,7 +147,7 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":"..\\java\\frc\\robot\\generated",
+  "root":"..\\..\\java\\frc\\robot\\generated",
   "genVars":true,
   "genTrajData":true,
   "useChoreoLib":true

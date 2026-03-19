@@ -22,26 +22,29 @@ public class FeedSubsystem extends SubsystemBase {
 
     public void applyState() {
         switch (currentFeedState) {
-            case RUN->feedIO.runFeedMotor();
+            case RUN -> feedIO.runFeedMotor();
             case STOP -> feedIO.stopFeedMotor();
             case PERCENTOUTPUT -> feedIO.setSpeed(targetSpeed);
-            default ->System.out.println("Error in Feed Subsystem: State applied to " +
+            default -> System.out.println("Error in Feed Subsystem: State applied to " +
                     "non-existing option/undefined error.");
         }
     }
 
-    public void setFeedState(FeedStates state) {
+    public void changeState(FeedStates state) {
         this.currentFeedState = state;
     }
-        public void setFeedState(FeedStates state, double speed) {
+
+    public void changeState(FeedStates state, double speed) {
         this.currentFeedState = state;
         this.targetSpeed = speed;
     }
 
     @Override
     public void periodic() {
+        Logger.recordOutput(" Feed State", currentFeedState.toString());
+
         feedIO.updateInputs(inputs);
-        Logger.processInputs(getName() , inputs);
+        Logger.processInputs(getName(), inputs);
         applyState();
 
     }
