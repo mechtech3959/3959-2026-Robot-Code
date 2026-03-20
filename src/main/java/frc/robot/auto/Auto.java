@@ -26,7 +26,7 @@ public class Auto {
     // private final SuperStructureSubsystem superStructure;
     private final DrivetrainSubsystem drivetrain;
     private final SuperStructureSubsystem superStructureSubsystem;
-    private final AutoFactory autoFactory;
+    private AutoFactory autoFactory;
     private final AutoChooser autoChooser;
 
     public Auto(DrivetrainSubsystem drivetrain, SuperStructureSubsystem superStructureSubsystem) {
