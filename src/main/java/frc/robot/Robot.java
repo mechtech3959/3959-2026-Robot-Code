@@ -57,7 +57,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-
+     m_robotContainer.updateFactory();
   }
 
   @Override

@@ -103,7 +103,9 @@ public class RobotContainer {
 
         configureBindings();
     }
-
+public void updateFactory(){
+    auton.refreshAutoFactory();
+}
     public void endTransition() {
         drivetrainSubsystem.changeState(SwerveStates.TeleOp);
     }

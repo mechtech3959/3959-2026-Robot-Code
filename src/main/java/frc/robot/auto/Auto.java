@@ -49,6 +49,10 @@ public class Auto {
         RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
     }
 
+    public void refreshAutoFactory() {
+        this.autoFactory = drivetrain.makeAutoFactory();
+    }
+
     public AutoRoutine testRoutine() {
         final AutoRoutine routine = autoFactory.newRoutine("test");
         final AutoTrajectory test = Test.asAutoTraj(routine);
