@@ -24,7 +24,14 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj BLBallToShoot = new ChoreoTraj(
+    public static final ChoreoTraj BCenterBackup = new ChoreoTraj(
+	    "BCenterBackup",
+	    OptionalInt.empty(),
+	    5.10082,
+	    new Pose2d(3.464, 4.036, Rotation2d.fromRadians(0)),
+	    new Pose2d(2.439, 4.036, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj BLBallToShoot = new ChoreoTraj(
 	    "BLBallToShoot",
 	    OptionalInt.empty(),
 	    2.6431,
@@ -73,6 +80,13 @@ public record ChoreoTraj(
 	    new Pose2d(6.438, 2.183, Rotation2d.fromRadians(0)),
 	    new Pose2d(6.458, 2.203, Rotation2d.fromRadians(0))
 	);
+	public static final ChoreoTraj RCenterBackup = new ChoreoTraj(
+	    "RCenterBackup",
+	    OptionalInt.empty(),
+	    0.86218,
+	    new Pose2d(12.994, 4.044, Rotation2d.fromRadians(3.142)),
+	    new Pose2d(14.12, 4.036, Rotation2d.fromRadians(3.142))
+	);
 	public static final ChoreoTraj Test = new ChoreoTraj(
 	    "Test",
 	    OptionalInt.empty(),
@@ -87,29 +101,23 @@ public record ChoreoTraj(
 	    new Pose2d(3.6, 4, Rotation2d.fromRadians(0)),
 	    new Pose2d(3.6, 4, Rotation2d.fromRadians(0))
 	);
-	public static final ChoreoTraj BCenterBackup = new ChoreoTraj(
-	    "BCenterBackup",
-	    OptionalInt.empty(),
-	    0.9819,
-	    new Pose2d(3.543, 4.028, Rotation2d.fromRadians(0)),
-	    new Pose2d(2.083, 4.047, Rotation2d.fromRadians(0))
-	);
 
     /**
      * A map between trajectory names and their corresponding data.
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-    	Map.entry("BLBallToShoot", BLBallToShoot),
+    	Map.entry("BCenterBackup", BCenterBackup),
+		Map.entry("BLBallToShoot", BLBallToShoot),
 		Map.entry("BLeftTrenchFlip", BLeftTrenchFlip),
 		Map.entry("BLTFlipToBalls", BLTFlipToBalls),
 		Map.entry("BLTraverseBLR", BLTraverseBLR),
 		Map.entry("Climb", Climb),
 		Map.entry("LeftIntakeCorralShoot", LeftIntakeCorralShoot),
 		Map.entry("PathGEn", PathGEn),
+		Map.entry("RCenterBackup", RCenterBackup),
 		Map.entry("Test", Test),
-		Map.entry("TestAcc", TestAcc),
-		Map.entry("BCenterBackup", BCenterBackup)
+		Map.entry("TestAcc", TestAcc)
     );
 
     /**

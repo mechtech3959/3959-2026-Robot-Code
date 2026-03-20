@@ -9,6 +9,7 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import static frc.robot.generated.ChoreoTraj.RCenterBackup;
 
 import static frc.robot.generated.ChoreoTraj.BCenterBackup;
 import static frc.robot.generated.ChoreoTraj.BLBallToShoot;
@@ -18,6 +19,8 @@ import static frc.robot.generated.ChoreoTraj.Test;
 import static frc.robot.generated.ChoreoTraj.TestAcc;
 import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+
+import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveStates;
 
 public class Auto {
     // private final SuperStructureSubsystem superStructure;
@@ -141,6 +144,25 @@ public class Auto {
                         bcenter.cmd() // Follow the trajectory
                 ));
         bcenter.done().onTrue(Commands.runOnce(() -> {
+            drivetrain.changeState(SwerveStates.Disabled);
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
+        }));
+        return routine;
+    }
+
+    public AutoRoutine RCenterBack() {
+        final AutoRoutine routine = autoFactory.newRoutine("RCenter");
+        final AutoTrajectory bcenter = RCenterBackup.asAutoTraj(routine);
+        routine.active().onTrue(
+                Commands.sequence(
+                        Commands.print("Started the routine!"),
+                        bcenter.resetOdometry(), // Reset pose to trajectory start
+
+                        bcenter.cmd() // Follow the trajectory
+                ));
+        bcenter.done().onTrue(Commands.runOnce(() -> {
+            drivetrain.changeState(SwerveStates.Disabled);
+
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
         }));
         return routine;
