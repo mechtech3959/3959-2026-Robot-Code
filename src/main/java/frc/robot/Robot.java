@@ -10,13 +10,17 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.ProjectileTrajectory;
 
 public class Robot extends LoggedRobot {
+  private Command m_autonomousCommand;
+
   private final RobotContainer m_robotContainer;
 
   public Robot() {
+
     Logger.recordMetadata("ProjectName", "2026Comp"); // Set a metadata value
 
     if (isReal()) {
@@ -27,10 +31,11 @@ public class Robot extends LoggedRobot {
 
       setUseTiming(false); // Run as fast as possible
       // Pull the replay log from AdvantageScope (or prompt the user)
-     // String logPath = LogFileUtil.findReplayLog();
-     // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+      // String logPath = LogFileUtil.findReplayLog();
+      // Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
       // Save outputs to a new log
-     // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+      // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
+      // "_sim")));
     }
 
     m_robotContainer = new RobotContainer();
@@ -57,7 +62,12 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-     m_robotContainer.updateFactory();
+    // m_robotContainer.updateFactory();
+    m_autonomousCommand = m_robotContainer.autoCenter();
+
+    if (m_autonomousCommand != null) {
+      CommandScheduler.getInstance().schedule(m_autonomousCommand);
+    }
   }
 
   @Override
@@ -71,7 +81,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-    ProjectileTrajectory.calculateTrajectory(((double)Units.feetToMeters(3)));
+  //  ProjectileTrajectory.calculateTrajectory(((double) Units.feetToMeters(3)));
   }
 
   @Override

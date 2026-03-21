@@ -19,6 +19,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drivetrain.modules.ModuleCTREIO;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.drivetrain.modules.ModuleIO;
 import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -36,7 +38,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         TeleOp,
         Heading,
         VisionHeading,
-        Climb
+        Climb,
+        AutoBack
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
@@ -46,6 +49,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
             0, 0);
     private final SwerveRequest.ApplyFieldSpeeds fieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
     private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric()
+            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+
     private final ClimbRequest climbRequest = new ClimbRequest();
     private final PIDController autoXController = new PIDController(3, 0, 0);
     private final PIDController autoYController = new PIDController(3, 0, 0);
@@ -120,6 +126,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         io.updateDrivetrainData(swerveInputs);
         Logger.processInputs(getName(), swerveInputs);
+        Logger.recordOutput("drivestate", currentDriveState.toString());
 
         // Read fresh data from hardware
         modules[0].updateInputs(moduleInputs[0]);
@@ -136,14 +143,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public AutoFactory makeAutoFactory() {
-            boolean shouldMirror = DriverStation.getAlliance()
-        .map(alliance -> alliance == DriverStation.Alliance.Red)
-        .orElse(false);
+        boolean shouldMirror = DriverStation.getAlliance()
+                .map(alliance -> alliance == DriverStation.Alliance.Red)
+                .orElse(false);
         return new AutoFactory(
                 this::getPose,
                 this::resetPose,
                 this::stageTrajectory,
-             shouldMirror, // Trajectories are relative to starting pose
+                shouldMirror, // Trajectories are relative to starting pose
                 this);
 
     }
@@ -235,6 +242,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void disable() {
+        io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));//fromRobotRelativeSpeeds(emptySpeed, getHeading())));
 
     }
 
@@ -264,7 +272,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
             case Climb -> climb();
-
+            case AutoBack -> autoBack();
             default -> {
             }
         }
@@ -290,6 +298,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public double getLinearVelocity() {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
+    }
+
+    public void autoBack() {
+        // io.seedField();
+        io.setSwerveState(
+                fieldCentric.withVelocityX(-0.5)
+                        .withVelocityY(0)
+                        .withRotationalRate(0));
     }
 
 }
