@@ -19,7 +19,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drivetrain.modules.ModuleCTREIO;
@@ -27,7 +26,6 @@ import frc.robot.subsystems.drivetrain.modules.ModuleIO;
 import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
-import edu.wpi.first.wpilibj2.command.Command;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -51,6 +49,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric()
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    private final SwerveRequest.ApplyRobotSpeeds robotCentric = new SwerveRequest.ApplyRobotSpeeds();
 
     private final ClimbRequest climbRequest = new ClimbRequest();
     private final PIDController autoXController = new PIDController(3, 0, 0);
@@ -242,7 +241,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void disable() {
-        io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));//fromRobotRelativeSpeeds(emptySpeed, getHeading())));
+        io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));// fromRobotRelativeSpeeds(emptySpeed, getHeading())));
 
     }
 
@@ -272,7 +271,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
             case Climb -> climb();
-            case AutoBack -> autoBack();
+            case AutoBack -> autoRobotCenticBack();
             default -> {
             }
         }
@@ -300,12 +299,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
     }
 
+    public void seedField() {
+        io.seedField();
+    }
+
     public void autoBack() {
         // io.seedField();
         io.setSwerveState(
-                fieldCentric.withVelocityX(-0.5)
+                fieldCentric.withVelocityX(0.5)
                         .withVelocityY(0)
                         .withRotationalRate(0));
+    }
+
+    public void autoRobotCenticBack() {
+        // io.seedField();
+        io.setSwerveState(
+                robotCentric.withSpeeds(new ChassisSpeeds(0.8, 0, 0)));
     }
 
 }

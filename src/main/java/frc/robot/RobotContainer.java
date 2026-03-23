@@ -4,19 +4,20 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import org.littletonrobotics.junction.Logger;
-
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.climber.ClimberCTREIO;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.conveyor.ConveyorREVIO;
 import frc.robot.subsystems.conveyor.ConveyorSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainCTREIO;
@@ -32,11 +33,7 @@ import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionLimelightIO;
 import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.auto.Auto;
 import frc.robot.util.ShooterMap;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class RobotContainer {
     // private final Auto auton;
@@ -61,6 +58,7 @@ public class RobotContainer {
     private final ConveyorSubsystem conveyorSubsystem;
     private final SuperStructureSubsystem superStructureSubsystem;
     private final CommandXboxController driverController = new CommandXboxController(0);
+    private final CommandXboxController shooterStopperController = new CommandXboxController(1);
 
     public RobotContainer() {
 
@@ -126,7 +124,7 @@ public class RobotContainer {
                 Commands.runOnce(() -> {
                     drivetrainSubsystem.changeState(SwerveStates.AutoBack);
                 }),
-                Commands.waitSeconds(1.5),
+                Commands.waitSeconds(2.5),
 
                 Commands.runOnce(() -> {
                     drivetrainSubsystem.changeState(SwerveStates.Disabled);
@@ -194,6 +192,12 @@ public class RobotContainer {
         }));
         driverController.x().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+        }));
+        shooterStopperController.x().onTrue(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+        }));
+        shooterStopperController.start().onTrue(Commands.runOnce(() -> {
+            drivetrainSubsystem.seedField();
         }));
 
         // driverController.b().onChange(Commands.runOnce(() -> {
