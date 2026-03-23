@@ -92,7 +92,7 @@ public interface DrivetrainIO {
 
     default void simulationPeriodic() {
     }
-
+    default void seedField(){}
     default void periodic() {
     }
 

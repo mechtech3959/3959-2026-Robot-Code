@@ -87,15 +87,19 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     public void intaking() {
+
         if (intake.getState() == IntakeStates.INTAKE) {
             return;
         }
-        if (climber.getState() != ClimberStates.HOME)
-            climber.changeState(ClimberStates.HOME);
-        if (climber.getPosition() < 90) {
+        indexer.changeState(IndexerStates.STOP);
+        conveyor.changeState(ConveyorStates.STOP);
+        shooter.changeState(ShooterStates.REST);
+       // if (climber.getState() != ClimberStates.HOME)
+       //     climber.changeState(ClimberStates.HOME);
+       // if (climber.getPosition() < 90) {
             intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.5);
 
-        }
+       // }
         // if (intake.getState() != IntakeStates.INTAKE)
         // intaking();
 
@@ -126,11 +130,11 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
-        if (climber.getState() != ClimberStates.HOME)
-            climber.changeState(ClimberStates.HOME);
-        if (climber.getPosition() < 90) {
+     //   if (climber.getState() != ClimberStates.HOME)
+        //    climber.changeState(ClimberStates.HOME);
+     //   if (climber.getPosition() < 90) {
             intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
-        }
+     //   }
         // travel();
 
     }
@@ -143,11 +147,11 @@ public class SuperStructureSubsystem extends SubsystemBase {
         conveyor.changeState(ConveyorStates.STOP);
         climber.changeState(ClimberStates.CLEAR_INTAKE);
         if (intake.getState() != IntakeStates.STOW && climber.getPosition() < 90)
-            intake.changeState(IntakeStates.STOW,FeedStates.STOP);
-     //   if (climber.isAtTarget()) {
-         //   intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-       // } // else {
-          // prep_Climb();
+            intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+        // if (climber.isAtTarget()) {
+        // intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+        // } // else {
+        // prep_Climb();
         // }
     }
 
@@ -170,14 +174,14 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     public void autoShoot() {
-        intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+      //  intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
         indexer.changeState(IndexerStates.RUN);
         conveyor.changeState(ConveyorStates.RUN);
         shooter.changeState(ShooterStates.AUTO);
     }
 
     public void closeShoot() {
-        intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+      //  intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
         indexer.changeState(IndexerStates.RUN);
         conveyor.changeState(ConveyorStates.RUN);
         shooter.changeState(ShooterStates.KNOWN_CLOSE);
@@ -185,18 +189,19 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     public void farShoot() {
-        intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+      //  intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
         indexer.changeState(IndexerStates.RUN);
         conveyor.changeState(ConveyorStates.RUN);
         shooter.changeState(ShooterStates.KNOWN_FAR);
 
     }
-   public void stopShooting(){
-      intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+
+    public void stopShooting() {
+    //    intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
         shooter.changeState(ShooterStates.REST);
-   }
+    }
 
     public void changeState(SuperStructureState newState) {
         // this.requestedSuperStructureState = newState;

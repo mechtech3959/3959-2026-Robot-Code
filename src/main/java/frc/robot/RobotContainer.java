@@ -4,18 +4,20 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
-import org.littletonrobotics.junction.Logger;
-
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.climber.ClimberCTREIO;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.conveyor.ConveyorREVIO;
 import frc.robot.subsystems.conveyor.ConveyorSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainCTREIO;
@@ -31,13 +33,10 @@ import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionLimelightIO;
 import frc.robot.subsystems.vision.VisionSubsystem;
-import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.auto.Auto;
 import frc.robot.util.ShooterMap;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 public class RobotContainer {
-    private final Auto auton;
+    // private final Auto auton;
 
     private final DrivetrainCTREIO drivetrainIO;
     private final DrivetrainSubsystem drivetrainSubsystem;
@@ -59,6 +58,7 @@ public class RobotContainer {
     private final ConveyorSubsystem conveyorSubsystem;
     private final SuperStructureSubsystem superStructureSubsystem;
     private final CommandXboxController driverController = new CommandXboxController(0);
+    private final CommandXboxController shooterStopperController = new CommandXboxController(1);
 
     public RobotContainer() {
 
@@ -98,10 +98,14 @@ public class RobotContainer {
         superStructureSubsystem = new SuperStructureSubsystem(conveyorSubsystem,
                 shooterSubsystem, intakeSubsystem,
                 indexerSubsystem, climberSubsystem, drivetrainSubsystem);
-        auton = new Auto(drivetrainSubsystem, superStructureSubsystem);
+        // auton = new Auto(drivetrainSubsystem, superStructureSubsystem);
         shooterMap = new ShooterMap();
 
         configureBindings();
+    }
+
+    public void updateFactory() {
+        // auton.refreshAutoFactory();
     }
 
     public void endTransition() {
@@ -115,6 +119,23 @@ public class RobotContainer {
 
     }
 
+    public Command autoCenter() {
+        return Commands.sequence(
+                Commands.runOnce(() -> {
+                    drivetrainSubsystem.changeState(SwerveStates.AutoBack);
+                }),
+                Commands.waitSeconds(2.5),
+
+                Commands.runOnce(() -> {
+                    drivetrainSubsystem.changeState(SwerveStates.Disabled);
+
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
+
+                })
+
+        );
+    }
+
     private Command controllerRumbleCommand() {
         return Commands.startEnd(
                 () -> {
@@ -125,47 +146,58 @@ public class RobotContainer {
                 });
     }
 
+    private Command intakeCommand() {
+        return Commands.startEnd(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
+        }, () -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
+
+        });
+    }
+
     private Command controllerDoubleRumbleCommand() {
         return controllerRumbleCommand().withTimeout(0.5).andThen(controllerRumbleCommand().withTimeout(0.5));
     }
 
     private void configureBindings() {
 
-        auton.configure();
+        // auton.configure();
 
         driverController.start().onChange(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.STARTING_CONFIG);
 
         }));
-        driverController.leftBumper().whileTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
-
-        }).alongWith(controllerRumbleCommand())).onFalse(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
-
-        }));
-        driverController.rightBumper().toggleOnTrue(Commands.runOnce(() -> {
-            drivetrainSubsystem.changeState(SwerveStates.Heading);
-        })).toggleOnTrue(Commands.runOnce(() -> {
+        driverController.leftBumper().toggleOnTrue(intakeCommand());
+        // driverController.a().onChange(Commands.runOnce(() -> {
+        // drivetrainSubsystem.changeState(SwerveStates.Heading);
+        // }));
+        driverController.b().onChange(Commands.runOnce(() -> {
             drivetrainSubsystem.changeState(SwerveStates.TeleOp);
         }));
         // Single press B = prep climb
-        driverController.y().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
-        }));
+        // driverController.y().onTrue(Commands.runOnce(() -> {
+        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
+        // }));
 
         // Double press B = actual climb
-        driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
-            // drivetrainSubsystem.changeState(SwerveStates.climb);
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
-        }));
-              driverController.b().onTrue(Commands.runOnce(() -> {
+        // driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
+        // drivetrainSubsystem.changeState(SwerveStates.climb);
+        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
+        // }));
+        driverController.rightTrigger().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
         }));
-          driverController.a().onTrue(Commands.runOnce(() -> {
+        driverController.rightBumper().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
-        }));  driverController.x().onTrue(Commands.runOnce(() -> {
+        }));
+        driverController.x().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+        }));
+        shooterStopperController.x().onTrue(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+        }));
+        shooterStopperController.start().onTrue(Commands.runOnce(() -> {
+            drivetrainSubsystem.seedField();
         }));
 
         // driverController.b().onChange(Commands.runOnce(() -> {
@@ -201,5 +233,25 @@ public class RobotContainer {
          * FeedSubsystem.FeedStates.PERCENTOUTPUT, 1)));
          */
     }
+    /*
+     * public Command getAutonomousCommand() {
+     * final var idle = new SwerveRequest.Idle();
+     * return Commands.sequence(
+     * // Reset our field centric heading to match the robot
+     * // facing away from our alliance station wall (0 deg).
+     * drivetrain.runOnce(() ->
+     * drivetrainSubsystem.seedFieldCentric(Rotation2d.kZero)),
+     * // Then slowly drive forward (away from us) for 5 seconds.
+     * drivetrain.applyRequest(() ->
+     * drive.withVelocityX(0.5)
+     * .withVelocityY(0)
+     * .withRotationalRate(0)
+     * )
+     * .withTimeout(5.0),
+     * // Finally idle for the rest of auton
+     * drivetrain.applyRequest(() -> idle)
+     * );
+     * }
+     */
 
 }

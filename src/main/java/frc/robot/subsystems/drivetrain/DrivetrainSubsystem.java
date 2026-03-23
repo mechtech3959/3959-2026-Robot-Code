@@ -36,20 +36,25 @@ public class DrivetrainSubsystem extends SubsystemBase {
         TeleOp,
         Heading,
         VisionHeading,
-        Climb
+        Climb,
+        AutoBack
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
             .withHeadingPID(3, 0.0, 0.00)
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
-    private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0, 
-        0, 0);
+    private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0,
+            0, 0);
     private final SwerveRequest.ApplyFieldSpeeds fieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
     private final SwerveRequest.SwerveDriveBrake brakeRequest = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric()
+            .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
+    private final SwerveRequest.ApplyRobotSpeeds robotCentric = new SwerveRequest.ApplyRobotSpeeds();
+
     private final ClimbRequest climbRequest = new ClimbRequest();
-    private final PIDController autoXController = new PIDController(7, 0, 0);
-    private final PIDController autoYController = new PIDController(7, 0, 0);
-    private final PIDController autoHeadingController = new PIDController(7, 0, 0);
+    private final PIDController autoXController = new PIDController(3, 0, 0);
+    private final PIDController autoYController = new PIDController(3, 0, 0);
+    private final PIDController autoHeadingController = new PIDController(3, 0, 0);
     private SwerveSample trajectorySample = null;
 
     private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
@@ -67,7 +72,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final ModuleIO[] modules = new ModuleIO[4];
 
-    private final double maxSpeed = 8.0; // meters per second, placeholder value - adjust based on your robot's
+    private final double maxSpeed = 5.0; // meters per second, placeholder value - adjust based on your robot's
                                          // capabilities
     private final double maxAngSpeed = 6; // radians per second, placeholder value - adjust based on your robot's
                                           // capabilities
@@ -120,6 +125,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         io.updateDrivetrainData(swerveInputs);
         Logger.processInputs(getName(), swerveInputs);
+        Logger.recordOutput("drivestate", currentDriveState.toString());
 
         // Read fresh data from hardware
         modules[0].updateInputs(moduleInputs[0]);
@@ -136,11 +142,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public AutoFactory makeAutoFactory() {
+        boolean shouldMirror = DriverStation.getAlliance()
+                .map(alliance -> alliance == DriverStation.Alliance.Red)
+                .orElse(false);
         return new AutoFactory(
                 this::getPose,
                 this::resetPose,
                 this::stageTrajectory,
-                true, // Trajectories are relative to starting pose
+                shouldMirror, // Trajectories are relative to starting pose
                 this);
 
     }
@@ -232,14 +241,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void disable() {
+        io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));// fromRobotRelativeSpeeds(emptySpeed, getHeading())));
 
     }
 
     public void headingDrive() {
         ChassisSpeeds joystickSpeeds = calculateSpeedsBasedOnJoystickInputs();
-        io.setSwerveState(headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose)).withDeadband(0.1)
-                .withVelocityX(joystickSpeeds.vxMetersPerSecond)
-                .withVelocityY(joystickSpeeds.vyMetersPerSecond));
+        io.setSwerveState(
+                headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose)).withDeadband(0.1)
+                        .withVelocityX(joystickSpeeds.vxMetersPerSecond)
+                        .withVelocityY(joystickSpeeds.vyMetersPerSecond));
 
     }
 
@@ -260,7 +271,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
             case Climb -> climb();
-
+            case AutoBack -> autoRobotCenticBack();
             default -> {
             }
         }
@@ -286,6 +297,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public double getLinearVelocity() {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
+    }
+
+    public void seedField() {
+        io.seedField();
+    }
+
+    public void autoBack() {
+        // io.seedField();
+        io.setSwerveState(
+                fieldCentric.withVelocityX(0.5)
+                        .withVelocityY(0)
+                        .withRotationalRate(0));
+    }
+
+    public void autoRobotCenticBack() {
+        // io.seedField();
+        io.setSwerveState(
+                robotCentric.withSpeeds(new ChassisSpeeds(0.8, 0, 0)));
     }
 
 }

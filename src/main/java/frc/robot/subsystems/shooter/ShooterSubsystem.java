@@ -50,7 +50,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         switch (ShooterState) {
             case KNOWN_CLOSE -> io.setShooterSpeed(42);
-            case KNOWN_FAR -> io.setShooterSpeed(55);
+            case KNOWN_FAR -> io.setShooterSpeed(52);
             case REST -> io.setShooterNeutral();
             case UNKNOWN -> io.setShooterSpeed(0);
             case INTAKE -> io.setShooterSpeed(15);

@@ -22,13 +22,13 @@ public class ClimberSubsystem extends SubsystemBase {
     private void applyState() {
         switch (currentClimberState) {
             case HOME ->
-                climberIO.setPosition(0);
+                climberIO.setPosition(-30);
             case CLEAR_INTAKE ->
-                climberIO.setPosition(150);
+                climberIO.setPosition(120);
             case CLIMB ->
                 climberIO.setPosition(-30);
             case STARTING_CONFIG ->
-                climberIO.setPosition(180);
+                climberIO.setPosition(-30);
             case CAMERA_CUSTOM ->
                 climberIO.setPosition(cameraCustomPosition);
             // May not work how I think it will, but use the controller thumbstick

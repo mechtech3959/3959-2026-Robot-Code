@@ -51,9 +51,9 @@ public class ClimberConfiguration {
 
         SoftwareLimitSwitchConfigs softwareLimits = new SoftwareLimitSwitchConfigs()
                 .withForwardSoftLimitEnable(true) // Disabled for testing
-                .withForwardSoftLimitThreshold(Units.degreesToRotations(200))
+                .withForwardSoftLimitThreshold(Units.degreesToRotations(130))
                 .withReverseSoftLimitEnable(true) // Disabled for testing
-                .withReverseSoftLimitThreshold(Units.degreesToRotations(-60));
+                .withReverseSoftLimitThreshold(Units.degreesToRotations(-30));
 
         talonConfig.withSlot0(slot0)
                 .withMotionMagic(motionMagicConfig)
