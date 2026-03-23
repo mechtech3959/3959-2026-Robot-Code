@@ -1,13 +1,11 @@
 package frc.robot.subsystems.vision;
 
-import java.util.List;
 import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.generated.LimelightHelpers;
 import frc.robot.util.FieldBasedConstants;
-import org.littletonrobotics.junction.Logger;
-
 import frc.robot.util.TagMap;
 
 public class VisionLimelightIO implements VisionIO {
@@ -91,15 +89,7 @@ public class VisionLimelightIO implements VisionIO {
 
     
 
-    @Override
-    public void trackingStart() {
-        TX = LimelightHelpers.getTX(pipeLine);
-        TY = LimelightHelpers.getTY(pipeLine);
-        TA = LimelightHelpers.getTA(pipeLine);
-        TV = LimelightHelpers.getTV(pipeLine);
-
-    }
-
+   
     @Override
     public void updateInputs(VisionIOInputs inputs) {
         /* 
