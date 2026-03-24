@@ -9,17 +9,15 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import static frc.robot.generated.ChoreoTraj.RCenterBackup;
-
 import static frc.robot.generated.ChoreoTraj.BCenterBackup;
 import static frc.robot.generated.ChoreoTraj.BLBallToShoot;
 import static frc.robot.generated.ChoreoTraj.BLTFlipToBalls;
 import static frc.robot.generated.ChoreoTraj.BLeftTrenchFlip;
+import static frc.robot.generated.ChoreoTraj.RCenterBackup;
 import static frc.robot.generated.ChoreoTraj.Test;
 import static frc.robot.generated.ChoreoTraj.TestAcc;
 import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
-
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem.SwerveStates;
 
 public class Auto {
@@ -36,17 +34,17 @@ public class Auto {
         this.superStructureSubsystem = superStructureSubsystem;
 
         this.autoFactory = drivetrain.makeAutoFactory();
-
-    }
-
-    public void configure() {
-
         autoChooser.addRoutine("Test", this::testCMDRoutine);
         autoChooser.addRoutine("Blue Middle", this::BlueMiddleRoutine);
         autoChooser.addRoutine("Blue Left Local", this::BLTrenchCoral);
         autoChooser.addRoutine("Blue Center Backup", this::BCenterBack);
         SmartDashboard.putData("Auto Chooser", autoChooser);
         RobotModeTriggers.autonomous().whileTrue(autoChooser.selectedCommandScheduler());
+    }
+
+    public void configure() {
+        refreshAutoFactory();
+
     }
 
     public void refreshAutoFactory() {

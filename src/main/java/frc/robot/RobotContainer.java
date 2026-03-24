@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.auto.Auto;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.climber.ClimberCTREIO;
@@ -36,7 +37,7 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.util.ShooterMap;
 
 public class RobotContainer {
-    // private final Auto auton;
+    private final Auto auton;
 
     private final DrivetrainCTREIO drivetrainIO;
     private final DrivetrainSubsystem drivetrainSubsystem;
@@ -98,16 +99,18 @@ public class RobotContainer {
         superStructureSubsystem = new SuperStructureSubsystem(conveyorSubsystem,
                 shooterSubsystem, intakeSubsystem,
                 indexerSubsystem, climberSubsystem, drivetrainSubsystem);
-        // auton = new Auto(drivetrainSubsystem, superStructureSubsystem);
+        auton = new Auto(drivetrainSubsystem, superStructureSubsystem);
         shooterMap = new ShooterMap();
 
         configureBindings();
     }
 
     public void updateFactory() {
-        // auton.refreshAutoFactory();
+        auton.refreshAutoFactory();
     }
-
+    public void autoStart(){
+        auton.refreshAutoFactory();
+    }
     public void endTransition() {
         drivetrainSubsystem.changeState(SwerveStates.TeleOp);
     }

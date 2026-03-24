@@ -52,9 +52,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveRequest.ApplyRobotSpeeds robotCentric = new SwerveRequest.ApplyRobotSpeeds();
 
     private final ClimbRequest climbRequest = new ClimbRequest();
-    private final PIDController autoXController = new PIDController(3, 0, 0);
-    private final PIDController autoYController = new PIDController(3, 0, 0);
-    private final PIDController autoHeadingController = new PIDController(3, 0, 0);
+    private final PIDController autoXController = new PIDController(10, 0, 0);
+    private final PIDController autoYController = new PIDController(10, 0, 0);
+    private final PIDController autoHeadingController = new PIDController(7.5, 0, 0);
     private SwerveSample trajectorySample = null;
 
     private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
@@ -81,7 +81,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         this.io = io;
         this.controller = controller;
-        headingDrive.HeadingController = new PhoenixPIDController(3, 0, 0);
+        headingDrive.HeadingController = new PhoenixPIDController(2, 0, 0.1);
         headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         modules[0] = new ModuleCTREIO(io.getSwerveModule(0));
@@ -142,14 +142,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public AutoFactory makeAutoFactory() {
-        boolean shouldMirror = DriverStation.getAlliance()
-                .map(alliance -> alliance == DriverStation.Alliance.Red)
-                .orElse(false);
+        // boolean shouldMirror = DriverStation.getAlliance()
+        // .map(alliance -> alliance == DriverStation.Alliance.Red)
+        // .orElse(false);
         return new AutoFactory(
                 this::getPose,
                 this::resetPose,
                 this::stageTrajectory,
-                shouldMirror, // Trajectories are relative to starting pose
+                !FieldBasedConstants.isBlueAlliance(),
                 this);
 
     }
@@ -213,14 +213,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot
         Pose2d pose = io.getPose();
-        ChassisSpeeds speed = sample.getChassisSpeeds();
-        speed.vxMetersPerSecond += autoXController.calculate(pose.getX(), sample.x);
-        speed.vyMetersPerSecond += autoYController.calculate(pose.getY(), sample.y);
-        speed.omegaRadiansPerSecond += autoHeadingController.calculate(pose.getRotation().getRadians(), sample.heading);
+        // ChassisSpeeds speed = sample.getChassisSpeeds();
+        // speed.vxMetersPerSecond += autoXController.calculate(pose.getX(), sample.x);
+        // speed.vyMetersPerSecond += autoYController.calculate(pose.getY(), sample.y);
+        // speed.omegaRadiansPerSecond +=
+        // autoHeadingController.calculate(pose.getRotation().getRadians(),
+        // sample.heading);
+        ChassisSpeeds speeds = new ChassisSpeeds(
+                sample.vx + autoXController.calculate(pose.getX(), sample.x),
+                sample.vy + autoYController.calculate(pose.getY(), sample.y),
+                sample.omega + autoHeadingController.calculate(pose.getRotation().getRadians(), sample.heading));
 
-        io.setSwerveState(pathRequest.withSpeeds(speed)
-                .withWheelForceFeedforwardsX(sample.moduleForcesX())
-                .withWheelForceFeedforwardsY(sample.moduleForcesY())
+        io.setSwerveState(pathRequest.withSpeeds(speeds)
+                // .withWheelForceFeedforwardsX(sample.moduleForcesX())
+                // .withWheelForceFeedforwardsY(sample.moduleForcesY())
                 .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
     }
 
