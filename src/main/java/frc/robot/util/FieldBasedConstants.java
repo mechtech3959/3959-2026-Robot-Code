@@ -7,13 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 public class FieldBasedConstants {
     public static boolean isBlueAlliance() {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isEmpty()) {
-            // Don't guess — return a safe default and log it
-            System.out.println("WARNING: Alliance not set by driver station!");
-            return true; // or false depending on which side you practice on
-        }
-        return alliance.get() == DriverStation.Alliance.Blue;
+        return DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue; 
     }
 
     private static final Pose3d blueBase = new Pose3d(4.611, 4.034, 3.0, new Rotation3d(new Rotation2d(0)));
