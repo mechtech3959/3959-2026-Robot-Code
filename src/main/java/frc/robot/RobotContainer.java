@@ -9,8 +9,12 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,6 +38,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionLimelightIO;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.util.ShooterMap;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 public class RobotContainer {
     // private final Auto auton;
@@ -59,6 +64,7 @@ public class RobotContainer {
     private final SuperStructureSubsystem superStructureSubsystem;
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandXboxController shooterStopperController = new CommandXboxController(1);
+    private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
 
@@ -100,6 +106,11 @@ public class RobotContainer {
                 indexerSubsystem, climberSubsystem, drivetrainSubsystem);
         // auton = new Auto(drivetrainSubsystem, superStructureSubsystem);
         shooterMap = new ShooterMap();
+        NamedCommands.registerCommand("ShootClose", Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
+        }));
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
         configureBindings();
     }
@@ -254,4 +265,7 @@ public class RobotContainer {
      * }
      */
 
+    public Command getAutonomousCommand() {
+        return autoChooser.getSelected();
+    }
 }

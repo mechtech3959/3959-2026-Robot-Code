@@ -63,7 +63,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // m_robotContainer.updateFactory();
-    m_autonomousCommand = m_robotContainer.autoCenter();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
@@ -81,7 +81,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-  //  ProjectileTrajectory.calculateTrajectory(((double) Units.feetToMeters(3)));
+    // ProjectileTrajectory.calculateTrajectory(((double) Units.feetToMeters(3)));
   }
 
   @Override

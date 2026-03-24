@@ -5,6 +5,10 @@ import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
@@ -26,6 +30,11 @@ import frc.robot.subsystems.drivetrain.modules.ModuleIO;
 import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -33,6 +42,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Disabled,
         Brake,
         ChoreoTrajectory,
+        PathPlannerTrajectory,
         TeleOp,
         Heading,
         VisionHeading,
@@ -56,7 +66,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final PIDController autoYController = new PIDController(3, 0, 0);
     private final PIDController autoHeadingController = new PIDController(3, 0, 0);
     private SwerveSample trajectorySample = null;
-
+    private ChassisSpeeds trajectoryTargetSpeeds = new ChassisSpeeds(0, 0, 0);
     private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
 
     private SwerveStates currentDriveState = SwerveStates.TeleOp;
@@ -97,6 +107,44 @@ public class DrivetrainSubsystem extends SubsystemBase {
         io.registerDrivetrainTelemetry(swerveInputs);
 
         autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
+        RobotConfig config;
+        try {
+            config = RobotConfig.fromGUISettings();
+
+            // Configure AutoBuilder last
+            AutoBuilder.configure(
+                    this::getPose, // Robot pose supplier
+                    this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                    this::getRobotSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                    (speeds) -> prepTrajectory(speeds), // Method that will drive the robot given ROBOT
+                                                        // RELATIVE ChassisSpeeds. Also optionally outputs
+                                                        // individual module feedforwards
+                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
+                                                    // for
+                                                    // holonomic drive trains
+                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                    ),
+                    config, // The robot configuration
+                    () -> {
+                        // Boolean supplier that controls when the path will be mirrored for the red
+                        // alliance
+                        // This will flip the path being followed to the red side of the field.
+                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                        var alliance = DriverStation.getAlliance();
+                        if (alliance.isPresent()) {
+                            return alliance.get() == DriverStation.Alliance.Red;
+                        }
+                        return false;
+                    },
+                    this // Reference to this subsystem to set requirements
+            );
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
+
         SmartDashboard.putData("Swerve Drive", (SendableBuilder builder) -> {
             builder.setSmartDashboardType("SwerveDrive");
 
@@ -115,6 +163,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     null);
             builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
         });
+        // Set up custom logging to add the current path to a field 2d widget
+        // PathPlannerLogging.setLogActivePathCallback((poses) ->
+        // field.getObject("path").setPoses(poses));
 
     }
 
@@ -210,6 +261,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
+    public void prepTrajectory(ChassisSpeeds speeds) {
+        this.trajectoryTargetSpeeds = speeds;
+        currentDriveState = SwerveStates.PathPlannerTrajectory;
+
+    }
+
+    public void followPathPlannerTrajectory(ChassisSpeeds speeds) {
+        io.setSwerveState(robotCentric.withSpeeds(speeds).withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
+    }
+
     public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot
         Pose2d pose = io.getPose();
@@ -266,6 +327,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     followTrajectory(trajectorySample);
                 }
             }
+            case PathPlannerTrajectory -> {
+                if (trajectoryTargetSpeeds != null) {
+                    followPathPlannerTrajectory(trajectoryTargetSpeeds);
+                }
+            }
             case TeleOp -> teleopDrive();
 
             case Heading -> headingDrive();
@@ -297,6 +363,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public double getLinearVelocity() {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
+    }
+
+    public ChassisSpeeds getRobotSpeeds() {
+        return io.getRobotRelSpeed();
     }
 
     public void seedField() {
