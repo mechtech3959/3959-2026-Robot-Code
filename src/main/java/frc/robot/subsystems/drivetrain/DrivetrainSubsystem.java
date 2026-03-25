@@ -51,7 +51,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
-            .withHeadingPID(3, 0.0, 0.00)
+            .withHeadingPID(0.1, 0.0, 0.05)
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
     private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0,
             0, 0);
@@ -91,8 +91,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         this.io = io;
         this.controller = controller;
-        headingDrive.HeadingController = new PhoenixPIDController(3, 0, 0);
-        headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+    //    headingDrive.HeadingController = new PhoenixPIDController(0.5, 0, 1.005);
+      //  headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         modules[0] = new ModuleCTREIO(io.getSwerveModule(0));
         modules[1] = new ModuleCTREIO(io.getSwerveModule(1));
@@ -274,8 +274,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void followPathPlannerTrajectory(ChassisSpeeds speeds) {
         // io.setSwerveState(robotCentric.withSpeeds(speeds).withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
         io.setSwerveState(
-                new SwerveRequest.ApplyFieldSpeeds()
-                        .withSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(speeds, io.getPose().getRotation()))
+                new SwerveRequest.ApplyRobotSpeeds()
+                        .withSpeeds(speeds)
                         .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
     }
 

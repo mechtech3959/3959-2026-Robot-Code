@@ -36,7 +36,7 @@ public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
 
         super(TalonFX::new, TalonFX::new, CANcoder::new, constants, 250, moduleConstants);
 
-       this.resetRotation(FieldBasedConstants.isBlueAlliance() ? Rotation2d.kZero : Rotation2d.k180deg);
+       this.resetRotation(FieldBasedConstants.isBlueAlliance() ? Rotation2d.k180deg : Rotation2d.kZero);
         if (Utils.isSimulation()) {
             startSimThread();
         }

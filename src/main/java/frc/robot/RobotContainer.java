@@ -184,9 +184,9 @@ public class RobotContainer {
 
         }));
         driverController.leftBumper().toggleOnTrue(intakeCommand());
-        // driverController.a().onChange(Commands.runOnce(() -> {
-        // drivetrainSubsystem.changeState(SwerveStates.Heading);
-        // }));
+         driverController.a().onChange(Commands.runOnce(() -> {
+         drivetrainSubsystem.changeState(SwerveStates.Heading);
+         }));
         driverController.b().onChange(Commands.runOnce(() -> {
             drivetrainSubsystem.changeState(SwerveStates.TeleOp);
         }));
