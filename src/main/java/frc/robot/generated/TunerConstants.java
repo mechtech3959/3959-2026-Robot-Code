@@ -44,17 +44,24 @@ public class TunerConstants {
         // the
         // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         // P 50
-        // D1.7852 2 
+        // D1.7852 2
         // kv 1.5268
-        // ks 0.35037   
+        // ks 0.35037
         // p 44.149
         // 0.042834
         // ks 0.08
         // kv 1.5
         private static final Slot0Configs steerGains = new Slot0Configs()
-                        .withKP(50).withKI(0).withKD(1.5)
-                        .withKS(0.2).withKV(1.45).withKA(0)
+                        .withKP(100).withKI(0).withKD(0.5)
+                        .withKS(0.1).withKV(1.16).withKA(0)
                         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+        // our maybe tuned constants
+        // .withKP(50).withKI(0).withKD(1.5)
+        // .withKS(0.2).withKV(1.45).withKA(0)
+
+        // wcp cc constants
+        // .withKP(100).withKI(0).withKD(0.5)
+        // .withKS(0.1).withKV(1.16).withKA(0)
         // When using closed-loop control, the drive motor uses the control
         // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         private static final Slot0Configs driveGains = new Slot0Configs()
@@ -85,13 +92,16 @@ public class TunerConstants {
         // cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API
         // documentation.
-        private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration().withCurrentLimits(
-                        new CurrentLimitsConfigs().withStatorCurrentLimit(80).withStatorCurrentLimitEnable(true)
-                                        .withSupplyCurrentLimit(50).withSupplyCurrentLimitEnable(true));
+        private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
+        /*
+          .withCurrentLimits(
+          new CurrentLimitsConfigs().withStatorCurrentLimit(80).
+          withStatorCurrentLimitEnable(true)
+          .withSupplyCurrentLimit(50).withSupplyCurrentLimitEnable(true));
+         */
         private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
                         .withCurrentLimits(
-                                        new CurrentLimitsConfigs().
-                                                withStatorCurrentLimit(Amps.of(60))
+                                        new CurrentLimitsConfigs().withStatorCurrentLimit(Amps.of(60))
                                                         .withStatorCurrentLimitEnable(true));
         private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
         // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
@@ -103,15 +113,16 @@ public class TunerConstants {
 
         // Theoretical free speed (m/s) at 12 V applied output;
         // This needs to be tuned to your individual robot
-        public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(10.48);
-
+        // public static final LinearVelocity kSpeedAt12Volts =
+        // MetersPerSecond.of(10.48);
+        public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.42);
         // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
         // This may need to be tuned to your individual robot
         private static final double kCoupleRatio = 4.909090909090909;
 
         private static final double kDriveGearRatio = 5.8909090909090915;
         private static final double kSteerGearRatio = 12.1;
-        //diameter is 4in
+        // diameter is 4in
         private static final Distance kWheelRadius = Inches.of(2);
 
         private static final boolean kInvertLeftSide = false;
