@@ -115,6 +115,11 @@ public class RobotContainer {
         configureBindings();
     }
 
+    // In RobotContainer.java
+    public void prepareForAuto() {
+        drivetrainSubsystem.changeState(SwerveStates.Disabled);
+    }
+
     public void updateFactory() {
         // auton.refreshAutoFactory();
     }

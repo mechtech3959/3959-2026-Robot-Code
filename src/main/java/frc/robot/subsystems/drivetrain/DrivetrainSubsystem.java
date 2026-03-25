@@ -123,8 +123,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                                     // for
                                                     // holonomic drive trains
                             new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                            new PIDConstants(0.7, 0.0, 0.1) // Rotation PID constants
                     ),
+
                     config, // The robot configuration
                     () -> {
                         // Boolean supplier that controls when the path will be mirrored for the red
@@ -262,13 +263,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void prepTrajectory(ChassisSpeeds speeds) {
-        this.trajectoryTargetSpeeds = speeds;
+        // this.trajectoryTargetSpeeds = speeds;
+        Logger.recordOutput("Debug/PPSpeeds", speeds);
+        Logger.recordOutput("Debug/PoseAtCommand", io.getPose());
         currentDriveState = SwerveStates.PathPlannerTrajectory;
+        followPathPlannerTrajectory(speeds);
 
     }
 
     public void followPathPlannerTrajectory(ChassisSpeeds speeds) {
-        io.setSwerveState(robotCentric.withSpeeds(speeds).withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
+        // io.setSwerveState(robotCentric.withSpeeds(speeds).withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
+        io.setSwerveState(
+                new SwerveRequest.ApplyFieldSpeeds()
+                        .withSpeeds(ChassisSpeeds.fromRobotRelativeSpeeds(speeds, io.getPose().getRotation()))
+                        .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
     }
 
     public void followTrajectory(SwerveSample sample) {
@@ -328,9 +336,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 }
             }
             case PathPlannerTrajectory -> {
-                if (trajectoryTargetSpeeds != null) {
-                    followPathPlannerTrajectory(trajectoryTargetSpeeds);
-                }
+                // if (trajectoryTargetSpeeds != null) {
+                // followPathPlannerTrajectory(trajectoryTargetSpeeds);
+                // }
             }
             case TeleOp -> teleopDrive();
 

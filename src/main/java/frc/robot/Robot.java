@@ -63,6 +63,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     // m_robotContainer.updateFactory();
+    m_robotContainer.prepareForAuto();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
