@@ -217,8 +217,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
             return emptySpeed;
         }
 
-        double xMagnitude = MathUtil.applyDeadband(controller.getLeftY(), 0.1);
-        double yMagnitude = MathUtil.applyDeadband(controller.getLeftX(), 0.1);
+        double xMagnitude = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
+        double yMagnitude = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
         double angularMagnitude = MathUtil.applyDeadband(controller.getRightX(), 0.1);
         double ramp = 1.1 - controller.getLeftTriggerAxis();
 
@@ -228,7 +228,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 * ramp;
         double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
                 * ramp;
-        double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
+        double angularVelocity = -angularMagnitude * maxAngSpeed * ramp;
 
         // Empirical time offset (−0.02 s) used to compensate for rotational skew:
         // we rotate the pose estimate by omega * dt to account for ~20 ms latency
