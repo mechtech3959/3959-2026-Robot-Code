@@ -177,7 +177,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         io.updateDrivetrainData(swerveInputs);
         Logger.processInputs(getName(), swerveInputs);
-        Logger.recordOutput("drivestate", currentDriveState.toString());
+        Logger.recordOutput("States/drivetrain", currentDriveState.toString());
 
         // Read fresh data from hardware
         modules[0].updateInputs(moduleInputs[0]);
@@ -263,11 +263,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void prepTrajectory(ChassisSpeeds speeds) {
-        // this.trajectoryTargetSpeeds = speeds;
-        Logger.recordOutput("Debug/PPSpeeds", speeds);
-        Logger.recordOutput("Debug/PoseAtCommand", io.getPose());
+         this.trajectoryTargetSpeeds = speeds;
         currentDriveState = SwerveStates.PathPlannerTrajectory;
-        followPathPlannerTrajectory(speeds);
 
     }
 
@@ -336,9 +333,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 }
             }
             case PathPlannerTrajectory -> {
-                // if (trajectoryTargetSpeeds != null) {
-                // followPathPlannerTrajectory(trajectoryTargetSpeeds);
-                // }
+                if (trajectoryTargetSpeeds != null) {
+                 followPathPlannerTrajectory(trajectoryTargetSpeeds);
+             }
             }
             case TeleOp -> teleopDrive();
 

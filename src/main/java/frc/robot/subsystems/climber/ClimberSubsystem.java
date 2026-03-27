@@ -55,7 +55,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput(" Climber State", currentClimberState.toString());
+        Logger.recordOutput("States/Climber", currentClimberState.toString());
 
         applyState();
         climberIO.updateInputs(inputs);

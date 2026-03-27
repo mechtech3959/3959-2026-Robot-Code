@@ -31,9 +31,8 @@ public class ShooterSubsystem extends SubsystemBase {
         UNKNOWN
     }
 
-    private double targetRPS =0;
-   // private double targetAngle = 50; // fixed angle
-    
+    private double targetRPS = 0;
+    // private double targetAngle = 50; // fixed angle
 
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
@@ -82,7 +81,8 @@ public class ShooterSubsystem extends SubsystemBase {
         this.targetRPS = targetRPS;
         ShooterState = newState;
     }
-    public void setEstimatedRPS(double rps){
+
+    public void setEstimatedRPS(double rps) {
         this.targetRPS = rps;
 
     }
@@ -92,7 +92,8 @@ public class ShooterSubsystem extends SubsystemBase {
         io.periodic();
         io.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);
-        Logger.recordOutput(getName() + "ShooterStatus", ShooterStatus);
+        Logger.recordOutput("States/shooter-status", ShooterStatus);
+        Logger.recordOutput("States/shooter-state", ShooterState.toString());
         handleShooterStatus();
         handleState();
     }

@@ -34,7 +34,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput("Indexer State", currentIndexingState.toString());
+        Logger.recordOutput("States/Indexer", currentIndexingState.toString());
 
         applyState();
     }
