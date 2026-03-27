@@ -41,7 +41,7 @@ public class FeedSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput(" Feed State", currentFeedState.toString());
+        Logger.recordOutput("States/Feed", currentFeedState.toString());
 
         feedIO.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);

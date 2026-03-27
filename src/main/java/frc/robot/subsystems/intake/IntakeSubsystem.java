@@ -75,7 +75,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput(" Intake State", currentIntakeState.toString());
+        Logger.recordOutput("States/Intake", currentIntakeState.toString());
         intakeIO.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);
         applyState();

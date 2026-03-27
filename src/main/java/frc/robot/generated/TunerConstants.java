@@ -3,11 +3,13 @@ package frc.robot.generated;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
@@ -92,7 +94,7 @@ public class TunerConstants {
         // cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API
         // documentation.
-        private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
+        private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration().withMotorOutput(new MotorOutputConfigs());//.withInverted(InvertedValue.Clockwise_Positive));
         /*
           .withCurrentLimits(
           new CurrentLimitsConfigs().withStatorCurrentLimit(80).
@@ -169,7 +171,7 @@ public class TunerConstants {
         private static final int kFrontLeftSteerMotorId = 6;
         private static final int kFrontLeftEncoderId = 10;
         private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.086669921875)
-                        .plus(Rotations.of(Units.degreesToRotations(135)));
+                        .plus(Rotations.of(Units.degreesToRotations(-45)));//135
         private static final boolean kFrontLeftSteerMotorInverted = false;
         private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -181,7 +183,7 @@ public class TunerConstants {
         private static final int kFrontRightSteerMotorId = 7;
         private static final int kFrontRightEncoderId = 11;
         private static final Angle kFrontRightEncoderOffset = Rotations.of(-0.08251953125)
-                        .plus(Rotations.of(Units.degreesToRotations(-135)));
+                        .plus(Rotations.of(Units.degreesToRotations(45)));//-135
 
         private static final boolean kFrontRightSteerMotorInverted = false;
         private static final boolean kFrontRightEncoderInverted = false;
@@ -194,7 +196,7 @@ public class TunerConstants {
         private static final int kBackLeftSteerMotorId = 5;
         private static final int kBackLeftEncoderId = 9;
         private static final Angle kBackLeftEncoderOffset = Rotations.of(0.08251953125)
-                        .plus(Rotations.of(Units.degreesToRotations(-135)));
+                        .plus(Rotations.of(Units.degreesToRotations(45)));//-135
 
         private static final boolean kBackLeftSteerMotorInverted = false;
         private static final boolean kBackLeftEncoderInverted = false;
@@ -207,7 +209,7 @@ public class TunerConstants {
         private static final int kBackRightSteerMotorId = 8;
         private static final int kBackRightEncoderId = 12;
         private static final Angle kBackRightEncoderOffset = Rotations.of(0.257568359375)
-                        .plus(Rotations.of(Units.degreesToRotations(135)));
+                        .plus(Rotations.of(Units.degreesToRotations(-45)));//135
 
         private static final boolean kBackRightSteerMotorInverted = false;
         private static final boolean kBackRightEncoderInverted = false;
