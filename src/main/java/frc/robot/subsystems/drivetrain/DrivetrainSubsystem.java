@@ -51,7 +51,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
-            .withHeadingPID(0.1, 0.0, 0.05)
+            .withHeadingPID(7, 0.0, 0.0)
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
     private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0,
             0, 0);

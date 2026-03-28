@@ -94,13 +94,12 @@ public class TunerConstants {
         // cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API
         // documentation.
-        private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration().withMotorOutput(new MotorOutputConfigs());//.withInverted(InvertedValue.Clockwise_Positive));
-        /*
+        private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration()
           .withCurrentLimits(
-          new CurrentLimitsConfigs().withStatorCurrentLimit(80).
+          new CurrentLimitsConfigs().withStatorCurrentLimit(120).
           withStatorCurrentLimitEnable(true)
-          .withSupplyCurrentLimit(50).withSupplyCurrentLimitEnable(true));
-         */
+          .withSupplyCurrentLimit(80).withSupplyCurrentLimitEnable(true));
+         
         private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
                         .withCurrentLimits(
                                         new CurrentLimitsConfigs().withStatorCurrentLimit(Amps.of(60))

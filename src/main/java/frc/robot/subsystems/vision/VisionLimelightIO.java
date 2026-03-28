@@ -77,7 +77,7 @@ public class VisionLimelightIO implements VisionIO {
 
     @Override
     public void updateTracking(double yawDegrees) {
-        LimelightHelpers.SetRobotOrientation(pipeLine, yawDegrees + yaw, 0, 0, 0, 0, 0);
+        LimelightHelpers.SetRobotOrientation(pipeLine, yawDegrees, 0, 0, 0, 0, 0);
         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
         if (limelightMeasurement != null) {
             foundPosition = limelightMeasurement.pose;

@@ -109,6 +109,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootClose", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
         }));
+           NamedCommands.registerCommand("IntakeOn", Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
+        }));
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -191,15 +194,15 @@ public class RobotContainer {
             drivetrainSubsystem.changeState(SwerveStates.TeleOp);
         }));
         // Single press B = prep climb
-        // driverController.y().onTrue(Commands.runOnce(() -> {
-        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
-        // }));
+        driverController.y().onTrue(Commands.runOnce(() -> {
+         superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
+     }));
 
         // Double press B = actual climb
-        // driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
-        // drivetrainSubsystem.changeState(SwerveStates.climb);
-        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
-        // }));
+         driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
+         drivetrainSubsystem.changeState(SwerveStates.Climb);
+         superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
+         }));
         driverController.rightTrigger().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
         }));
