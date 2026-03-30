@@ -15,16 +15,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
     private void applyState() {
         switch (currentIndexingState) {
-            case RUN:
-                indexerIO.runForwardMotor();
-                break;
-            case STOP:
-                indexerIO.stopMotor();
-                break;
-            default:
-                System.out.println(
+            case RUN -> indexerIO.runForwardMotor();
+            case STOP -> indexerIO.stopMotor();
+            default -> System.out.println(
                         "Error in Fuel Indexing Subsystem: State applied to " + "non-existing option/undefined error.");
-                break;
         }
     }
 

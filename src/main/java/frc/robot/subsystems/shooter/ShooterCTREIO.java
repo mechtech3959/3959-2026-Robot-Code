@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.StrictFollower;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -11,6 +12,7 @@ public class ShooterCTREIO implements ShooterIO {
     private final TalonFX leftShooter;
     private final TalonFX rightShooter;
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+    private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0);
     
     private final NeutralOut neutralOut = new NeutralOut();
 

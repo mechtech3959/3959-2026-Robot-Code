@@ -4,8 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
-import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -31,11 +30,6 @@ import frc.robot.subsystems.drivetrain.modules.ModuleIO;
 import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
@@ -94,8 +88,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         this.io = io;
         this.controller = controller;
-    //    headingDrive.HeadingController = new PhoenixPIDController(0.5, 0, 1.005);
-      //  headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+        // headingDrive.HeadingController = new PhoenixPIDController(0.5, 0, 1.005);
+        // headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         modules[0] = new ModuleCTREIO(io.getSwerveModule(0));
         modules[1] = new ModuleCTREIO(io.getSwerveModule(1));
@@ -119,9 +113,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     this::getPose, // Robot pose supplier
                     this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
                     this::getRobotSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                    (speeds,feedforwards) -> prepTrajectory(speeds), // Method that will drive the robot given ROBOT
-                                                        // RELATIVE ChassisSpeeds. Also optionally outputs
-                                                        // individual module feedforwards
+                    (speeds, feedforwards) -> prepTrajectory(speeds), // Method that will drive the robot given ROBOT
+                    // RELATIVE ChassisSpeeds. Also optionally outputs
+                    // individual module feedforwards
                     new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
                                                     // for
                                                     // holonomic drive trains
@@ -167,9 +161,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     null);
             builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
         });
-        // Set up custom logging to add the current path to a field 2d widget
-        // PathPlannerLogging.setLogActivePathCallback((poses) ->
-        // field.getObject("path").setPoses(poses));
 
     }
 
@@ -236,7 +227,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // Empirical time offset (−0.02 s) used to compensate for rotational skew:
         // we rotate the pose estimate by omega * dt to account for ~20 ms latency
         // between measured pose and applied chassis speeds.
-        final double SKEW_COMPENSATION_TIME_S = -0.03;
+        final double SKEW_COMPENSATION_TIME_S = -0.02;
 
         Rotation2d skewCompensationFactor = Rotation2d
                 .fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * SKEW_COMPENSATION_TIME_S);
@@ -266,17 +257,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void prepTrajectory(ChassisSpeeds speeds) {
-         this.trajectoryTargetSpeeds = speeds;
+        this.trajectoryTargetSpeeds = speeds;
         currentDriveState = SwerveStates.PathPlannerTrajectory;
 
     }
 
     public void followPathPlannerTrajectory(ChassisSpeeds speeds) {
-         io.setSwerveState(robotCentric.withSpeeds(speeds).withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
-      //  io.setSwerveState(
-        //    new SwerveRequest.ApplyRobotSpeeds()
-         //             .withSpeeds(speeds)
-          //              .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
+        io.setSwerveState(robotCentric.withSpeeds(speeds).withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
+        // io.setSwerveState(
+        // new SwerveRequest.ApplyRobotSpeeds()
+        // .withSpeeds(speeds)
+        // .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
     }
 
     public void followTrajectory(SwerveSample sample) {
@@ -294,7 +285,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void teleopDrive() {
-        if (!DriverStation.getAlliance().isPresent()) {
+        if (DriverStation.getAlliance().isEmpty()) {
             io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));
             return;
         }
@@ -306,8 +297,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 
-        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : -xMagnitude * maxSpeed) * ramp;
-        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed) * ramp;
+        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : -xMagnitude * maxSpeed)
+                * ramp;
+        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
+                * ramp;
         double angularVelocity = -angularMagnitude * maxAngSpeed * ramp;
 
         io.setSwerveState(fieldCentric
@@ -326,7 +319,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void disable() {
-        io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));// fromRobotRelativeSpeeds(emptySpeed, getHeading())));
+        io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));
 
     }
 
@@ -353,8 +346,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
             }
             case PathPlannerTrajectory -> {
                 if (trajectoryTargetSpeeds != null) {
-                 followPathPlannerTrajectory(trajectoryTargetSpeeds);
-             }
+                    followPathPlannerTrajectory(trajectoryTargetSpeeds);
+                }
             }
             case TeleOp -> teleopDrive();
 
@@ -405,7 +398,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void autoBack() {
-        // io.seedField();
         io.setSwerveState(
                 fieldCentric.withVelocityX(0.5)
                         .withVelocityY(0)
@@ -413,7 +405,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void autoRobotCenticBack() {
-        // io.seedField();
         io.setSwerveState(
                 robotCentric.withSpeeds(new ChassisSpeeds(0.8, 0, 0)));
     }

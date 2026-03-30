@@ -1,9 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import java.io.Console;
-
-import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -53,6 +49,7 @@ public class ShooterSubsystem extends SubsystemBase {
             case REST -> io.setShooterNeutral();
             case UNKNOWN -> io.setShooterSpeed(0);
             case INTAKE -> io.setShooterSpeed(15);
+            case AUTO -> io.setShooterSpeed(targetRPS);
             case TUNING -> io.setShooterSpeed(tuningRPS.get());
         }
     }
