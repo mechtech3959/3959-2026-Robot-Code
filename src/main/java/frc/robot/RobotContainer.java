@@ -38,10 +38,8 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionLimelightIO;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.util.ShooterMap;
-import com.pathplanner.lib.auto.AutoBuilder;
 
 public class RobotContainer {
-    // private final Auto auton;
 
     private final DrivetrainCTREIO drivetrainIO;
     private final DrivetrainSubsystem drivetrainSubsystem;
@@ -130,9 +128,6 @@ public class RobotContainer {
         drivetrainSubsystem.changeState(SwerveStates.Disabled);
     }
 
-    public void updateFactory() {
-        // auton.refreshAutoFactory();
-    }
 
     public void endTransition() {
         drivetrainSubsystem.changeState(SwerveStates.TeleOp);
@@ -185,13 +180,9 @@ public class RobotContainer {
         });
     }
 
-    private Command controllerDoubleRumbleCommand() {
-        return controllerRumbleCommand().withTimeout(0.5).andThen(controllerRumbleCommand().withTimeout(0.5));
-    }
 
     private void configureBindings() {
 
-        // auton.configure();
 
         driverController.start().onChange(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.STARTING_CONFIG);
@@ -204,12 +195,12 @@ public class RobotContainer {
         driverController.b().onChange(Commands.runOnce(() -> {
             drivetrainSubsystem.changeState(SwerveStates.TeleOp);
         }));
-        // Single press B = prep climb
+        // Single press Y = prep climb
         driverController.y().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
         }));
 
-        // Double press B = actual climb
+        // Double press Y = actual climb
         driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
             drivetrainSubsystem.changeState(SwerveStates.Climb);
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
@@ -230,59 +221,10 @@ public class RobotContainer {
             drivetrainSubsystem.seedField();
         }));
 
-        // driverController.b().onChange(Commands.runOnce(() -> {
-        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TEST);
-        // }));
+ 
 
-        /*
-         * driverController.a().onChange(Commands.runOnce(() -> {
-         * drivetrainSubsystem.changeState(SwerveState.Heading);
-         * }));
-         * driverController.b().onChange(Commands.runOnce(() -> {
-         * drivetrainSubsystem.changeState(SwerveState.TeleOp);
-         * }));
-         * driverController.x().onChange(Commands.runOnce(() -> {
-         * drivetrainSubsystem.changeState(SwerveState.Brake);
-         * }));
-         * driverController.y().onChange(Commands.runOnce(() -> {
-         * drivetrainSubsystem.changeState(SwerveState.VisionHeading);
-         * }));
-         */
-        /*
-         * driverController.a().onTrue(Commands.runOnce(
-         * () -> intakeSubsystem.setIntakeState(IntakeStates.TEST,
-         * FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.25)));
-         * driverController.b().onTrue(Commands.runOnce(
-         * () -> intakeSubsystem.setIntakeState(IntakeStates.TEST,
-         * FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.5)));
-         * driverController.x().onTrue(Commands.runOnce(
-         * () -> intakeSubsystem.setIntakeState(IntakeStates.TEST,
-         * FeedSubsystem.FeedStates.PERCENTOUTPUT, 0.75)));
-         * driverController.y().onTrue(Commands.runOnce(
-         * () -> intakeSubsystem.setIntakeState(IntakeStates.TEST,
-         * FeedSubsystem.FeedStates.PERCENTOUTPUT, 1)));
-         */
     }
-    /*
-     * public Command getAutonomousCommand() {
-     * final var idle = new SwerveRequest.Idle();
-     * return Commands.sequence(
-     * // Reset our field centric heading to match the robot
-     * // facing away from our alliance station wall (0 deg).
-     * drivetrain.runOnce(() ->
-     * drivetrainSubsystem.seedFieldCentric(Rotation2d.kZero)),
-     * // Then slowly drive forward (away from us) for 5 seconds.
-     * drivetrain.applyRequest(() ->
-     * drive.withVelocityX(0.5)
-     * .withVelocityY(0)
-     * .withRotationalRate(0)
-     * )
-     * .withTimeout(5.0),
-     * // Finally idle for the rest of auton
-     * drivetrain.applyRequest(() -> idle)
-     * );
-     * }
-     */
+   
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
