@@ -74,16 +74,7 @@ public class DrivetrainCTREIO extends SwerveDrivetrain<TalonFX, TalonFX, CANcode
 
     @Override
     public ChassisSpeeds getRobotRelSpeed() {
-        var state = this.getState();
-        Logger.recordOutput("Debug/RawStateSpeeds", state.Speeds);
-        Logger.recordOutput("Debug/ConvertedRobotRel",
-                ChassisSpeeds.fromFieldRelativeSpeeds(state.Speeds, state.Pose.getRotation()));
-        return state.Speeds;
-    }
-
-    @Override
-    public void trajPath(ChassisSpeeds speeds) {
-        this.setControl(new SwerveRequest.ApplyRobotSpeeds().withSpeeds(speeds));
+        return this.getState().Speeds;
     }
 
     @Override

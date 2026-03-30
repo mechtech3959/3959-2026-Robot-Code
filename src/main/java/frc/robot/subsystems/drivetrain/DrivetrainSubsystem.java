@@ -10,11 +10,9 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import choreo.auto.AutoFactory;
-import choreo.trajectory.SwerveSample;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -59,12 +57,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveRequest.ApplyRobotSpeeds robotCentric = new SwerveRequest.ApplyRobotSpeeds();
 
     private final ClimbRequest climbRequest = new ClimbRequest();
-    private final PIDController autoXController = new PIDController(3, 0, 0);
-    private final PIDController autoYController = new PIDController(3, 0, 0);
-    private final PIDController autoHeadingController = new PIDController(3, 0, 0);
-    private SwerveSample trajectorySample = null;
+
     private ChassisSpeeds trajectoryTargetSpeeds = new ChassisSpeeds(0, 0, 0);
-    private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
 
     private SwerveStates currentDriveState = SwerveStates.TeleOp;
     private final CommandXboxController controller;
@@ -88,8 +82,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         this.io = io;
         this.controller = controller;
-        // headingDrive.HeadingController = new PhoenixPIDController(0.5, 0, 1.005);
-        // headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         modules[0] = new ModuleCTREIO(io.getSwerveModule(0));
         modules[1] = new ModuleCTREIO(io.getSwerveModule(1));
@@ -103,45 +95,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         io.registerDrivetrainTelemetry(swerveInputs);
 
-        autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
-        RobotConfig config;
-        try {
-            config = RobotConfig.fromGUISettings();
-
-            // Configure AutoBuilder last
-            AutoBuilder.configure(
-                    this::getPose, // Robot pose supplier
-                    this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-                    this::getRobotSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                    (speeds, feedforwards) -> prepTrajectory(speeds), // Method that will drive the robot given ROBOT
-                    // RELATIVE ChassisSpeeds. Also optionally outputs
-                    // individual module feedforwards
-                    new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller
-                                                    // for
-                                                    // holonomic drive trains
-                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(7, 0.0, 0.1) // Rotation PID constants
-                    ),
-
-                    config, // The robot configuration
-                    () -> {
-                        // Boolean supplier that controls when the path will be mirrored for the red
-                        // alliance
-                        // This will flip the path being followed to the red side of the field.
-                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-                        var alliance = DriverStation.getAlliance();
-                        if (alliance.isPresent()) {
-                            return alliance.get() == DriverStation.Alliance.Red;
-                        }
-                        return false;
-                    },
-                    this // Reference to this subsystem to set requirements
-            );
-        } catch (Exception e) {
-            // Handle exception as needed
-            e.printStackTrace();
-        }
+        // Defer AutoBuilder configuration to avoid leaking `this` from the constructor.
+        // Call configureAutoBuilder() after constructing this subsystem (for example,
+        // from RobotContainer)
+        // so the AutoBuilder gets a fully constructed subsystem reference.
+        // RobotConfig config;
+        // try { ... AutoBuilder.configure(..., this) ... } catch (Exception e) { ... }
+        // <-- moved to configureAutoBuilder()
 
         SmartDashboard.putData("Swerve Drive", (SendableBuilder builder) -> {
             builder.setSmartDashboardType("SwerveDrive");
@@ -187,27 +147,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
-    public AutoFactory makeAutoFactory() {
-        boolean shouldMirror = DriverStation.getAlliance()
-                .map(alliance -> alliance == DriverStation.Alliance.Red)
-                .orElse(false);
-        return new AutoFactory(
-                this::getPose,
-                this::resetPose,
-                this::stageTrajectory,
-                shouldMirror, // Trajectories are relative to starting pose
-                this);
-
-    }
-
     public void poseEst(Pose2d pose, double time, Matrix<N3, N1> dev) {
 
         io.setPoseEstValues(pose, time, dev);
     }
 
     private ChassisSpeeds calculateSpeedsBasedOnJoystickInputs() {
-        // was .isEmpty() but threw error for some reason
-        if (!DriverStation.getAlliance().isPresent()) {
+        if (DriverStation.getAlliance().isEmpty()) {
             return emptySpeed;
         }
 
@@ -270,20 +216,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
     }
 
-    public void followTrajectory(SwerveSample sample) {
-        // Get the current pose of the robot
-        Pose2d pose = io.getPose();
-        ChassisSpeeds speed = sample.getChassisSpeeds();
-        speed.vxMetersPerSecond += autoXController.calculate(pose.getX(), sample.x);
-        speed.vyMetersPerSecond += autoYController.calculate(pose.getY(), sample.y);
-        speed.omegaRadiansPerSecond += autoHeadingController.calculate(pose.getRotation().getRadians(), sample.heading);
-
-        io.setSwerveState(pathRequest.withSpeeds(speed)
-                .withWheelForceFeedforwardsX(sample.moduleForcesX())
-                .withWheelForceFeedforwardsY(sample.moduleForcesY())
-                .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
-    }
-
     public void teleopDrive() {
         if (DriverStation.getAlliance().isEmpty()) {
             io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));
@@ -339,11 +271,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         switch (currentDriveState) {
             case Disabled -> disable();
             case Brake -> brake();
-            case ChoreoTrajectory -> {
-                if (trajectorySample != null) {
-                    followTrajectory(trajectorySample);
-                }
-            }
+
             case PathPlannerTrajectory -> {
                 if (trajectoryTargetSpeeds != null) {
                     followPathPlannerTrajectory(trajectoryTargetSpeeds);
@@ -363,11 +291,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void changeState(SwerveStates wanted) {
         currentDriveState = wanted;
-    }
-
-    public void stageTrajectory(SwerveSample sample) {
-        this.trajectorySample = sample;
-        currentDriveState = SwerveStates.ChoreoTrajectory;
     }
 
     public Rotation2d getHeading() {
@@ -407,6 +330,37 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void autoRobotCenticBack() {
         io.setSwerveState(
                 robotCentric.withSpeeds(new ChassisSpeeds(0.8, 0, 0)));
+    }
+
+    // New public initializer — call this after the subsystem is fully constructed.
+    public void configureAutoBuilder() {
+        try {
+            RobotConfig config = RobotConfig.fromGUISettings();
+
+            // Configure AutoBuilder with fully-constructed `this` (safe to pass now).
+            AutoBuilder.configure(
+                    this::getPose, // Robot pose supplier
+                    this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                    this::getRobotSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                    (speeds, feedforwards) -> prepTrajectory(speeds), // Method that will drive the robot given ROBOT
+                                                                      // RELATIVE ChassisSpeeds
+                    new PPHolonomicDriveController(
+                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(7, 0.0, 0.1) // Rotation PID constants
+                    ),
+                    config,
+                    () -> {
+                        var alliance = DriverStation.getAlliance();
+                        if (alliance.isPresent()) {
+                            return alliance.get() == DriverStation.Alliance.Red;
+                        }
+                        return false;
+                    },
+                    this // Reference to this subsystem to set requirements — safe now
+            );
+        } catch (Exception e) {
+            // Handle exception as needed
+        }
     }
 
 }

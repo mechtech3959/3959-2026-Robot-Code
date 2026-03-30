@@ -9,17 +9,13 @@ import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 public class VisionSubsystem extends SubsystemBase {
 
     private final VisionIO[] cameras;
-    private final VisionIOInputsAutoLogged[] inputs;
     private final DrivetrainSubsystem drivetrain;
 
     //VisionIO is set to an Array to allow easy addition of more cameras in the future, but for now we will just use 2 Limelight cameras
     public VisionSubsystem(DrivetrainSubsystem drivetrain, VisionIO... cameras) {
         this.drivetrain = drivetrain;
         this.cameras = cameras;
-        this.inputs = new VisionIOInputsAutoLogged[cameras.length];
-        for (int i = 0; i < cameras.length; i++) {
-            inputs[i] = new VisionIOInputsAutoLogged();
-        }
+     
     }
 
     @Override

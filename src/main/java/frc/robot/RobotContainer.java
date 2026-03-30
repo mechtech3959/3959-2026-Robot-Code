@@ -109,6 +109,7 @@ public class RobotContainer {
                 indexerSubsystem, climberSubsystem, drivetrainSubsystem);
         // auton = new Auto(drivetrainSubsystem, superStructureSubsystem);
         shooterMap = new ShooterMap();
+        drivetrainSubsystem.configureAutoBuilder();
         NamedCommands.registerCommand("ShootClose", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
         }));
