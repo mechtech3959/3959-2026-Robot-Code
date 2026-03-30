@@ -94,9 +94,12 @@ public class RobotContainer {
         feedSubsystem = new FeedSubsystem(feedIO);
         intakeIO = new IntakeREVIO();
         intakeSubsystem = new IntakeSubsystem(intakeIO, feedSubsystem);
+        // CAD Values for LL4 are 0.70750176 Height,0 Center, -0.04948936 Backwards, YAW 0,Pitch 20, Roll 0
+        // CAD Values for LL2+ are 0.6968871 Height, 0.2286 Right, -0.31140908 Backwards, YAW 180, Pitch 0, Roll 0
         // 22, 0.703
-        visionLimelightFront = new VisionLimelightIO("limelight-front", "LL4", 0.703, 20.0, 0);
-        visionLimelightBack = new VisionLimelightIO("limelight-back", "LL2+", 0.8, 0.0, 180);
+        visionLimelightFront = new VisionLimelightIO("limelight-front", "LL4", 0.70750176, 20.0, 0);
+        //0.8
+        visionLimelightBack = new VisionLimelightIO("limelight-back", "LL2+", 0.6968871, 0.0, 180);
 
         visionSubsystem = new VisionSubsystem(drivetrainSubsystem, visionLimelightFront, visionLimelightBack);
         climberIO = new ClimberCTREIO();
@@ -109,8 +112,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootClose", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
         }));
-           NamedCommands.registerCommand("IntakeOn", Commands.runOnce(() -> {
+        NamedCommands.registerCommand("IntakeOn", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
+        }));
+        NamedCommands.registerCommand("IntakeOff", Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
         }));
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -129,6 +135,10 @@ public class RobotContainer {
 
     public void endTransition() {
         drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+    }
+
+    public void resetAllianceHeading() {
+        drivetrainSubsystem.resetAllianceHeading();
     }
 
     public void estimatedDistance() {
@@ -187,22 +197,22 @@ public class RobotContainer {
 
         }));
         driverController.leftBumper().toggleOnTrue(intakeCommand());
-         driverController.a().onChange(Commands.runOnce(() -> {
-         drivetrainSubsystem.changeState(SwerveStates.Heading);
-         }));
+        driverController.a().onChange(Commands.runOnce(() -> {
+            drivetrainSubsystem.changeState(SwerveStates.Heading);
+        }));
         driverController.b().onChange(Commands.runOnce(() -> {
             drivetrainSubsystem.changeState(SwerveStates.TeleOp);
         }));
         // Single press B = prep climb
         driverController.y().onTrue(Commands.runOnce(() -> {
-         superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
-     }));
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
+        }));
 
         // Double press B = actual climb
-         driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
-         drivetrainSubsystem.changeState(SwerveStates.Climb);
-         superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
-         }));
+        driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
+            drivetrainSubsystem.changeState(SwerveStates.Climb);
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
+        }));
         driverController.rightTrigger().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
         }));
