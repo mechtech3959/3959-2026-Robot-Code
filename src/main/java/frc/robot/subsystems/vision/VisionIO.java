@@ -1,22 +1,9 @@
 package frc.robot.subsystems.vision;
 
-import org.littletonrobotics.junction.AutoLog;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.generated.LimelightHelpers;
 
 public interface VisionIO {
-    @AutoLog
-    public class VisionIOInputs {
-        public double TX = 0;
-        public double TY = 0;
-        public double TA = 0;
-        public boolean TV = false;
-        public String pipeLine = "";
-        public Pose2d foundPosition = new Pose2d();
-        public double timeStamp = 0;
-    }
-
+    
     default LimelightHelpers.PoseEstimate getPoseEstimate() {
         return null;
     }
@@ -48,9 +35,7 @@ public interface VisionIO {
     default void updateTracking(double yawDegrees) {
     }
 
-    default void updateInputs(VisionIOInputs inputs) {
-    }
-
+    
     default void periodic() {
     }
 
