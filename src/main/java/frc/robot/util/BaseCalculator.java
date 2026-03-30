@@ -1,7 +1,7 @@
 package frc.robot.util;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class BaseCalculator {
     public static Rotation2d angleToAlign(Pose2d position) {

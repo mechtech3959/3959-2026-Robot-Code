@@ -224,9 +224,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 
-        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? -xMagnitude * maxSpeed : -xMagnitude * maxSpeed)
+        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : -xMagnitude * maxSpeed)
                 * ramp;
-        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? -yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
+        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
                 * ramp;
         double angularVelocity = -angularMagnitude * maxAngSpeed * ramp;
 
@@ -314,7 +314,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void headingDrive() {
         ChassisSpeeds joystickSpeeds = calculateSpeedsBasedOnJoystickInputs();
         io.setSwerveState(
-                headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose)).withDeadband(0.1)
+                headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose))
                         .withVelocityX(joystickSpeeds.vxMetersPerSecond)
                         .withVelocityY(joystickSpeeds.vyMetersPerSecond));
 

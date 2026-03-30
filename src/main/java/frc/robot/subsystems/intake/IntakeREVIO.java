@@ -31,7 +31,7 @@ public class IntakeREVIO implements IntakeIO {
         sparkMotorConfig.softLimit
                 .forwardSoftLimit(0.314)
                 .forwardSoftLimitEnabled(true)
-                .reverseSoftLimit(0.001)
+                .reverseSoftLimit(0.005)
                 .reverseSoftLimitEnabled(true);
 
         sparkMotorConfig.closedLoop.maxMotion
