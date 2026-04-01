@@ -8,6 +8,8 @@ public interface ClimberIO {
         public double position = 0; // Encoder position
         public double appliedVolts = 0; // Attempted volts
         public double currentAmps = 0; // Current amps being drawn
+        public double currentStatorAmps = 0; // Current amps being drawn
+
         public double tempCelsius = 0; // Current motor temperature
         public double velocity = 0; // Current motor temperature
         public double target = 0;

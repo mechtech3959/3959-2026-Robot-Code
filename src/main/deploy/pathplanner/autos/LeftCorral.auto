@@ -27,7 +27,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "IntakeON"
+                        "name": "IntakeOn"
                       }
                     }
                   ]
@@ -40,6 +40,12 @@
           "type": "path",
           "data": {
             "pathName": "Corral Shoot Right Close"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootFar"
           }
         }
       ]

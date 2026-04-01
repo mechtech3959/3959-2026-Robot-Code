@@ -14,7 +14,7 @@ public class IntakeConfiguration {
         public IntakeConfiguration() {
                 sparkMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, 43)
                                 .pid(1.65, 0.0005, 0).iZone(0.03)
-                                .iMaxAccum(0.05).feedForward.kS(0.1).kV(0.3); // .kCosRatio(2.0 * Math.PI);
+                                .iMaxAccum(0.05).feedForward.kS(0.1).kV(0.2); // .kCosRatio(2.0 * Math.PI);
                 sparkMotorConfig.smartCurrentLimit(20, 40);
 
                 sparkMotorConfig.idleMode(IdleMode.kBrake);
@@ -30,7 +30,6 @@ public class IntakeConfiguration {
                                 .cruiseVelocity(20) // 1.5 RAD/s = 14.3 rpm
                                 .maxAcceleration(15) // 0.5 sec to reach 1.5 RAD/s
                                 .allowedProfileError(1); // Deadband
-                // IntakeConfiguration intakeMotorConfig = new IntakeConfiguration();
 
         }
 

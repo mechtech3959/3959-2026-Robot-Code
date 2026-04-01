@@ -117,6 +117,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeOff", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
         }));
+          NamedCommands.registerCommand("ShootFar", Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
+        }));
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
