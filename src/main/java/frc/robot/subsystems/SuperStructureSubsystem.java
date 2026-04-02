@@ -94,12 +94,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
         shooter.changeState(ShooterStates.REST);
-       // if (climber.getState() != ClimberStates.HOME)
-       //     climber.changeState(ClimberStates.HOME);
-       // if (climber.getPosition() < 90) {
+        if (climber.getState() != ClimberStates.HOME)
+            climber.changeState(ClimberStates.HOME);
+        if (climber.getPosition() < 90) {
             intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.5);
 
-       // }
+        }
         // if (intake.getState() != IntakeStates.INTAKE)
         // intaking();
 
@@ -130,11 +130,11 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
-     //   if (climber.getState() != ClimberStates.HOME)
-        //    climber.changeState(ClimberStates.HOME);
-     //   if (climber.getPosition() < 90) {
+        if (climber.getState() != ClimberStates.HOME)
+            climber.changeState(ClimberStates.HOME);
+        if (climber.getPosition() < 90) {
             intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
-     //   }
+        }
         // travel();
 
     }
@@ -148,11 +148,11 @@ public class SuperStructureSubsystem extends SubsystemBase {
         climber.changeState(ClimberStates.CLEAR_INTAKE);
         if (intake.getState() != IntakeStates.STOW && climber.getPosition() < 90)
             intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-        // if (climber.isAtTarget()) {
-        // intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-        // } // else {
-        // prep_Climb();
-        // }
+         if (climber.isAtTarget()) {
+         intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+         }else {
+       //  prep_Climb();
+         }
     }
 
     public void climbing() {
@@ -168,9 +168,9 @@ public class SuperStructureSubsystem extends SubsystemBase {
             climber.changeState(ClimberStates.CLIMB);
         }
 
-        // else {
-        // climbing();
-        // }
+         else {
+      //   climbing();
+         }
     }
 
     public void autoShoot() {

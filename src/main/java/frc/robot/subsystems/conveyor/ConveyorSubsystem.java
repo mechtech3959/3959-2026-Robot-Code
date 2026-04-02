@@ -29,7 +29,7 @@ public class ConveyorSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput(" Conveyor State", currentConveyorState.toString());
+        Logger.recordOutput("States/Conveyor", currentConveyorState.toString());
         applyState();
     }
 

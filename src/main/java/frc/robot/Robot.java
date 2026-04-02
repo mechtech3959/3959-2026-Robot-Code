@@ -9,10 +9,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.ProjectileTrajectory;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -62,8 +60,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void autonomousInit() {
-    // m_robotContainer.updateFactory();
-    m_autonomousCommand = m_robotContainer.autoCenter();
+    m_robotContainer.resetAllianceHeading();
+    m_robotContainer.prepareForAuto();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);
@@ -81,7 +80,6 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopInit() {
-  //  ProjectileTrajectory.calculateTrajectory(((double) Units.feetToMeters(3)));
   }
 
   @Override

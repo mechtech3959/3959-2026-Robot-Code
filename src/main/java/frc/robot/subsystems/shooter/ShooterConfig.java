@@ -27,7 +27,7 @@ public class ShooterConfig {
                                                 .withNeutralMode(NeutralModeValue.Coast).withControlTimesyncFreqHz(0));
         }
 
-        static CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs().withStatorCurrentLimit(100)
+        static CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs().withStatorCurrentLimit(150)
                         .withStatorCurrentLimitEnable(true).withSupplyCurrentLimit(50)
                         .withSupplyCurrentLimitEnable(true);
         // KI (7.5) 1

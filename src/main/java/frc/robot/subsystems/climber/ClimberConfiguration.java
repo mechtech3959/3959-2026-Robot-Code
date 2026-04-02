@@ -23,7 +23,7 @@ public class ClimberConfiguration {
                 .withKS(0) // Static voltage to move
                 .withKV(0.1) // Cruising voltage
                 .withKP(50) // Present error
-                .withKI(1) // Past error
+                .withKI(5) // Past error
                 .withKD(1) // Future error
                 .withStaticFeedforwardSign(
                         StaticFeedforwardSignValue.UseClosedLoopSign);
@@ -44,7 +44,7 @@ public class ClimberConfiguration {
                 .withNeutralMode(NeutralModeValue.Brake);
 
         CurrentLimitsConfigs currentLimits = new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(100)
+                .withStatorCurrentLimit(120)
                 .withStatorCurrentLimitEnable(true)
                 .withSupplyCurrentLimit(50)
                 .withSupplyCurrentLimitEnable(true);

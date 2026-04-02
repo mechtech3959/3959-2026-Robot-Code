@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BLeftTrenchFlip"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeON"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BLTFlipToBalls"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BLBallToShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootClose"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": true
+}

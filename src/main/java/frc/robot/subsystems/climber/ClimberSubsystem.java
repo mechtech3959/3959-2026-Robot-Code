@@ -24,7 +24,7 @@ public class ClimberSubsystem extends SubsystemBase {
             case HOME ->
                 climberIO.setPosition(-30);
             case CLEAR_INTAKE ->
-                climberIO.setPosition(120);
+                climberIO.setPosition(65);
             case CLIMB ->
                 climberIO.setPosition(-30);
             case STARTING_CONFIG ->
@@ -55,7 +55,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        Logger.recordOutput(" Climber State", currentClimberState.toString());
+        Logger.recordOutput("States/Climber", currentClimberState.toString());
 
         applyState();
         climberIO.updateInputs(inputs);

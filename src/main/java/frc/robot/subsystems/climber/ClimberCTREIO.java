@@ -48,6 +48,7 @@ public class ClimberCTREIO implements ClimberIO {
         inputs.position = Units.rotationsToDegrees(climberMotor.getPosition().getValueAsDouble());
         inputs.appliedVolts = climberMotor.getMotorVoltage().getValueAsDouble();
         inputs.currentAmps = climberMotor.getSupplyCurrent().getValueAsDouble();
+        inputs.currentStatorAmps = climberMotor.getStatorCurrent().getValueAsDouble();
         inputs.tempCelsius = climberMotor.getDeviceTemp().getValue().magnitude();
         inputs.target = target;
     }

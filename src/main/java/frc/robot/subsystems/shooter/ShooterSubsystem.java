@@ -1,9 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import java.io.Console;
-
-import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -31,9 +27,8 @@ public class ShooterSubsystem extends SubsystemBase {
         UNKNOWN
     }
 
-    private double targetRPS =0;
-   // private double targetAngle = 50; // fixed angle
-    
+    private double targetRPS = 0;
+    // private double targetAngle = 50; // fixed angle
 
     private final ShooterIO io;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
@@ -49,11 +44,12 @@ public class ShooterSubsystem extends SubsystemBase {
     private void handleState() {
 
         switch (ShooterState) {
-            case KNOWN_CLOSE -> io.setShooterSpeed(42);
-            case KNOWN_FAR -> io.setShooterSpeed(52);
+            case KNOWN_CLOSE -> io.setShooterSpeed(tuningRPS.get());// io.setShooterSpeed(42);
+            case KNOWN_FAR -> io.setShooterSpeed(53);
             case REST -> io.setShooterNeutral();
             case UNKNOWN -> io.setShooterSpeed(0);
             case INTAKE -> io.setShooterSpeed(15);
+            case AUTO -> io.setShooterSpeed(targetRPS);
             case TUNING -> io.setShooterSpeed(tuningRPS.get());
         }
     }
@@ -82,7 +78,8 @@ public class ShooterSubsystem extends SubsystemBase {
         this.targetRPS = targetRPS;
         ShooterState = newState;
     }
-    public void setEstimatedRPS(double rps){
+
+    public void setEstimatedRPS(double rps) {
         this.targetRPS = rps;
 
     }
@@ -92,7 +89,8 @@ public class ShooterSubsystem extends SubsystemBase {
         io.periodic();
         io.updateInputs(inputs);
         Logger.processInputs(getName(), inputs);
-        Logger.recordOutput(getName() + "ShooterStatus", ShooterStatus);
+        Logger.recordOutput("States/shooter-status", ShooterStatus);
+        Logger.recordOutput("States/shooter-state", ShooterState.toString());
         handleShooterStatus();
         handleState();
     }

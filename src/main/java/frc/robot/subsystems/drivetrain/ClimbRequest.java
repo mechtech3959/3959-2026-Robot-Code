@@ -3,34 +3,33 @@ package frc.robot.subsystems.drivetrain;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
-
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.TalonFX;
-
+// A SwerveRequest that applies a constant coast to the drive motors and holds the turning motors straight, used for climbing
+//DO NOT USE THIS NORMALLY, CTRE EXPLICITLY WARNED US NOT TO USE THIS, ONLY USE THIS IN THE CLIMBING STATE OF THE DRIVETRAIN.
 public class ClimbRequest implements SwerveRequest {
     private final PositionVoltage m_TurnRequest = new PositionVoltage(0);
     private final CoastOut m_driveRequest = new CoastOut();
 
     public ClimbRequest() {
-  }
+    }
 
+    @SafeVarargs
     @Override
-    public StatusCode apply(SwerveDrivetrain.SwerveControlParameters parameters,
-            SwerveModule... modulesToApply) {
-        // Your custom logic goes here.
-        // You can access global parameters like the current pose estimate
-        // (parameters.getPose()) or time (parameters.getCurrentTime()).
+    public final StatusCode apply(SwerveDrivetrain.SwerveControlParameters parameters,
+            SwerveModule<?, ?, ?>... modulesToApply) {
 
-        for (SwerveModule module : modulesToApply) {
-            // Calculate the specific ModuleRequest for each module based on your logic
 
-            // For example, make all wheels point in a specific direction:
+        for (SwerveModule<?, ?, ?> rawModule : modulesToApply) {
+            // Cast to the concrete module type expected by this request.
+            @SuppressWarnings("unchecked")
+            SwerveModule<TalonFX, TalonFX, CANcoder> module = (SwerveModule<TalonFX, TalonFX, CANcoder>) rawModule;
 
-            // Or whatever logic you need
+ 
 
             // Apply the calculated request to the module
             module.apply(m_driveRequest, m_TurnRequest.withPosition(0.5));

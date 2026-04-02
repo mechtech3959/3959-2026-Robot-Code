@@ -4,13 +4,15 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix6.swerve.SwerveModule;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.utility.PhoenixPIDController;
 
-import choreo.auto.AutoFactory;
-import choreo.trajectory.SwerveSample;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -27,12 +29,15 @@ import frc.robot.subsystems.drivetrain.modules.ModuleIOInputsAutoLogged;
 import frc.robot.util.BaseCalculator;
 import frc.robot.util.FieldBasedConstants;
 
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+
 public class DrivetrainSubsystem extends SubsystemBase {
 
     public enum SwerveStates {
         Disabled,
         Brake,
         ChoreoTrajectory,
+        PathPlannerTrajectory,
         TeleOp,
         Heading,
         VisionHeading,
@@ -41,7 +46,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     private final SwerveRequest.FieldCentricFacingAngle headingDrive = new SwerveRequest.FieldCentricFacingAngle()
-            .withHeadingPID(3, 0.0, 0.00)
+            .withHeadingPID(7, 0.0, 0.0)
             .withDriveRequestType(SwerveModule.DriveRequestType.Velocity);
     private final ChassisSpeeds emptySpeed = new ChassisSpeeds(0,
             0, 0);
@@ -52,12 +57,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveRequest.ApplyRobotSpeeds robotCentric = new SwerveRequest.ApplyRobotSpeeds();
 
     private final ClimbRequest climbRequest = new ClimbRequest();
-    private final PIDController autoXController = new PIDController(3, 0, 0);
-    private final PIDController autoYController = new PIDController(3, 0, 0);
-    private final PIDController autoHeadingController = new PIDController(3, 0, 0);
-    private SwerveSample trajectorySample = null;
 
-    private final SwerveRequest.ApplyFieldSpeeds pathRequest = new SwerveRequest.ApplyFieldSpeeds();
+    private ChassisSpeeds trajectoryTargetSpeeds = new ChassisSpeeds(0, 0, 0);
 
     private SwerveStates currentDriveState = SwerveStates.TeleOp;
     private final CommandXboxController controller;
@@ -81,8 +82,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         this.io = io;
         this.controller = controller;
-        headingDrive.HeadingController = new PhoenixPIDController(3, 0, 0);
-        headingDrive.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         modules[0] = new ModuleCTREIO(io.getSwerveModule(0));
         modules[1] = new ModuleCTREIO(io.getSwerveModule(1));
@@ -96,7 +95,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         io.registerDrivetrainTelemetry(swerveInputs);
 
-        autoHeadingController.enableContinuousInput(-Math.PI, Math.PI);
+        // Defer AutoBuilder configuration to avoid leaking `this` from the constructor.
+        // Call configureAutoBuilder() after constructing this subsystem (for example,
+        // from RobotContainer)
+        // so the AutoBuilder gets a fully constructed subsystem reference.
+        // RobotConfig config;
+        // try { ... AutoBuilder.configure(..., this) ... } catch (Exception e) { ... }
+        // <-- moved to configureAutoBuilder()
+
         SmartDashboard.putData("Swerve Drive", (SendableBuilder builder) -> {
             builder.setSmartDashboardType("SwerveDrive");
 
@@ -125,7 +131,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         io.updateDrivetrainData(swerveInputs);
         Logger.processInputs(getName(), swerveInputs);
-        Logger.recordOutput("drivestate", currentDriveState.toString());
+        Logger.recordOutput("States/drivetrain", currentDriveState.toString());
 
         // Read fresh data from hardware
         modules[0].updateInputs(moduleInputs[0]);
@@ -141,32 +147,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
-    public AutoFactory makeAutoFactory() {
-        boolean shouldMirror = DriverStation.getAlliance()
-                .map(alliance -> alliance == DriverStation.Alliance.Red)
-                .orElse(false);
-        return new AutoFactory(
-                this::getPose,
-                this::resetPose,
-                this::stageTrajectory,
-                shouldMirror, // Trajectories are relative to starting pose
-                this);
-
-    }
-
     public void poseEst(Pose2d pose, double time, Matrix<N3, N1> dev) {
 
         io.setPoseEstValues(pose, time, dev);
     }
 
     private ChassisSpeeds calculateSpeedsBasedOnJoystickInputs() {
-        // was .isEmpty() but threw error for some reason
-        if (!DriverStation.getAlliance().isPresent()) {
+        if (DriverStation.getAlliance().isEmpty()) {
             return emptySpeed;
         }
 
-        double xMagnitude = MathUtil.applyDeadband(controller.getLeftY(), 0.1);
-        double yMagnitude = MathUtil.applyDeadband(controller.getLeftX(), 0.1);
+        double xMagnitude = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
+        double yMagnitude = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
         double angularMagnitude = MathUtil.applyDeadband(controller.getRightX(), 0.1);
         double ramp = 1.1 - controller.getLeftTriggerAxis();
 
@@ -176,12 +168,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 * ramp;
         double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
                 * ramp;
-        double angularVelocity = angularMagnitude * maxAngSpeed * ramp;
+        double angularVelocity = -angularMagnitude * maxAngSpeed * ramp;
 
         // Empirical time offset (−0.02 s) used to compensate for rotational skew:
         // we rotate the pose estimate by omega * dt to account for ~20 ms latency
         // between measured pose and applied chassis speeds.
-        final double SKEW_COMPENSATION_TIME_S = -0.03;
+        final double SKEW_COMPENSATION_TIME_S = -0.02;
 
         Rotation2d skewCompensationFactor = Rotation2d
                 .fromRadians(swerveInputs.Speeds.omegaRadiansPerSecond * SKEW_COMPENSATION_TIME_S);
@@ -210,25 +202,43 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
-    public void followTrajectory(SwerveSample sample) {
-        // Get the current pose of the robot
-        Pose2d pose = io.getPose();
-        ChassisSpeeds speed = sample.getChassisSpeeds();
-        speed.vxMetersPerSecond += autoXController.calculate(pose.getX(), sample.x);
-        speed.vyMetersPerSecond += autoYController.calculate(pose.getY(), sample.y);
-        speed.omegaRadiansPerSecond += autoHeadingController.calculate(pose.getRotation().getRadians(), sample.heading);
+    public void prepTrajectory(ChassisSpeeds speeds) {
+        this.trajectoryTargetSpeeds = speeds;
+        currentDriveState = SwerveStates.PathPlannerTrajectory;
 
-        io.setSwerveState(pathRequest.withSpeeds(speed)
-                .withWheelForceFeedforwardsX(sample.moduleForcesX())
-                .withWheelForceFeedforwardsY(sample.moduleForcesY())
-                .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
+    }
+
+    public void followPathPlannerTrajectory(ChassisSpeeds speeds) {
+        io.setSwerveState(robotCentric.withSpeeds(speeds).withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
+        // io.setSwerveState(
+        // new SwerveRequest.ApplyRobotSpeeds()
+        // .withSpeeds(speeds)
+        // .withDriveRequestType(SwerveModule.DriveRequestType.Velocity));
     }
 
     public void teleopDrive() {
+        if (DriverStation.getAlliance().isEmpty()) {
+            io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));
+            return;
+        }
 
-        io.setSwerveState(fieldSpeeds
-                .withSpeeds(calculateSpeedsBasedOnJoystickInputs())
-                .withDriveRequestType(SwerveModule.DriveRequestType.OpenLoopVoltage));
+        double xMagnitude = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
+        double yMagnitude = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
+        double angularMagnitude = MathUtil.applyDeadband(controller.getRightX(), 0.1);
+        double ramp = 1.1 - controller.getLeftTriggerAxis();
+
+        angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
+
+        double xVelocity = (FieldBasedConstants.isBlueAlliance() ? xMagnitude * maxSpeed : -xMagnitude * maxSpeed)
+                * ramp;
+        double yVelocity = (FieldBasedConstants.isBlueAlliance() ? yMagnitude * maxSpeed : -yMagnitude * maxSpeed)
+                * ramp;
+        double angularVelocity = -angularMagnitude * maxAngSpeed * ramp;
+
+        io.setSwerveState(fieldCentric
+                .withVelocityX(xVelocity)
+                .withVelocityY(yVelocity)
+                .withRotationalRate(angularVelocity));
     }
 
     public void brake() {
@@ -241,14 +251,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void disable() {
-        io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));// fromRobotRelativeSpeeds(emptySpeed, getHeading())));
+        io.setSwerveState(fieldSpeeds.withSpeeds(emptySpeed));
 
     }
 
     public void headingDrive() {
         ChassisSpeeds joystickSpeeds = calculateSpeedsBasedOnJoystickInputs();
         io.setSwerveState(
-                headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose)).withDeadband(0.1)
+                headingDrive.withTargetDirection(BaseCalculator.angleToAlign(swerveInputs.Pose))
                         .withVelocityX(joystickSpeeds.vxMetersPerSecond)
                         .withVelocityY(joystickSpeeds.vyMetersPerSecond));
 
@@ -261,9 +271,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         switch (currentDriveState) {
             case Disabled -> disable();
             case Brake -> brake();
-            case ChoreoTrajectory -> {
-                if (trajectorySample != null) {
-                    followTrajectory(trajectorySample);
+
+            case PathPlannerTrajectory -> {
+                if (trajectoryTargetSpeeds != null) {
+                    followPathPlannerTrajectory(trajectoryTargetSpeeds);
                 }
             }
             case TeleOp -> teleopDrive();
@@ -282,11 +293,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         currentDriveState = wanted;
     }
 
-    public void stageTrajectory(SwerveSample sample) {
-        this.trajectorySample = sample;
-        currentDriveState = SwerveStates.ChoreoTrajectory;
-    }
-
     public Rotation2d getHeading() {
         return swerveInputs.Pose.getRotation();
     }
@@ -299,12 +305,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return Math.hypot(swerveInputs.Speeds.vxMetersPerSecond, swerveInputs.Speeds.vyMetersPerSecond);
     }
 
+    public ChassisSpeeds getRobotSpeeds() {
+        return io.getRobotRelSpeed();
+    }
+
     public void seedField() {
         io.seedField();
     }
 
+    public void resetAllianceHeading() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            io.resetHeading(alliance.get() == DriverStation.Alliance.Red ? Rotation2d.k180deg : Rotation2d.kZero);
+        }
+    }
+
     public void autoBack() {
-        // io.seedField();
         io.setSwerveState(
                 fieldCentric.withVelocityX(0.5)
                         .withVelocityY(0)
@@ -312,9 +328,39 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void autoRobotCenticBack() {
-        // io.seedField();
         io.setSwerveState(
                 robotCentric.withSpeeds(new ChassisSpeeds(0.8, 0, 0)));
+    }
+
+    // New public initializer — call this after the subsystem is fully constructed.
+    public void configureAutoBuilder() {
+        try {
+            RobotConfig config = RobotConfig.fromGUISettings();
+
+            // Configure AutoBuilder with fully-constructed `this` (safe to pass now).
+            AutoBuilder.configure(
+                    this::getPose, // Robot pose supplier
+                    this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                    this::getRobotSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                    (speeds, feedforwards) -> prepTrajectory(speeds), // Method that will drive the robot given ROBOT
+                                                                      // RELATIVE ChassisSpeeds
+                    new PPHolonomicDriveController(
+                            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(7, 0.0, 0.1) // Rotation PID constants
+                    ),
+                    config,
+                    () -> {
+                        var alliance = DriverStation.getAlliance();
+                        if (alliance.isPresent()) {
+                            return alliance.get() == DriverStation.Alliance.Red;
+                        }
+                        return false;
+                    },
+                    this // Reference to this subsystem to set requirements — safe now
+            );
+        } catch (Exception e) {
+            // Handle exception as needed
+        }
     }
 
 }
