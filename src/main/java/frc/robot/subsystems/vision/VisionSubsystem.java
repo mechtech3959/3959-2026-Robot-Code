@@ -20,6 +20,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        
         double yaw = drivetrain.getHeading().getDegrees();
 
         // Set orientation first
