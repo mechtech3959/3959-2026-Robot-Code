@@ -14,7 +14,7 @@ import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Temperature;
 import edu.wpi.first.units.measure.Voltage;
 
-public class ModuleIOCTRE implements ModuleIO {
+public class ModuleCTREIO implements ModuleIO {
     private final CommonTalon driveMotor;
     private final CommonTalon turnMotor;
     private final CANcoder cancoder;
@@ -37,7 +37,7 @@ public class ModuleIOCTRE implements ModuleIO {
 
     private final StatusSignal<Angle> absolutePos;
 
-    public ModuleIOCTRE(SwerveModule<TalonFX, TalonFX, CANcoder> module) {
+    public ModuleCTREIO(SwerveModule<TalonFX, TalonFX, CANcoder> module) {
         this.driveMotor = module.getDriveMotor();
         this.turnMotor = module.getSteerMotor();
         this.cancoder = module.getEncoder();

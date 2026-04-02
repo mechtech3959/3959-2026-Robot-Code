@@ -1,7 +1,10 @@
 package frc.robot.subsystems.vision;
 
+import com.ctre.phoenix6.Utils;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.generated.LimelightHelpers;
+import frc.robot.util.FieldBasedConstants;
 
 public class VisionLimelightIO implements VisionIO {
 
@@ -13,11 +16,26 @@ public class VisionLimelightIO implements VisionIO {
     public Pose2d foundPosition;
     public double timeStamp;
     private LimelightHelpers.PoseEstimate limelightMeasurement;
-    private String limelightModel;
+ //   private String cameraType;
+  //  private double distanceEstimate;
+   // private double yawDegrees;
+    //private double targetHeight;
+   // private double limelightHeight;
+    //private double limelightAngle;
+    private final  int[] redHubTags = { 2, 3, 4, 5, 8, 9, 10, 11 };
+    private final int[] blueHubTags = { 18, 19, 20, 21, 24, 25, 26, 27 };
 
-    public VisionLimelightIO(String pipeLine,String limelightModel) {
+   //  private double yaw;
+
+    public VisionLimelightIO(String pipeLine, String cameraType, double limelightHeight, double limelightAngle,
+            double yaw) {
         this.pipeLine = pipeLine;
-        this.limelightModel = limelightModel;
+     //   this.cameraType = cameraType;
+      //  this.limelightHeight = limelightHeight;
+       // this.limelightAngle = limelightAngle;
+       // this.targetHeight = TagMap.getTagHeight(2);
+      //  this.yaw = yaw;
+
     }
 
     @Override
@@ -26,13 +44,21 @@ public class VisionLimelightIO implements VisionIO {
     }
 
     @Override
-    public void setVisionNeutral() {
-        TX = 0;
-        TY = 0;
-        TA = 0;
-        TV = false;
-        foundPosition = new Pose2d();
-        timeStamp = 0;
+    public double estimatedDistanceToTarget() {
+     
+        //Set the fiducial ID filters to only include the tags on the alliance's hub, so that we get a more accurate distance estimate (since the camera will prioritize closer tags, and the opposing hub's tags are farther away)
+        if (FieldBasedConstants.isBlueAlliance()) {
+            LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, blueHubTags);
+        } else {
+            LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, redHubTags);
+        }
+        if (!TV) {
+            return -1;
+        }
+
+        double avgTagDist = getPoseEstimate().avgTagDist;
+        LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, null);
+        return avgTagDist;
     }
 
     @Override
@@ -41,30 +67,18 @@ public class VisionLimelightIO implements VisionIO {
         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(pipeLine);
         if (limelightMeasurement != null) {
             foundPosition = limelightMeasurement.pose;
-            timeStamp = limelightMeasurement.timestampSeconds;
+            double latency = (limelightMeasurement.latency) / 1000.0;
+            timeStamp = Utils.getCurrentTimeSeconds() - latency;
+            limelightMeasurement.timestampSeconds = timeStamp;
         }
     }
 
-    @Override
-    public void trackingStart() {
-        TX = LimelightHelpers.getTX(pipeLine);
-        TY = LimelightHelpers.getTY(pipeLine);
-        TA = LimelightHelpers.getTA(pipeLine);
-        TV = LimelightHelpers.getTV(pipeLine);
+    
 
+   
+  
+
+    public void setPipeline(int index) {
+        LimelightHelpers.setPipelineIndex(pipeLine, index);
     }
-
-    @Override
-    public void updateInputs(VisionIOInputs inputs) {
-        inputs.TX = LimelightHelpers.getTX(pipeLine);
-        inputs.TY = LimelightHelpers.getTY(pipeLine);
-        inputs.TA = LimelightHelpers.getTA(pipeLine);
-        inputs.TV = LimelightHelpers.getTV(pipeLine);
-        inputs.pipeLine = pipeLine;
-        if (limelightMeasurement != null) {
-            foundPosition = limelightMeasurement.pose;
-            timeStamp = limelightMeasurement.timestampSeconds;
-        }
-    }
-
 }

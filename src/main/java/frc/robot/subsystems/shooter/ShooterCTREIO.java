@@ -1,8 +1,8 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.StrictFollower;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -12,14 +12,15 @@ public class ShooterCTREIO implements ShooterIO {
     private final TalonFX leftShooter;
     private final TalonFX rightShooter;
     private final VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+    private final VelocityTorqueCurrentFOC velocityTorqueCurrentFOC = new VelocityTorqueCurrentFOC(0);
+    
     private final NeutralOut neutralOut = new NeutralOut();
-    CANBus tempBus = new CANBus("rio");
 
     private double target = 0;
 
     public ShooterCTREIO() {
-        this.leftShooter = new TalonFX(RobotMap.SHOOTER.LEFT_SHOOTER, tempBus);
-        this.rightShooter = new TalonFX(RobotMap.SHOOTER.RIGHT_SHOOTER, tempBus);
+        this.leftShooter = new TalonFX(RobotMap.SHOOTER.LEFT_SHOOTER, RobotMap.CAN.FAST_BUS);
+        this.rightShooter = new TalonFX(RobotMap.SHOOTER.RIGHT_SHOOTER, RobotMap.CAN.FAST_BUS);
         leftShooter.getConfigurator().apply(ShooterConfig.leftShooterConfiguration());
         rightShooter.getConfigurator().apply(ShooterConfig.rightShooterConfiguration());
         leftShooter.setControl(new StrictFollower(rightShooter.getDeviceID()));
@@ -28,7 +29,14 @@ public class ShooterCTREIO implements ShooterIO {
     @Override
     public void setShooterSpeed(double speed) {
         if (target != speed) {
-            rightShooter.setControl(velocityVoltage.withVelocity(speed));
+            if(speed <=20){
+                  rightShooter.setControl(velocityVoltage.withVelocity(speed).withUseTimesync(true).withSlot(1));
+            leftShooter.setControl(new StrictFollower(rightShooter.getDeviceID()).withUpdateFreqHz(0));
+            }
+            else{
+            rightShooter.setControl(velocityVoltage.withVelocity(speed).withUseTimesync(true).withSlot(0));
+            leftShooter.setControl(new StrictFollower(rightShooter.getDeviceID()).withUpdateFreqHz(0));
+            }
             target = speed;
         }
     }
@@ -47,7 +55,21 @@ public class ShooterCTREIO implements ShooterIO {
 
     @Override
     public boolean isNearTargetSpeed() {
-        return rightShooter.getVelocity().isNear(target, 25); // Adjust the tolerance as needed
+        return rightShooter.getVelocity().isNear(target, 5); // Adjust the tolerance as needed
 
+    }
+
+    @Override
+    public void updateInputs(ShooterIOInputs inputs) {
+        inputs.leftShooterSpeedRPS = leftShooter.getVelocity().getValueAsDouble();
+        inputs.rightShooterSpeedRPS = rightShooter.getVelocity().getValueAsDouble();
+        inputs.leftShooterSpeedRPM = leftShooter.getVelocity().getValueAsDouble() * 60 / 2048;
+        inputs.rightShooterSpeedRPM = rightShooter.getVelocity().getValueAsDouble() * 60 / 2048;
+        inputs.targetSpeedRPS = target;
+        inputs.atTargetSpeed = isNearTargetSpeed();
+        inputs.LeftShooterCurrentStator = leftShooter.getStatorCurrent().getValueAsDouble();
+        inputs.RightShooterCurrentStator = rightShooter.getStatorCurrent().getValueAsDouble();
+        inputs.LeftShooterCurrentSupply = leftShooter.getSupplyCurrent().getValueAsDouble();
+        inputs.RightShooterCurrentSupply = rightShooter.getSupplyCurrent().getValueAsDouble();
     }
 }

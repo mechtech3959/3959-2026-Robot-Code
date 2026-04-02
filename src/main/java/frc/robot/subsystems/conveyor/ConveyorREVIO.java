@@ -5,8 +5,10 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import frc.robot.RobotMap;
+
 public class ConveyorREVIO implements ConveyorIO {
-    private final SparkMax conveyorMotor = new SparkMax(30, MotorType.kBrushless);
+    private final SparkMax conveyorMotor = new SparkMax(RobotMap.CONVEYOR.CONVEYOR_MOTOR, MotorType.kBrushless);
 
     public ConveyorREVIO() {
         ConveyorConfiguration conveyorMotorConfig = new ConveyorConfiguration();
@@ -17,7 +19,7 @@ public class ConveyorREVIO implements ConveyorIO {
 
     @Override
     public void runConveyorMotor() {
-        conveyorMotor.set(1);
+        conveyorMotor.set(0.5);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.RPM;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -11,7 +9,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // TODO time longest possible time to shoot all balls / average time to shoot
     // all
     // balls, use this to determine auto shooting times
-    public enum ShooterState {
+    public enum ShooterActions {
         STOPPED,
         IDLE,
         SPINNING_UP,
@@ -19,69 +17,82 @@ public class ShooterSubsystem extends SubsystemBase {
         SHOOTING
     }
 
-    public enum ShooterMode {
+    public enum ShooterStates {
         KNOWN_CLOSE,
         KNOWN_FAR,
         REST,
+        INTAKE,
+        TUNING,
+        AUTO,
         UNKNOWN
     }
 
-    private double targetRPM;
-    private double targetAngle = 0;
+    private double targetRPS = 0;
+    // private double targetAngle = 50; // fixed angle
 
     private final ShooterIO io;
-    private ShooterState shooterState = ShooterState.IDLE;
-    private ShooterMode shooterMode = ShooterMode.UNKNOWN;
+    private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+    private ShooterActions ShooterStatus = ShooterActions.IDLE;
+    private ShooterStates ShooterState = ShooterStates.UNKNOWN;
+    LoggedNetworkNumber tuningRPS;
 
     public ShooterSubsystem(ShooterIO io) {
         this.io = io;
-
+        this.tuningRPS = new LoggedNetworkNumber("/Tuning/RPS", 0.0);
     }
 
-    private void handleShooterState() {
+    private void handleState() {
 
-        switch (shooterMode) {
-            case KNOWN_CLOSE -> io.setShooterSpeed(targetRPM);
-            case KNOWN_FAR -> {
-                // no-op for known far mode (configure if needed)
-            }
+        switch (ShooterState) {
+            case KNOWN_CLOSE -> io.setShooterSpeed(tuningRPS.get());// io.setShooterSpeed(42);
+            case KNOWN_FAR -> io.setShooterSpeed(53);
             case REST -> io.setShooterNeutral();
             case UNKNOWN -> io.setShooterSpeed(0);
+            case INTAKE -> io.setShooterSpeed(15);
+            case AUTO -> io.setShooterSpeed(targetRPS);
+            case TUNING -> io.setShooterSpeed(tuningRPS.get());
         }
     }
 
-    public void shooterStatus() {
-        if (shooterMode == ShooterMode.REST) {
-            shooterState = ShooterState.IDLE;
+    public void handleShooterStatus() {
+        if (ShooterState == ShooterStates.REST) {
+            ShooterStatus = ShooterActions.IDLE;
         } else if (io.getShooterSpeed() == 0) {
-            shooterState = ShooterState.STOPPED;
+            ShooterStatus = ShooterActions.STOPPED;
         } else if (!io.isNearTargetSpeed()) {
-            shooterState = ShooterState.SPINNING_UP;
+            ShooterStatus = ShooterActions.SPINNING_UP;
         } else {
-            shooterState = ShooterState.AT_SPEED;
+            ShooterStatus = ShooterActions.AT_SPEED;
         }
     }
 
-    public void ChangeShooterState(ShooterState newState) {
-        shooterState = newState;
+    public void setShooterAction(ShooterActions newState) {
+        ShooterStatus = newState;
     }
 
-    public void ChangeShooterState(ShooterMode newState, double targetRPM) {
-        this.targetRPM = targetRPM;
-        shooterMode = newState;
+    public void changeState(ShooterStates newState) {
+        ShooterState = newState;
+    }
+
+    public void changeState(ShooterStates newState, double targetRPS) {
+        this.targetRPS = targetRPS;
+        ShooterState = newState;
+    }
+
+    public void setEstimatedRPS(double rps) {
+        this.targetRPS = rps;
+
     }
 
     @Override
     public void periodic() {
-        // Logger.recordOutput("",tunableRPM);
-
         io.periodic();
-        Logger.recordOutput("here", true);
-        Logger.recordOutput("speed", io.getShooterSpeed());
-        Logger.recordOutput("target", targetRPM);
-        Logger.recordOutput("isAtSpeed", io.isNearTargetSpeed());
-        shooterStatus();
-        handleShooterState();
+        io.updateInputs(inputs);
+        Logger.processInputs(getName(), inputs);
+        Logger.recordOutput("States/shooter-status", ShooterStatus);
+        Logger.recordOutput("States/shooter-state", ShooterState.toString());
+        handleShooterStatus();
+        handleState();
     }
 
 }
