@@ -43,7 +43,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private void handleState() {
 
-        switch (ShooterState) {
+        switch (ShooterState) { 
             case KNOWN_CLOSE -> io.setShooterSpeed(tuningRPS.get());// io.setShooterSpeed(42);
             case KNOWN_FAR -> io.setShooterSpeed(53);
             case REST -> io.setShooterNeutral();

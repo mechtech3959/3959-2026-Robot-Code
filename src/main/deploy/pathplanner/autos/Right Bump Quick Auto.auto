@@ -7,19 +7,19 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeON"
+            "name": "IntakeOn-FAST"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New New New Path"
+            "pathName": "Right Quick Path"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootFar"
+            "name": "ShootClose"
           }
         }
       ]
