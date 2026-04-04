@@ -203,6 +203,10 @@ public class SuperStructureSubsystem extends SubsystemBase {
         shooter.changeState(ShooterStates.REST);
     }
 
+    public SuperStructureState getState() {
+        return currentSuperStructureState;
+    }
+
     public void changeState(SuperStructureState newState) {
         // this.requestedSuperStructureState = newState;
         this.currentSuperStructureState = newState;

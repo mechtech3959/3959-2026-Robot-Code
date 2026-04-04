@@ -289,6 +289,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     }
 
+    public SwerveStates getSwerveState() {
+        return currentDriveState;
+    }
+
     public void changeState(SwerveStates wanted) {
         currentDriveState = wanted;
     }

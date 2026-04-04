@@ -70,6 +70,10 @@ public class ShooterSubsystem extends SubsystemBase {
         ShooterStatus = newState;
     }
 
+    public ShooterStates getShooterState() {
+        return ShooterState;
+    }
+
     public void changeState(ShooterStates newState) {
         ShooterState = newState;
     }

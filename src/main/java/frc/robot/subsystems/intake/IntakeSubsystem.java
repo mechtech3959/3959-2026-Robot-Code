@@ -55,6 +55,10 @@ public class IntakeSubsystem extends SubsystemBase {
         return currentIntakeState;
     }
 
+    public IntakeStates getIntakeState() {
+        return currentIntakeState;
+    }
+
     public void changeState(IntakeStates state) {
         this.currentIntakeState = state;
     }
