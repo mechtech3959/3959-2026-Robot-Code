@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6937727272727274,
-        "y": 2.499284090909091
+        "x": 3.678206947791815,
+        "y": 2.0334540200557307
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.693772727272727,
-        "y": 2.499284090909091
+        "x": 1.8185967741928206,
+        "y": 2.147854838709299
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 1.9324090909090912
       },
       "prevControl": {
-        "x": 7.729604309795375,
-        "y": 1.6643928824220184
+        "x": 7.319112903225806,
+        "y": 0.6800752688172043
       },
       "nextControl": {
-        "x": 8.568897727272727,
-        "y": 3.756715909090909
+        "x": 8.588410702735306,
+        "y": 3.7487669963433827
       },
       "isLocked": false,
       "linkedName": null
@@ -64,16 +64,16 @@
     },
     {
       "anchor": {
-        "x": 4.672920454545455,
+        "x": 4.646876344085293,
         "y": 2.499284090909091
       },
       "prevControl": {
-        "x": 5.858204545454544,
-        "y": 2.5405113636363637
+        "x": 5.788753729235125,
+        "y": 2.5217923226935204
       },
       "nextControl": {
-        "x": 3.6840639023738797,
-        "y": 2.4648890803987755
+        "x": 3.697291913262088,
+        "y": 2.48056626117902
       },
       "isLocked": false,
       "linkedName": null
@@ -94,15 +94,23 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 2.0880503144654097,
+      "waypointRelativePos": 0.7772795216741424,
       "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.5246636771294595,
+      "rotationDegrees": 38.054383094783695
     },
     {
       "waypointRelativePos": 2.1461784365010086,
       "rotationDegrees": 59.82586757247418
     },
     {
-      "waypointRelativePos": 4.0,
+      "waypointRelativePos": 3.658445440956598,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 4.080717488789224,
       "rotationDegrees": 0.0
     }
   ],
