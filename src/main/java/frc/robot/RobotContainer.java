@@ -201,22 +201,27 @@ public class RobotContainer {
 
         }));
         driverController.leftBumper().toggleOnTrue(intakeCommand());
-        driverController.a().onChange(Commands.runOnce(() -> {
-            drivetrainSubsystem.changeState(SwerveStates.Heading);
-        }));
-        driverController.b().onChange(Commands.runOnce(() -> {
-            drivetrainSubsystem.changeState(SwerveStates.TeleOp);
-        }));
-        // Single press Y = prep climb
-        driverController.y().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
-        }));
+   //     driverController.a().onChange(Commands.runOnce(() -> {
+     //       drivetrainSubsystem.changeState(SwerveStates.Heading);
+       // }));
+       // driverController.b().onChange(Commands.runOnce(() -> {
+         //   drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+       // }));
+       driverController.leftTrigger().whileTrue(Commands.startEnd(()->{
+        drivetrainSubsystem.changeState(SwerveStates.Heading);
+       }, ()->{
+        drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+       })); 
+       // Single press Y = prep climb
+        //driverController.y().onTrue(Commands.runOnce(() -> {
+         //   superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
+       // }));
 
         // Double press Y = actual climb
-        driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
-            drivetrainSubsystem.changeState(SwerveStates.Climb);
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
-        }));
+  //      driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
+    //        drivetrainSubsystem.changeState(SwerveStates.Climb);
+      //      superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
+       // }));
         driverController.rightTrigger().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
         }));

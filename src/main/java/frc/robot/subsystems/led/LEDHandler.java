@@ -33,13 +33,13 @@ public class LEDHandler {
         match_EndTrigger = RobotModeTriggers.disabled()
                 .and(() -> (DriverStation.getMatchTime() == 0));
         shootingTrigger = new Trigger(() -> shooterSubsystem.getShooterState() != ShooterSubsystem.ShooterStates.REST);
-        intakingTrigger = new Trigger(() -> intakeSubsystem.getIntakeState() == IntakeSubsystem.IntakeStates.INTAKE);
+        intakingTrigger = new Trigger(() -> intakeSubsystem.getState() == IntakeSubsystem.IntakeStates.INTAKE);
         intakingAndShootingTrigger = new Trigger(
                 () -> (shooterSubsystem.getShooterState() != ShooterSubsystem.ShooterStates.REST)
-                        && (intakeSubsystem.getIntakeState() == IntakeSubsystem.IntakeStates.INTAKE));
+                        && (intakeSubsystem.getState() == IntakeSubsystem.IntakeStates.INTAKE));
         neitherIntakingNorShootingTrigger = new Trigger(
                 () -> (shooterSubsystem.getShooterState() == ShooterSubsystem.ShooterStates.REST)
-                        && (intakeSubsystem.getIntakeState() != IntakeSubsystem.IntakeStates.INTAKE));
+                        && (intakeSubsystem.getState() != IntakeSubsystem.IntakeStates.INTAKE));
         headingLockTrigger = new Trigger(() -> drivetrainSubsystem.getSwerveState() == DrivetrainSubsystem.SwerveStates.Heading);
     }
 

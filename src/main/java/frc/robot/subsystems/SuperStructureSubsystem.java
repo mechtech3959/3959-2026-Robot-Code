@@ -1,20 +1,20 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.conveyor.ConveyorSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.indexer.IndexerSubsystem;
-import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
-import static frc.robot.subsystems.shooter.ShooterSubsystem.ShooterStates;
-import static frc.robot.subsystems.intake.IntakeSubsystem.IntakeStates;
-import static frc.robot.subsystems.climber.ClimberSubsystem.ClimberStates;
-import static frc.robot.subsystems.conveyor.ConveyorSubsystem.ConveyorStates;
-import static frc.robot.subsystems.indexer.IndexerSubsystem.IndexerStates;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.climber.ClimberSubsystem.ClimberStates;
+import frc.robot.subsystems.conveyor.ConveyorSubsystem;
+import frc.robot.subsystems.conveyor.ConveyorSubsystem.ConveyorStates;
+import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem.IndexerStates;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeStates;
+import frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem.ShooterStates;
 
 public class SuperStructureSubsystem extends SubsystemBase {
     public enum SuperStructureState {
@@ -94,12 +94,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
         shooter.changeState(ShooterStates.REST);
-        if (climber.getState() != ClimberStates.HOME)
-            climber.changeState(ClimberStates.HOME);
-        if (climber.getPosition() < 90) {
-            intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.5);
+        //if (climber.getState() != ClimberStates.HOME)
+         //  climber.changeState(ClimberStates.HOME);
+      //  if (climber.getPosition() < 90) {
+        //    intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.5);
 
-        }
+        //}
         // if (intake.getState() != IntakeStates.INTAKE)
         // intaking();
 
@@ -111,30 +111,30 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
-        if (intake.getPosition() > 0.1 && climber.getPosition() < 90) {
+        //if (intake.getPosition() > 0.1 && climber.getPosition() < 90) {
             intake.changeState(IntakeStates.STOW, FeedStates.STOP);
 
-        } else if (intake.getPosition() < 0.05 && (climber.getState() != ClimberStates.STARTING_CONFIG)) {
-            climber.changeState(ClimberStates.STARTING_CONFIG);
-        } else if (intake.getPosition() > 0.05 && climber.getPosition() > 90) {
-            climber.changeState(ClimberStates.HOME);
-        } else {
+       // } else if (intake.getPosition() < 0.05 && (climber.getState() != ClimberStates.STARTING_CONFIG)) {
+         //   climber.changeState(ClimberStates.STARTING_CONFIG);
+       // } else if (intake.getPosition() > 0.05 && climber.getPosition() > 90) {
+        //    climber.changeState(ClimberStates.HOME);
+       // } else {
             // starting_Config();
-        }
+        //}
 
     }
 
     public void travel() {
-        if (intake.getState() == IntakeStates.MID_STOW) {
+        if (intake.getState() == IntakeStates.STOW) {
             return;
         }
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
-        if (climber.getState() != ClimberStates.HOME)
-            climber.changeState(ClimberStates.HOME);
-        if (climber.getPosition() < 90) {
-            intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
-        }
+       // if (climber.getState() != ClimberStates.HOME)
+        //    climber.changeState(ClimberStates.HOME);
+    //    if (climber.getPosition() < 90) {
+            intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+      //  }
         // travel();
 
     }
