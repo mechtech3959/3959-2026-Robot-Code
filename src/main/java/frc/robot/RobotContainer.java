@@ -113,7 +113,7 @@ public class RobotContainer {
         climberSubsystem = new ClimberSubsystem(climberIO);
         superStructureSubsystem = new SuperStructureSubsystem(conveyorSubsystem,
                 shooterSubsystem, intakeSubsystem,
-                indexerSubsystem, climberSubsystem, drivetrainSubsystem);
+                indexerSubsystem, climberSubsystem, drivetrainSubsystem, visionSubsystem);
         shooterMap = new ShooterMap();
         ledIO = new LEDCTREIO();
         ledSubsystem = new LEDSubsystem(ledIO);
@@ -151,12 +151,7 @@ public class RobotContainer {
         drivetrainSubsystem.resetAllianceHeading();
     }
 
-    public void estimatedDistance() {
-        double distance = visionSubsystem.getDistanceToTarget();
-        Logger.recordOutput("distance from tag", distance);
-        shooterSubsystem.setEstimatedRPS(shooterMap.getShooterSpeedForDistance(distance));
-
-    }
+ 
 
     public Command autoCenter() {
         return Commands.sequence(
@@ -230,6 +225,9 @@ public class RobotContainer {
         }));
         driverController.x().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+        }));
+                driverController.y().onTrue(Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
         }));
         shooterStopperController.x().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
