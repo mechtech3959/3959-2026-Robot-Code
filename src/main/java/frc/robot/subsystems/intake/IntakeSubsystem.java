@@ -12,7 +12,7 @@ public class IntakeSubsystem extends SubsystemBase {
         STOW,
         MID_STOW,
         INTAKE,
-        FAST_INTAKE,
+
         START,
         TEST
     }
@@ -39,9 +39,8 @@ public class IntakeSubsystem extends SubsystemBase {
                 intakeIO.setControl(0.1);
             case INTAKE ->
             // was 0.3
-                intakeIO.setControl(0.6);
-            case FAST_INTAKE ->
-                intakeIO.setControl(0.8);
+                intakeIO.setControl(0.3);
+          
             case TEST -> {
             }
             case START -> {

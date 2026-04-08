@@ -41,11 +41,11 @@ public class LEDSubsystem extends SubsystemBase {
     private SecondSecondaryLEDStates secondSecondaryLEDStates = SecondSecondaryLEDStates.NEITHER;
     // TODO GET THE LED VALUES
     private int mainLEDStartIndex = 0;
-    private int mainLEDEndIndex = 100;
-    private int secondaryLEDStartIndex = 25;
-    private int secondaryLEDEndIndex = 50;
-    private int secondSecondaryLEDStartIndex = 50;
-    private int secondSecondaryLEDEndIndex = 75;
+    private int mainLEDEndIndex = 9;
+    private int secondaryLEDStartIndex = 2;
+    private int secondaryLEDEndIndex = 4;
+    private int secondSecondaryLEDStartIndex = 6;
+    private int secondSecondaryLEDEndIndex = 8;
 
     public LEDSubsystem(LEDIO ledIO) {
         this.ledIO = ledIO;
@@ -72,10 +72,10 @@ public class LEDSubsystem extends SubsystemBase {
             case MATCH_END -> {
                 if (FieldBasedConstants.isBlueAlliance()) {
                     ledIO.setAnimation(new ColorFlowAnimation(mainLEDStartIndex, mainLEDEndIndex)
-                            .withColor(new RGBWColor(0, 0, 255)).withFrameRate(20));
+                            .withColor(new RGBWColor(0, 0, 255)).withFrameRate(5));
                 } else {
                     ledIO.setAnimation(new ColorFlowAnimation(mainLEDStartIndex, mainLEDEndIndex)
-                            .withColor(new RGBWColor(255, 0, 0)).withFrameRate(20));
+                            .withColor(new RGBWColor(255, 0, 0)).withFrameRate(5));
                 }
             }
         }
@@ -87,7 +87,7 @@ public class LEDSubsystem extends SubsystemBase {
                 ledIO.setAnimation(new StrobeAnimation(secondaryLEDStartIndex, secondaryLEDEndIndex)
                         .withColor(new RGBWColor(255, 0, 0)).withFrameRate(10));
             case BOOTING -> ledIO.setAnimation(new LarsonAnimation(secondaryLEDStartIndex, secondaryLEDEndIndex)
-                    .withColor(new RGBWColor(255, 255, 0)).withFrameRate(20));
+                    .withColor(new RGBWColor(255, 255, 0)).withFrameRate(5));
             case HEADING_LOCK -> ledIO.setAnimation(
                     new SolidColor(secondaryLEDStartIndex, secondaryLEDEndIndex).withColor(new RGBWColor(0, 255, 0)));
         }
@@ -102,7 +102,7 @@ public class LEDSubsystem extends SubsystemBase {
                         .withColor(new RGBWColor(255, 0, 255)));
             case NEITHER ->
                 ledIO.setAnimation(new LarsonAnimation(secondSecondaryLEDStartIndex, secondSecondaryLEDEndIndex)
-                        .withColor(new RGBWColor(0, 255, 255)).withFrameRate(20));
+                        .withColor(new RGBWColor(0, 255, 255)).withFrameRate(5));
         }
 
     }

@@ -132,6 +132,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootFar", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
         }));
+        NamedCommands.registerCommand("ShootAuto", Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
+        }));
+                NamedCommands.registerCommand("AlignDrive", Commands.runOnce(() -> {
+            drivetrainSubsystem.changeState(SwerveStates.Heading);
+                }));
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
         ledHandler.handleLEDs();
@@ -150,8 +156,6 @@ public class RobotContainer {
     public void resetAllianceHeading() {
         drivetrainSubsystem.resetAllianceHeading();
     }
-
- 
 
     public Command autoCenter() {
         return Commands.sequence(
@@ -180,6 +184,23 @@ public class RobotContainer {
                 });
     }
 
+    private Command controllerDualRumbleCommand() {
+        return Commands.startEnd(
+                () -> {
+                    shooterStopperController.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+                    driverController.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+
+                },
+                () -> {
+                    shooterStopperController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+                    driverController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+
+                });
+    }
+    private Command timmedDualRumble(){
+        return Commands.sequence();
+    }
+
     private Command intakeCommand() {
         return Commands.startEnd(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
@@ -195,38 +216,39 @@ public class RobotContainer {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.STARTING_CONFIG);
 
         }));
-        driverController.leftBumper().toggleOnTrue(intakeCommand());
-   //     driverController.a().onChange(Commands.runOnce(() -> {
-     //       drivetrainSubsystem.changeState(SwerveStates.Heading);
-       // }));
-       // driverController.b().onChange(Commands.runOnce(() -> {
-         //   drivetrainSubsystem.changeState(SwerveStates.TeleOp);
-       // }));
-       driverController.leftTrigger().whileTrue(Commands.startEnd(()->{
-        drivetrainSubsystem.changeState(SwerveStates.Heading);
-       }, ()->{
-        drivetrainSubsystem.changeState(SwerveStates.TeleOp);
-       })); 
-       // Single press Y = prep climb
-        //driverController.y().onTrue(Commands.runOnce(() -> {
-         //   superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
-       // }));
+        driverController.leftBumper()
+                .toggleOnTrue(intakeCommand().alongWith(controllerDualRumbleCommand().withTimeout(0.1)));
+        // driverController.a().onChange(Commands.runOnce(() -> {
+        // drivetrainSubsystem.changeState(SwerveStates.Heading);
+        // }));
+        // driverController.b().onChange(Commands.runOnce(() -> {
+        // drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+        // }));
+        driverController.leftTrigger().whileTrue(Commands.startEnd(() -> {
+            drivetrainSubsystem.changeState(SwerveStates.Heading);
+        }, () -> {
+            drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+        }));
+        // Single press Y = prep climb
+        // driverController.y().onTrue(Commands.runOnce(() -> {
+        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
+        // }));
 
         // Double press Y = actual climb
-  //      driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
-    //        drivetrainSubsystem.changeState(SwerveStates.Climb);
-      //      superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
-       // }));
-        driverController.rightTrigger().onTrue(Commands.runOnce(() -> {
+        // driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
+        // drivetrainSubsystem.changeState(SwerveStates.Climb);
+        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
+        // }));
+        shooterStopperController.rightTrigger().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
         }));
-        driverController.rightBumper().onTrue(Commands.runOnce(() -> {
+        shooterStopperController.rightBumper().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
         }));
         driverController.x().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
         }));
-                driverController.y().onTrue(Commands.runOnce(() -> {
+        shooterStopperController.y().onTrue(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
         }));
         shooterStopperController.x().onTrue(Commands.runOnce(() -> {

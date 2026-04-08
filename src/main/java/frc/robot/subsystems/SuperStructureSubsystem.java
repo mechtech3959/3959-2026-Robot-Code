@@ -70,8 +70,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 shooter.changeState(ShooterStates.REST);
             }
             case INTAKING -> intaking();
-            case SHOOTING_AUTO -> {
-            }
+            case SHOOTING_AUTO -> autoShoot();
             case SHOOTING__CLOSE -> closeShoot();
             case SHOOTING__FAR -> farShoot();
             case SHOOTING_STOP -> stopShooting();
@@ -94,6 +93,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
     public void estimatedDistance() {
         double distance = vision.getDistanceToTarget();
+        Logger.recordOutput("distance",distance);
         if (distance < 0) {
             return; // Invalid distance, do not update shooter speed
         }
@@ -112,7 +112,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         // if (climber.getState() != ClimberStates.HOME)
         // climber.changeState(ClimberStates.HOME);
         // if (climber.getPosition() < 90) {
-        // intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.5);
+         intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.7);
 
         // }
         // if (intake.getState() != IntakeStates.INTAKE)

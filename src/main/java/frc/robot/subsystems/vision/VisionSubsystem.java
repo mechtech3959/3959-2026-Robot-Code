@@ -52,6 +52,7 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Feed to drivetrain
         updatePoseEstimate(cameras[1]);
+     //   Logger.recordOutput("DistT", getDistanceToTarget());
 
     }
 

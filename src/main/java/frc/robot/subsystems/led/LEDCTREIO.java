@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.CANdle;
 
 public class LEDCTREIO implements LEDIO {
     // CHECK THE ID
-    private final CANdle ledController = new CANdle(13, new CANBus("rio"));
+    private final CANdle ledController = new CANdle(17, new CANBus("rio"));
    
 
  
