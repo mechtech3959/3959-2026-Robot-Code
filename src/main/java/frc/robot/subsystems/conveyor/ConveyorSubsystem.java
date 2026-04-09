@@ -12,6 +12,7 @@ public class ConveyorSubsystem extends SubsystemBase {
     }
 
     private ConveyorStates currentConveyorState = ConveyorStates.STOP;
+    private final ConveyorIOInputsAutoLogged inputs = new ConveyorIOInputsAutoLogged();
 
     private void applyState() {
         switch (currentConveyorState) {
@@ -30,6 +31,8 @@ public class ConveyorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.recordOutput("States/Conveyor", currentConveyorState.toString());
+        conveyorIO.updateInputs(inputs);
+        Logger.processInputs(getName(), inputs);
         applyState();
     }
 

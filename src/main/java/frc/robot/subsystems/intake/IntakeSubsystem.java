@@ -12,6 +12,7 @@ public class IntakeSubsystem extends SubsystemBase {
         STOW,
         MID_STOW,
         INTAKE,
+
         START,
         TEST
     }
@@ -37,7 +38,9 @@ public class IntakeSubsystem extends SubsystemBase {
             case MID_STOW ->
                 intakeIO.setControl(0.1);
             case INTAKE ->
+            // was 0.3
                 intakeIO.setControl(0.3);
+          
             case TEST -> {
             }
             case START -> {
@@ -54,6 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeStates getState() {
         return currentIntakeState;
     }
+ 
 
     public void changeState(IntakeStates state) {
         this.currentIntakeState = state;

@@ -13,13 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Quick Path"
+            "pathName": "Left Quick Path"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "AlignDrive"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {

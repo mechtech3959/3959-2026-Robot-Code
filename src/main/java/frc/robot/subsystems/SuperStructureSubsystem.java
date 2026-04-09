@@ -1,20 +1,22 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.conveyor.ConveyorSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.indexer.IndexerSubsystem;
-import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
-import static frc.robot.subsystems.shooter.ShooterSubsystem.ShooterStates;
-import static frc.robot.subsystems.intake.IntakeSubsystem.IntakeStates;
-import static frc.robot.subsystems.climber.ClimberSubsystem.ClimberStates;
-import static frc.robot.subsystems.conveyor.ConveyorSubsystem.ConveyorStates;
-import static frc.robot.subsystems.indexer.IndexerSubsystem.IndexerStates;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.climber.ClimberSubsystem;
+import frc.robot.subsystems.climber.ClimberSubsystem.ClimberStates;
+import frc.robot.subsystems.conveyor.ConveyorSubsystem;
+import frc.robot.subsystems.conveyor.ConveyorSubsystem.ConveyorStates;
+import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem.IndexerStates;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeStates;
+import frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem.ShooterStates;
+import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.util.ShooterMap;
 
 public class SuperStructureSubsystem extends SubsystemBase {
     public enum SuperStructureState {
@@ -38,19 +40,23 @@ public class SuperStructureSubsystem extends SubsystemBase {
     private final IntakeSubsystem intake;
     private final ClimberSubsystem climber;
     private final DrivetrainSubsystem drivetrain;
-
+    private final VisionSubsystem vision;
+    private final ShooterMap shooterMap = new ShooterMap();
     private SuperStructureState currentSuperStructureState = SuperStructureState.IDLE;
     // private SuperStructureState requestedSuperStructureState =
     // SuperStructureState.IDLE;
 
     public SuperStructureSubsystem(ConveyorSubsystem conveyor, ShooterSubsystem shooter, IntakeSubsystem intake,
-            IndexerSubsystem indexer, ClimberSubsystem climber, DrivetrainSubsystem drivetrain) {
+            IndexerSubsystem indexer, ClimberSubsystem climber, DrivetrainSubsystem drivetrain,
+            VisionSubsystem vision) {
         this.conveyor = conveyor;
         this.shooter = shooter;
         this.intake = intake;
         this.climber = climber;
         this.indexer = indexer;
         this.drivetrain = drivetrain;
+        this.vision = vision;
+
     }
 
     private void applyState() {
@@ -64,8 +70,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
                 shooter.changeState(ShooterStates.REST);
             }
             case INTAKING -> intaking();
-            case SHOOTING_AUTO -> {
-            }
+            case SHOOTING_AUTO -> autoShoot();
             case SHOOTING__CLOSE -> closeShoot();
             case SHOOTING__FAR -> farShoot();
             case SHOOTING_STOP -> stopShooting();
@@ -86,6 +91,16 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
     }
 
+    public void estimatedDistance() {
+        double distance = vision.getDistanceToTarget();
+        Logger.recordOutput("distance",distance);
+        if (distance < 0) {
+            return; // Invalid distance, do not update shooter speed
+        }
+        shooter.setEstimatedRPS(shooterMap.getShooterSpeedForDistance(distance));
+
+    }
+
     public void intaking() {
 
         if (intake.getState() == IntakeStates.INTAKE) {
@@ -94,12 +109,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
         shooter.changeState(ShooterStates.REST);
-        if (climber.getState() != ClimberStates.HOME)
-            climber.changeState(ClimberStates.HOME);
-        if (climber.getPosition() < 90) {
-            intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.5);
+        // if (climber.getState() != ClimberStates.HOME)
+        // climber.changeState(ClimberStates.HOME);
+        // if (climber.getPosition() < 90) {
+         intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.7);
 
-        }
+        // }
         // if (intake.getState() != IntakeStates.INTAKE)
         // intaking();
 
@@ -111,30 +126,31 @@ public class SuperStructureSubsystem extends SubsystemBase {
         }
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
-        if (intake.getPosition() > 0.1 && climber.getPosition() < 90) {
-            intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+        // if (intake.getPosition() > 0.1 && climber.getPosition() < 90) {
+        intake.changeState(IntakeStates.STOW, FeedStates.STOP);
 
-        } else if (intake.getPosition() < 0.05 && (climber.getState() != ClimberStates.STARTING_CONFIG)) {
-            climber.changeState(ClimberStates.STARTING_CONFIG);
-        } else if (intake.getPosition() > 0.05 && climber.getPosition() > 90) {
-            climber.changeState(ClimberStates.HOME);
-        } else {
-            // starting_Config();
-        }
+        // } else if (intake.getPosition() < 0.05 && (climber.getState() !=
+        // ClimberStates.STARTING_CONFIG)) {
+        // climber.changeState(ClimberStates.STARTING_CONFIG);
+        // } else if (intake.getPosition() > 0.05 && climber.getPosition() > 90) {
+        // climber.changeState(ClimberStates.HOME);
+        // } else {
+        // starting_Config();
+        // }
 
     }
 
     public void travel() {
-        if (intake.getState() == IntakeStates.MID_STOW) {
+        if (intake.getState() == IntakeStates.STOW) {
             return;
         }
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
-        if (climber.getState() != ClimberStates.HOME)
-            climber.changeState(ClimberStates.HOME);
-        if (climber.getPosition() < 90) {
-            intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
-        }
+        // if (climber.getState() != ClimberStates.HOME)
+        // climber.changeState(ClimberStates.HOME);
+        // if (climber.getPosition() < 90) {
+        intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+        // }
         // travel();
 
     }
@@ -148,11 +164,11 @@ public class SuperStructureSubsystem extends SubsystemBase {
         climber.changeState(ClimberStates.CLEAR_INTAKE);
         if (intake.getState() != IntakeStates.STOW && climber.getPosition() < 90)
             intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-         if (climber.isAtTarget()) {
-         intake.changeState(IntakeStates.STOW, FeedStates.STOP);
-         }else {
-       //  prep_Climb();
-         }
+        if (climber.isAtTarget()) {
+            intake.changeState(IntakeStates.STOW, FeedStates.STOP);
+        } else {
+            // prep_Climb();
+        }
     }
 
     public void climbing() {
@@ -168,20 +184,21 @@ public class SuperStructureSubsystem extends SubsystemBase {
             climber.changeState(ClimberStates.CLIMB);
         }
 
-         else {
-      //   climbing();
-         }
+        else {
+            // climbing();
+        }
     }
 
     public void autoShoot() {
-      //  intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        // intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        estimatedDistance();
         indexer.changeState(IndexerStates.RUN);
         conveyor.changeState(ConveyorStates.RUN);
         shooter.changeState(ShooterStates.AUTO);
     }
 
     public void closeShoot() {
-      //  intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        // intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
         indexer.changeState(IndexerStates.RUN);
         conveyor.changeState(ConveyorStates.RUN);
         shooter.changeState(ShooterStates.KNOWN_CLOSE);
@@ -189,7 +206,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     public void farShoot() {
-      //  intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        // intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
         indexer.changeState(IndexerStates.RUN);
         conveyor.changeState(ConveyorStates.RUN);
         shooter.changeState(ShooterStates.KNOWN_FAR);
@@ -197,10 +214,14 @@ public class SuperStructureSubsystem extends SubsystemBase {
     }
 
     public void stopShooting() {
-    //    intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
+        // intake.changeState(IntakeStates.MID_STOW, FeedStates.STOP);
         indexer.changeState(IndexerStates.STOP);
         conveyor.changeState(ConveyorStates.STOP);
         shooter.changeState(ShooterStates.REST);
+    }
+
+    public SuperStructureState getState() {
+        return currentSuperStructureState;
     }
 
     public void changeState(SuperStructureState newState) {

@@ -33,6 +33,9 @@ import frc.robot.subsystems.intake.IntakeREVIO;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.feed.FeedCTREIO;
 import frc.robot.subsystems.intake.feed.FeedSubsystem;
+import frc.robot.subsystems.led.LEDCTREIO;
+import frc.robot.subsystems.led.LEDHandler;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterCTREIO;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.VisionLimelightIO;
@@ -60,6 +63,10 @@ public class RobotContainer {
     private final ShooterMap shooterMap;
     private final ConveyorSubsystem conveyorSubsystem;
     private final SuperStructureSubsystem superStructureSubsystem;
+    private final LEDCTREIO ledIO;
+    private final LEDSubsystem ledSubsystem;
+    private final LEDHandler ledHandler;
+
     private final CommandXboxController driverController = new CommandXboxController(0);
     private final CommandXboxController shooterStopperController = new CommandXboxController(1);
     private final SendableChooser<Command> autoChooser;
@@ -92,11 +99,13 @@ public class RobotContainer {
         feedSubsystem = new FeedSubsystem(feedIO);
         intakeIO = new IntakeREVIO();
         intakeSubsystem = new IntakeSubsystem(intakeIO, feedSubsystem);
-        // CAD Values for LL4 are 0.70750176 Height,0 Center, -0.04948936 Backwards, YAW 0,Pitch 20, Roll 0
-        // CAD Values for LL2+ are 0.6968871 Height, 0.2286 Right, -0.31140908 Backwards, YAW 180, Pitch 0, Roll 0
+        // CAD Values for LL4 are 0.70750176 Height,0 Center, -0.04948936 Backwards, YAW
+        // 0,Pitch 20, Roll 0
+        // CAD Values for LL2+ are 0.6968871 Height, 0.2286 Right, -0.31140908
+        // Backwards, YAW 180, Pitch 0, Roll 0
         // 22, 0.703
         visionLimelightFront = new VisionLimelightIO("limelight-front", "LL4", 0.70750176, 20.0, 0);
-        //0.8
+        // 0.8
         visionLimelightBack = new VisionLimelightIO("limelight-back", "LL2+", 0.6968871, 0.0, 180);
 
         visionSubsystem = new VisionSubsystem(drivetrainSubsystem, visionLimelightFront, visionLimelightBack);
@@ -104,9 +113,12 @@ public class RobotContainer {
         climberSubsystem = new ClimberSubsystem(climberIO);
         superStructureSubsystem = new SuperStructureSubsystem(conveyorSubsystem,
                 shooterSubsystem, intakeSubsystem,
-                indexerSubsystem, climberSubsystem, drivetrainSubsystem);
-        // auton = new Auto(drivetrainSubsystem, superStructureSubsystem);
+                indexerSubsystem, climberSubsystem, drivetrainSubsystem, visionSubsystem);
         shooterMap = new ShooterMap();
+        ledIO = new LEDCTREIO();
+        ledSubsystem = new LEDSubsystem(ledIO);
+        ledHandler = new LEDHandler(ledSubsystem, superStructureSubsystem, intakeSubsystem,
+                shooterSubsystem, drivetrainSubsystem);
         drivetrainSubsystem.configureAutoBuilder();
         NamedCommands.registerCommand("ShootClose", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
@@ -117,12 +129,18 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeOff", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.TRAVEL);
         }));
-          NamedCommands.registerCommand("ShootFar", Commands.runOnce(() -> {
+        NamedCommands.registerCommand("ShootFar", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
+        }));
+        NamedCommands.registerCommand("ShootAuto", Commands.runOnce(() -> {
+            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
+        }));
+        NamedCommands.registerCommand("AlignDrive", Commands.runOnce(() -> {
+            drivetrainSubsystem.changeState(SwerveStates.Heading);
         }));
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
-
+        ledHandler.handleLEDs();
         configureBindings();
     }
 
@@ -131,20 +149,12 @@ public class RobotContainer {
         drivetrainSubsystem.changeState(SwerveStates.Disabled);
     }
 
-
     public void endTransition() {
         drivetrainSubsystem.changeState(SwerveStates.TeleOp);
     }
 
     public void resetAllianceHeading() {
         drivetrainSubsystem.resetAllianceHeading();
-    }
-
-    public void estimatedDistance() {
-        double distance = visionSubsystem.getDistanceToTarget();
-        Logger.recordOutput("distance from tag", distance);
-        shooterSubsystem.setEstimatedRPS(shooterMap.getShooterSpeedForDistance(distance));
-
     }
 
     public Command autoCenter() {
@@ -174,6 +184,24 @@ public class RobotContainer {
                 });
     }
 
+    private Command controllerDualRumbleCommand() {
+        return Commands.startEnd(
+                () -> {
+                    shooterStopperController.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+                    driverController.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+
+                },
+                () -> {
+                    shooterStopperController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+                    driverController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+
+                });
+    }
+
+    private Command timmedDualRumble() {
+        return controllerDualRumbleCommand().withTimeout(0.3);
+    }
+
     private Command intakeCommand() {
         return Commands.startEnd(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.INTAKING);
@@ -183,51 +211,64 @@ public class RobotContainer {
         });
     }
 
-
     private void configureBindings() {
-
 
         driverController.start().onChange(Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.STARTING_CONFIG);
 
         }));
-        driverController.leftBumper().toggleOnTrue(intakeCommand());
-        driverController.a().onChange(Commands.runOnce(() -> {
+        shooterStopperController.leftBumper()
+                .toggleOnTrue(Commands.parallel(
+                        intakeCommand(),
+                        timmedDualRumble()));
+        // driverController.a().onChange(Commands.runOnce(() -> {
+        // drivetrainSubsystem.changeState(SwerveStates.Heading);
+        // }));
+        // driverController.b().onChange(Commands.runOnce(() -> {
+        // drivetrainSubsystem.changeState(SwerveStates.TeleOp);
+        // }));
+        driverController.leftTrigger().whileTrue(Commands.startEnd(() -> {
             drivetrainSubsystem.changeState(SwerveStates.Heading);
-        }));
-        driverController.b().onChange(Commands.runOnce(() -> {
+        }, () -> {
             drivetrainSubsystem.changeState(SwerveStates.TeleOp);
         }));
         // Single press Y = prep climb
-        driverController.y().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
-        }));
+        // driverController.y().onTrue(Commands.runOnce(() -> {
+        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.PREP_CLIMB);
+        // }));
 
         // Double press Y = actual climb
-        driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
-            drivetrainSubsystem.changeState(SwerveStates.Climb);
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
-        }));
-        driverController.rightTrigger().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
-        }));
-        driverController.rightBumper().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
-        }));
-        driverController.x().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
-        }));
-        shooterStopperController.x().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
-        }));
+        // driverController.y().multiPress(2, 0.5).onTrue(Commands.runOnce(() -> {
+        // drivetrainSubsystem.changeState(SwerveStates.Climb);
+        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
+        // }));
+        shooterStopperController.rightTrigger().onTrue(
+                Commands.parallel(Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
+                }), timmedDualRumble()));
+        shooterStopperController.rightBumper().onTrue(
+                Commands.parallel(Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
+                }), timmedDualRumble()));
+        driverController.x().onTrue(Commands.parallel(
+                Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+                }), timmedDualRumble()));
+        shooterStopperController.y().onTrue(Commands.parallel(
+                Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
+                }), timmedDualRumble()));
+        shooterStopperController.x().onTrue(
+                Commands.parallel(Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+                }), timmedDualRumble()));
         shooterStopperController.start().onTrue(Commands.runOnce(() -> {
             drivetrainSubsystem.seedField();
         }));
-
- 
-
+        shooterStopperController.start().onTrue(Commands.runOnce(() -> {
+            resetAllianceHeading();
+        }));
     }
-   
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();

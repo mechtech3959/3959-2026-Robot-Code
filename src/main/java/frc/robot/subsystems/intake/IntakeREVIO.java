@@ -52,9 +52,12 @@ public class IntakeREVIO implements IntakeIO {
         // if (position == target) {
         // return; // No need to update if we're already at the target
         // }
-
-        intakeMotor.getClosedLoopController().setSetpoint(position, SparkBase.ControlType.kMAXMotionPositionControl);
-
+        if (Math.abs(target - getPosition()) < 0.05) {
+            intakeMotor.disable();
+        } else {
+            intakeMotor.getClosedLoopController().setSetpoint(position,
+                    SparkBase.ControlType.kMAXMotionPositionControl);
+        }
         target = position;
     }
 

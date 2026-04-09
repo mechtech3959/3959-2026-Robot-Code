@@ -16,25 +16,26 @@ public class VisionLimelightIO implements VisionIO {
     public Pose2d foundPosition;
     public double timeStamp;
     private LimelightHelpers.PoseEstimate limelightMeasurement;
- //   private String cameraType;
-  //  private double distanceEstimate;
-   // private double yawDegrees;
-    //private double targetHeight;
-   // private double limelightHeight;
-    //private double limelightAngle;
-    private final  int[] redHubTags = { 2, 3, 4, 5, 8, 9, 10, 11 };
+    // private String cameraType;
+    // private double distanceEstimate;
+    // private double yawDegrees;
+    // private double targetHeight;
+    // private double limelightHeight;
+    // private double limelightAngle;
+    private final int[] redHubTags = { 2, 3, 4, 5, 8, 9, 10, 11 };
     private final int[] blueHubTags = { 18, 19, 20, 21, 24, 25, 26, 27 };
+    private final int[] allTags = { 1, 2, 3, 4, 5, 8, 9, 10, 11, 18, 19, 20, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32 };
 
-   //  private double yaw;
+    // private double yaw;
 
     public VisionLimelightIO(String pipeLine, String cameraType, double limelightHeight, double limelightAngle,
             double yaw) {
         this.pipeLine = pipeLine;
-     //   this.cameraType = cameraType;
-      //  this.limelightHeight = limelightHeight;
-       // this.limelightAngle = limelightAngle;
-       // this.targetHeight = TagMap.getTagHeight(2);
-      //  this.yaw = yaw;
+        // this.cameraType = cameraType;
+        // this.limelightHeight = limelightHeight;
+        // this.limelightAngle = limelightAngle;
+        // this.targetHeight = TagMap.getTagHeight(2);
+        // this.yaw = yaw;
 
     }
 
@@ -45,19 +46,24 @@ public class VisionLimelightIO implements VisionIO {
 
     @Override
     public double estimatedDistanceToTarget() {
-     
-        //Set the fiducial ID filters to only include the tags on the alliance's hub, so that we get a more accurate distance estimate (since the camera will prioritize closer tags, and the opposing hub's tags are farther away)
+
+        // Set the fiducial ID filters to only include the tags on the alliance's hub,
+        // so that we get a more accurate distance estimate (since the camera will
+        // prioritize closer tags, and the opposing hub's tags are farther away)
         if (FieldBasedConstants.isBlueAlliance()) {
             LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, blueHubTags);
         } else {
             LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, redHubTags);
         }
-        if (!TV) {
+        if (!LimelightHelpers.getTV(pipeLine)) {
+            LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, allTags);
+
             return -1;
+
         }
 
         double avgTagDist = getPoseEstimate().avgTagDist;
-        LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, null);
+        LimelightHelpers.SetFiducialIDFiltersOverride(pipeLine, allTags);
         return avgTagDist;
     }
 
@@ -72,11 +78,6 @@ public class VisionLimelightIO implements VisionIO {
             limelightMeasurement.timestampSeconds = timeStamp;
         }
     }
-
-    
-
-   
-  
 
     public void setPipeline(int index) {
         LimelightHelpers.setPipelineIndex(pipeLine, index);

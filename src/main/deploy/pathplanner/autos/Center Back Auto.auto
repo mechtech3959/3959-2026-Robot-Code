@@ -5,21 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "IntakeOn"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Right Quick Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AlignDrive"
+            "pathName": "CenterStraightBack"
           }
         },
         {

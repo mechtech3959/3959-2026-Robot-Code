@@ -13,19 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Quick Path"
+            "pathName": "Right Middle Quick Path"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AlignDrive"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootAuto"
+            "name": "ShootClose"
           }
         }
       ]
