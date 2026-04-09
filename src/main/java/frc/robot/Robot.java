@@ -9,8 +9,13 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.cameraserver.CameraServer;
+
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -18,6 +23,14 @@ public class Robot extends LoggedRobot {
   private final RobotContainer m_robotContainer;
 
   public Robot() {
+
+    // Creates UsbCamera and MjpegServer [1] and connects them
+    // CameraServer.startAutomaticCapture();
+    // Creates the CvSink and connects it to the UsbCamera
+    // CvSink cvSink = CameraServer.getVideo();
+
+    // Creates the CvSource and MjpegServer [2] and connects them
+    // CvSource outputStream = CameraServer.putVideo("Blur", 640, 480);
 
     Logger.recordMetadata("ProjectName", "2026Comp"); // Set a metadata value
 

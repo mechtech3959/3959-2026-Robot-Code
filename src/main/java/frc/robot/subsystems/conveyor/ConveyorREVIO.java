@@ -26,5 +26,11 @@ public class ConveyorREVIO implements ConveyorIO {
     public void stopConveyorMotor() {
         conveyorMotor.set(0);
     }
+    @Override
+    public void updateInputs(ConveyorIOInputs inputs) {
+        inputs.motorCurrent = conveyorMotor.getOutputCurrent();
+        inputs.motorVelocity = conveyorMotor.get();
+        inputs.motorTemperature = conveyorMotor.getMotorTemperature();
+    }
 
 }

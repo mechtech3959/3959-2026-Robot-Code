@@ -1,6 +1,9 @@
 package frc.robot.subsystems.conveyor;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface ConveyorIO {
+    @AutoLog
     public class ConveyorIOInputs {
         public double motorCurrent = 0;
         public double motorVelocity = 0;

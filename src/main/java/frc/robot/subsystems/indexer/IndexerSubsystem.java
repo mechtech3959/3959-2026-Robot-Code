@@ -12,13 +12,14 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     private IndexerStates currentIndexingState = IndexerStates.STOP;
+    private final indexerIOInputsAutoLogged inputs = new indexerIOInputsAutoLogged();
 
     private void applyState() {
         switch (currentIndexingState) {
             case RUN -> indexerIO.runForwardMotor();
             case STOP -> indexerIO.stopMotor();
             default -> System.out.println(
-                        "Error in Fuel Indexing Subsystem: State applied to " + "non-existing option/undefined error.");
+                    "Error in Fuel Indexing Subsystem: State applied to " + "non-existing option/undefined error.");
         }
     }
 
@@ -29,6 +30,8 @@ public class IndexerSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Logger.recordOutput("States/Indexer", currentIndexingState.toString());
+        indexerIO.updateInputs(inputs);
+        Logger.processInputs(getName(), inputs);
 
         applyState();
     }

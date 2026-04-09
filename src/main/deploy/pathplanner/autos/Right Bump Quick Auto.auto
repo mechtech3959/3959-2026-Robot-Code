@@ -19,6 +19,12 @@
         {
           "type": "named",
           "data": {
+            "name": "AlignDrive"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ShootAuto"
           }
         }

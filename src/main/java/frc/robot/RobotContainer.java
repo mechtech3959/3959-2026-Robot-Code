@@ -135,9 +135,9 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootAuto", Commands.runOnce(() -> {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
         }));
-                NamedCommands.registerCommand("AlignDrive", Commands.runOnce(() -> {
+        NamedCommands.registerCommand("AlignDrive", Commands.runOnce(() -> {
             drivetrainSubsystem.changeState(SwerveStates.Heading);
-                }));
+        }));
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
         ledHandler.handleLEDs();
@@ -197,8 +197,9 @@ public class RobotContainer {
 
                 });
     }
-    private Command timmedDualRumble(){
-        return Commands.sequence();
+
+    private Command timmedDualRumble() {
+        return controllerDualRumbleCommand().withTimeout(0.3);
     }
 
     private Command intakeCommand() {
@@ -216,8 +217,10 @@ public class RobotContainer {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.STARTING_CONFIG);
 
         }));
-        driverController.leftBumper()
-                .toggleOnTrue(intakeCommand().alongWith(controllerDualRumbleCommand().withTimeout(0.1)));
+        shooterStopperController.leftBumper()
+                .toggleOnTrue(Commands.parallel(
+                        intakeCommand(),
+                        timmedDualRumble()));
         // driverController.a().onChange(Commands.runOnce(() -> {
         // drivetrainSubsystem.changeState(SwerveStates.Heading);
         // }));
@@ -239,25 +242,32 @@ public class RobotContainer {
         // drivetrainSubsystem.changeState(SwerveStates.Climb);
         // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
         // }));
-        shooterStopperController.rightTrigger().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
-        }));
-        shooterStopperController.rightBumper().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
-        }));
-        driverController.x().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
-        }));
-        shooterStopperController.y().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
-        }));
-        shooterStopperController.x().onTrue(Commands.runOnce(() -> {
-            superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
-        }));
+        shooterStopperController.rightTrigger().onTrue(
+                Commands.parallel(Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
+                }), timmedDualRumble()));
+        shooterStopperController.rightBumper().onTrue(
+                Commands.parallel(Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
+                }), timmedDualRumble()));
+        driverController.x().onTrue(Commands.parallel(
+                Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+                }), timmedDualRumble()));
+        shooterStopperController.y().onTrue(Commands.parallel(
+                Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
+                }), timmedDualRumble()));
+        shooterStopperController.x().onTrue(
+                Commands.parallel(Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+                }), timmedDualRumble()));
         shooterStopperController.start().onTrue(Commands.runOnce(() -> {
             drivetrainSubsystem.seedField();
         }));
-
+        shooterStopperController.start().onTrue(Commands.runOnce(() -> {
+            resetAllianceHeading();
+        }));
     }
 
     public Command getAutonomousCommand() {
