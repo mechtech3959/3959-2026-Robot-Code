@@ -262,6 +262,10 @@ public class RobotContainer {
                 Commands.parallel(Commands.runOnce(() -> {
                     superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
                 }), timmedDualRumble()));
+        shooterStopperController.a().onTrue(
+                Commands.parallel(Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.UNJAM);
+                }), timmedDualRumble()));
         shooterStopperController.start().onTrue(Commands.runOnce(() -> {
             drivetrainSubsystem.seedField();
         }));

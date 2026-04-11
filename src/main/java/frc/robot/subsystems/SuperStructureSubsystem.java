@@ -26,6 +26,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         SHOOTING__CLOSE,
         SHOOTING__FAR,
         SHOOTING_STOP,
+        UNJAM,
         TRAVEL,
 
         PREP_CLIMB,
@@ -77,6 +78,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
             case TRAVEL -> travel();
             case CLIMBING -> climbing();
             case PREP_CLIMB -> prep_Climb();
+            case UNJAM -> unjam();
             case STARTING_CONFIG ->
                 starting_Config();
 
@@ -93,12 +95,18 @@ public class SuperStructureSubsystem extends SubsystemBase {
 
     public void estimatedDistance() {
         double distance = vision.getDistanceToTarget();
-        Logger.recordOutput("distance",distance);
+        Logger.recordOutput("distance", distance);
         if (distance < 0) {
             return; // Invalid distance, do not update shooter speed
         }
         shooter.setEstimatedRPS(shooterMap.getShooterSpeedForDistance(distance));
 
+    }
+
+    public void unjam() {
+        indexer.changeState(IndexerStates.REVERSE);
+        conveyor.changeState(ConveyorStates.REVERSE);
+        shooter.changeState(ShooterStates.REST);
     }
 
     public void intaking() {
@@ -112,7 +120,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
         // if (climber.getState() != ClimberStates.HOME)
         // climber.changeState(ClimberStates.HOME);
         // if (climber.getPosition() < 90) {
-         intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.7);
+        intake.changeState(IntakeStates.INTAKE, FeedStates.RUN, 0.7);
 
         // }
         // if (intake.getState() != IntakeStates.INTAKE)

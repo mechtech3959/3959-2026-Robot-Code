@@ -26,6 +26,11 @@ public class ConveyorREVIO implements ConveyorIO {
     public void stopConveyorMotor() {
         conveyorMotor.set(0);
     }
+
+    @Override
+    public void reverseConveyorMotor(){
+        conveyorMotor.set(-0.5);
+    }
     @Override
     public void updateInputs(ConveyorIOInputs inputs) {
         inputs.motorCurrent = conveyorMotor.getOutputCurrent();
