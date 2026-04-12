@@ -29,9 +29,8 @@ public class IndexerREVIO implements IndexerIO {
     }
 
     @Override
-    public void reverseMotor(){
-                fuelIndexingMotor.set(-1);
-
+    public void reverseMotor() {
+        fuelIndexingMotor.set(-1);
     }
 
     @Override
