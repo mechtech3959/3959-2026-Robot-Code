@@ -1,29 +1,3 @@
-[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{0}: checkout: moving from 2c470b2e675942a08d9c2a8cf9b6f847a8b7c282 to RCR
-[33m2c470b2[m HEAD@{1}: commit: end rcr
-[33m21a8574[m HEAD@{2}: commit: day 1
-[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{3}: checkout: moving from RCR to 2c73d701889fa1dd59a89a8821cbbc06ce1b773f
-[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{4}: checkout: moving from main to RCR
-[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{5}: checkout: moving from PreRCR to main
-[33m2bad185[m[33m ([m[1;31morigin/PreRCR[m[33m, [m[1;32mPreRCR[m[33m)[m HEAD@{6}: checkout: moving from main to PreRCR
-[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{7}: pull --tags origin main: Fast-forward
-[33m90c1d26[m HEAD@{8}: checkout: moving from PreRCR to main
-[33m2bad185[m[33m ([m[1;31morigin/PreRCR[m[33m, [m[1;32mPreRCR[m[33m)[m HEAD@{9}: commit: final changes pre RCR
-[33m459b7c7[m HEAD@{10}: commit: lasr night physical testing
-[33m40e87f4[m HEAD@{11}: commit: autoshoot
-[33med84487[m HEAD@{12}: checkout: moving from PPLib to PreRCR
-[33ma88d216[m[33m ([m[1;31morigin/PPLib[m[33m, [m[1;32mPPLib[m[33m)[m HEAD@{13}: commit: Refactor auto commands and paths; update current limits and PID configurations for improved performance
-[33meb21111[m HEAD@{14}: commit: clean configuration & startup
-[33m3b52b6a[m HEAD@{15}: pull --tags origin PPLib: Fast-forward
-[33ma5ed645[m HEAD@{16}: commit: Fix drivetrain velocity calculations and adjust intake soft limit; begin auto shoot tuning
-[33m90e91da[m HEAD@{17}: commit: Add intake command and adjust drivetrain and vision subsystem logic& climbing
-[33ma59392c[m HEAD@{18}: commit: state logging
-[33m762f3cc[m HEAD@{19}: commit: make paths & fix tuner values
-[33mda80073[m HEAD@{20}: pull --tags origin PPLib: Fast-forward
-[33mb04a603[m HEAD@{21}: commit: update path planner waypoints and adjust drivetrain rotation logic
-[33m891accf[m HEAD@{22}: commit: change tuning & raise current limits
-[33m60b6453[m HEAD@{23}: commit: debugging changes
-[33m926dbca[m HEAD@{24}: pull --tags origin PPLib: Fast-forward
-[33maed51b7[m HEAD@{25}: commit: test ready
 [33m90c1d26[m HEAD@{26}: checkout: moving from main to PPLib
 [33m90c1d26[m HEAD@{27}: pull --tags origin main: Fast-forward
 [33m2198760[m HEAD@{28}: checkout: moving from SMR to main
