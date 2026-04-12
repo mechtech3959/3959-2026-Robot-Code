@@ -1,0 +1,155 @@
+[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{0}: checkout: moving from 2c470b2e675942a08d9c2a8cf9b6f847a8b7c282 to RCR
+[33m2c470b2[m HEAD@{1}: commit: end rcr
+[33m21a8574[m HEAD@{2}: commit: day 1
+[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{3}: checkout: moving from RCR to 2c73d701889fa1dd59a89a8821cbbc06ce1b773f
+[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{4}: checkout: moving from main to RCR
+[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{5}: checkout: moving from PreRCR to main
+[33m2bad185[m[33m ([m[1;31morigin/PreRCR[m[33m, [m[1;32mPreRCR[m[33m)[m HEAD@{6}: checkout: moving from main to PreRCR
+[33m2c73d70[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mRCR[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/RCR[m[33m, [m[1;32mmain[m[33m)[m HEAD@{7}: pull --tags origin main: Fast-forward
+[33m90c1d26[m HEAD@{8}: checkout: moving from PreRCR to main
+[33m2bad185[m[33m ([m[1;31morigin/PreRCR[m[33m, [m[1;32mPreRCR[m[33m)[m HEAD@{9}: commit: final changes pre RCR
+[33m459b7c7[m HEAD@{10}: commit: lasr night physical testing
+[33m40e87f4[m HEAD@{11}: commit: autoshoot
+[33med84487[m HEAD@{12}: checkout: moving from PPLib to PreRCR
+[33ma88d216[m[33m ([m[1;31morigin/PPLib[m[33m, [m[1;32mPPLib[m[33m)[m HEAD@{13}: commit: Refactor auto commands and paths; update current limits and PID configurations for improved performance
+[33meb21111[m HEAD@{14}: commit: clean configuration & startup
+[33m3b52b6a[m HEAD@{15}: pull --tags origin PPLib: Fast-forward
+[33ma5ed645[m HEAD@{16}: commit: Fix drivetrain velocity calculations and adjust intake soft limit; begin auto shoot tuning
+[33m90e91da[m HEAD@{17}: commit: Add intake command and adjust drivetrain and vision subsystem logic& climbing
+[33ma59392c[m HEAD@{18}: commit: state logging
+[33m762f3cc[m HEAD@{19}: commit: make paths & fix tuner values
+[33mda80073[m HEAD@{20}: pull --tags origin PPLib: Fast-forward
+[33mb04a603[m HEAD@{21}: commit: update path planner waypoints and adjust drivetrain rotation logic
+[33m891accf[m HEAD@{22}: commit: change tuning & raise current limits
+[33m60b6453[m HEAD@{23}: commit: debugging changes
+[33m926dbca[m HEAD@{24}: pull --tags origin PPLib: Fast-forward
+[33maed51b7[m HEAD@{25}: commit: test ready
+[33m90c1d26[m HEAD@{26}: checkout: moving from main to PPLib
+[33m90c1d26[m HEAD@{27}: pull --tags origin main: Fast-forward
+[33m2198760[m HEAD@{28}: checkout: moving from SMR to main
+[33mfab01d9[m[33m ([m[1;31morigin/SMR[m[33m, [m[1;32mSMR[m[33m)[m HEAD@{29}: commit: smr day 3
+[33md156d77[m HEAD@{30}: commit: SMR day 3
+[33m0994d83[m HEAD@{31}: commit: morning back up
+[33m036e068[m HEAD@{32}: commit: .
+[33m51790b4[m HEAD@{33}: commit: claude please save me
+[33m7ea73e2[m HEAD@{34}: commit: SMR day one
+[33mf1b5771[m HEAD@{35}: checkout: moving from CombinedTesting to SMR
+[33m3caf9b4[m[33m ([m[1;31morigin/CombinedTesting[m[33m, [m[1;32mCombinedTesting[m[33m)[m HEAD@{36}: commit: SMR DAY 1(12AM)
+[33m431b2a3[m HEAD@{37}: commit: im tired
+[33mf7553f2[m HEAD@{38}: commit: fix vision Estimatiom, tune drivetrain, and climb req
+[33m1326e2b[m HEAD@{39}: commit: climbing swerve req
+[33m48dee70[m HEAD@{40}: commit: .
+[33mbb6c408[m HEAD@{41}: commit: implment vision
+[33m9e27f9b[m HEAD@{42}: checkout: moving from Climber-with-CTRE to CombinedTesting
+[33m5739422[m[33m ([m[1;31morigin/Climber-with-CTRE[m[33m, [m[1;32mClimber-with-CTRE[m[33m)[m HEAD@{43}: commit: claw ready
+[33m39f69c2[m HEAD@{44}: checkout: moving from CombinedTesting to Climber-with-CTRE
+[33m9e27f9b[m HEAD@{45}: commit: auto tests
+[33m3581c34[m HEAD@{46}: pull --tags origin CombinedTesting: Fast-forward
+[33md8f4de4[m HEAD@{47}: commit: ..
+[33me09c5f0[m HEAD@{48}: checkout: moving from Climber-with-CTRE to CombinedTesting
+[33m39f69c2[m HEAD@{49}: commit: ..
+[33mf7a40eb[m HEAD@{50}: pull --tags origin Climber-with-CTRE: Fast-forward
+[33m89b8181[m HEAD@{51}: checkout: moving from CombinedTesting to Climber-with-CTRE
+[33me09c5f0[m HEAD@{52}: commit: intake rev swap
+[33m681edb0[m HEAD@{53}: commit: visual vm
+[33ma706946[m HEAD@{54}: commit: Working
+[33md2c4b4f[m HEAD@{55}: commit: working intake
+[33m441f61b[m HEAD@{56}: commit: Refactor subsystems: streamline state management and enhance functionality in SuperStructure, Conveyor, Indexer, Intake, and Shooter subsystems.
+[33mdb12f36[m HEAD@{57}: checkout: moving from Climber-with-CTRE to CombinedTesting
+[33m89b8181[m HEAD@{58}: pull --tags origin Climber-with-CTRE: Fast-forward
+[33m5fb7a45[m HEAD@{59}: commit: Refactor climber subsystem: replace ClimberCTRE with ClimberCTREIO and update position settings
+[33m81ea250[m HEAD@{60}: checkout: moving from CombinedTesting to Climber-with-CTRE
+[33mdb12f36[m HEAD@{61}: pull --tags origin CombinedTesting: Fast-forward
+[33m86d605b[m HEAD@{62}: checkout: moving from Drivetrain&Autonomous-Phase-#2 to CombinedTesting
+[33m5d3ea64[m[33m ([m[1;31morigin/Drivetrain&Autonomous-Phase-#2[m[33m, [m[1;32mDrivetrain&Autonomous-Phase-#2[m[33m)[m HEAD@{63}: checkout: moving from CombinedTesting to Drivetrain&Autonomous-Phase-#2
+[33m86d605b[m HEAD@{64}: commit: Refactor ConveyorIO and ShooterSubsystem: add input management in ConveyorIO, adjust max speeds in DrivetrainSubsystem, and improve shooter status handling.
+[33m26caabe[m HEAD@{65}: commit: Refactor subsystems: update intake and shooter state management, remove unused indexer files, and enhance structure for better clarity and functionality.
+[33m2198760[m HEAD@{66}: checkout: moving from main to CombinedTesting
+[33m2198760[m HEAD@{67}: commit: fix errors
+[33me9f159d[m HEAD@{68}: pull --tags origin main: Fast-forward
+[33m4f10040[m HEAD@{69}: checkout: moving from merge-conflict to main
+[33m8498a25[m[33m ([m[1;31morigin/merge-conflict[m[33m, [m[1;32mmerge-conflict[m[33m)[m HEAD@{70}: commit: ..
+[33m00726d8[m HEAD@{71}: commit: Merge branch 'Drivetrain&Autonomous-Phase-#2'
+[33m4f10040[m HEAD@{72}: checkout: moving from main to merge-conflict
+[33m4f10040[m HEAD@{73}: checkout: moving from Drivetrain&Autonomous-Phase-#2 to main
+[33m5d3ea64[m[33m ([m[1;31morigin/Drivetrain&Autonomous-Phase-#2[m[33m, [m[1;32mDrivetrain&Autonomous-Phase-#2[m[33m)[m HEAD@{74}: checkout: moving from Drivetrain&Autonomous-Phase-#2 to Drivetrain&Autonomous-Phase-#2
+[33m5d3ea64[m[33m ([m[1;31morigin/Drivetrain&Autonomous-Phase-#2[m[33m, [m[1;32mDrivetrain&Autonomous-Phase-#2[m[33m)[m HEAD@{75}: checkout: moving from main to Drivetrain&Autonomous-Phase-#2
+[33m4f10040[m HEAD@{76}: pull --tags origin main: Fast-forward
+[33m3631d02[m HEAD@{77}: checkout: moving from Drivetrain&Autonomous-Phase-#2 to main
+[33m5d3ea64[m[33m ([m[1;31morigin/Drivetrain&Autonomous-Phase-#2[m[33m, [m[1;32mDrivetrain&Autonomous-Phase-#2[m[33m)[m HEAD@{78}: pull --tags origin Drivetrain&Autonomous-Phase-#2: Fast-forward
+[33m697df33[m HEAD@{79}: checkout: moving from Intake-Phase-#2 to Drivetrain&Autonomous-Phase-#2
+[33md39632e[m[33m ([m[1;31morigin/Intake-Phase-#2[m[33m, [m[1;32mIntake-Phase-#2[m[33m)[m HEAD@{80}: pull --tags origin Intake-Phase-#2: Fast-forward
+[33m0d38e99[m HEAD@{81}: checkout: moving from Drivetrain&Autonomous-Phase-#2 to Intake-Phase-#2
+[33m697df33[m HEAD@{82}: commit: working drive
+[33m0aa4a7c[m HEAD@{83}: checkout: moving from Intake-Phase-#2 to Drivetrain&Autonomous-Phase-#2
+[33m0d38e99[m HEAD@{84}: commit: ..
+[33m345857d[m HEAD@{85}: checkout: moving from Shooter-Phase-#2 to Intake-Phase-#2
+[33m2b92f47[m[33m ([m[1;32mShooter-Phase-#2[m[33m)[m HEAD@{86}: checkout: moving from Intake-Phase-#2 to Shooter-Phase-#2
+[33m345857d[m HEAD@{87}: commit: update map & id
+[33m2b46711[m HEAD@{88}: checkout: moving from Shooter-Phase-#2 to Intake-Phase-#2
+[33m2b92f47[m[33m ([m[1;32mShooter-Phase-#2[m[33m)[m HEAD@{89}: checkout: moving from Drivetrain&Autonomous-Phase-#2 to Shooter-Phase-#2
+[33m0aa4a7c[m HEAD@{90}: commit: Elastic swerve display
+[33maf41993[m HEAD@{91}: checkout: moving from LED-Phase-#1 to Drivetrain&Autonomous-Phase-#2
+[33ma1a131c[m[33m ([m[1;31morigin/LED-Phase-#1[m[33m, [m[1;32mLED-Phase-#1[m[33m)[m HEAD@{92}: commit: led init
+[33m3631d02[m HEAD@{93}: checkout: moving from main to LED-Phase-#1
+[33m3631d02[m HEAD@{94}: checkout: moving from Drivetrain&Autonomous-Phase-#2 to main
+[33maf41993[m HEAD@{95}: commit: ..
+[33m3631d02[m HEAD@{96}: checkout: moving from main to Drivetrain&Autonomous-Phase-#2
+[33m3631d02[m HEAD@{97}: pull --tags origin main: Fast-forward
+[33m95f09ea[m HEAD@{98}: checkout: moving from Intake-Phase-#2 to main
+[33m2b46711[m HEAD@{99}: commit: intake
+[33m95f09ea[m HEAD@{100}: checkout: moving from main to Intake-Phase-#2
+[33m95f09ea[m HEAD@{101}: commit: robotMap
+[33mea861e7[m HEAD@{102}: pull --tags origin main: Fast-forward
+[33m64a558c[m HEAD@{103}: checkout: moving from fix-interfaces-and-format-MAIN-2/27 to main
+[33me553b34[m[33m ([m[1;31morigin/fix-interfaces-and-format-MAIN-2/27[m[33m, [m[1;32mfix-interfaces-and-format-MAIN-2/27[m[33m)[m HEAD@{104}: commit: yall init
+[33m31992bc[m HEAD@{105}: commit: intake & feed
+[33m879c5a9[m HEAD@{106}: commit: format and fix interfaces
+[33m64a558c[m HEAD@{107}: checkout: moving from main to fix-interfaces-and-format-MAIN-2/27
+[33m64a558c[m HEAD@{108}: pull --tags origin main: Fast-forward
+[33m04667ff[m HEAD@{109}: checkout: moving from vision to main
+[33me3b153c[m[33m ([m[1;31morigin/vision[m[33m, [m[1;32mvision[m[33m)[m HEAD@{110}: commit: ..
+[33m93b2d89[m HEAD@{111}: checkout: moving from Shooter-Phase-#2 to vision
+[33m2b92f47[m[33m ([m[1;32mShooter-Phase-#2[m[33m)[m HEAD@{112}: commit: additonal current logs
+[33mf00bc9e[m HEAD@{113}: commit: ..
+[33m73d9751[m HEAD@{114}: checkout: moving from Auto-Phase-#2 to Shooter-Phase-#2
+[33m14494c2[m[33m ([m[1;31morigin/Auto-Phase-#2[m[33m, [m[1;32mAuto-Phase-#2[m[33m)[m HEAD@{115}: commit: ..
+[33m03918f0[m HEAD@{116}: checkout: moving from Shooter-Phase-#2 to Auto-Phase-#2
+[33m73d9751[m HEAD@{117}: checkout: moving from Auto-Phase-#2 to Shooter-Phase-#2
+[33m03918f0[m HEAD@{118}: commit: ..
+[33mc5b455d[m HEAD@{119}: checkout: moving from Shooter-Phase-#2 to Auto-Phase-#2
+[33m73d9751[m HEAD@{120}: reset: moving to HEAD
+[33m73d9751[m HEAD@{121}: commit: tuning 2/23/26
+[33m59d66c1[m HEAD@{122}: commit: invert and autolog
+[33mcf8cd14[m HEAD@{123}: checkout: moving from shootertesting to Shooter-Phase-#2
+[33mc4ed447[m[33m ([m[1;31morigin/shootertesting[m[33m, [m[1;32mshootertesting[m[33m)[m HEAD@{124}: checkout: moving from vision to shootertesting
+[33m93b2d89[m HEAD@{125}: commit: auto log vision
+[33mb065a2d[m HEAD@{126}: checkout: moving from Auto-Phase-#2 to vision
+[33mc5b455d[m HEAD@{127}: commit: testing
+[33m04667ff[m HEAD@{128}: checkout: moving from main to Auto-Phase-#2
+[33m04667ff[m HEAD@{129}: checkout: moving from Shooter-Phase-#2 to main
+[33mcf8cd14[m HEAD@{130}: commit: ..
+[33m04667ff[m HEAD@{131}: checkout: moving from main to Shooter-Phase-#2
+[33m04667ff[m HEAD@{132}: pull --tags origin main: Fast-forward
+[33m33e9a3a[m HEAD@{133}: checkout: moving from shootertesting to main
+[33mc4ed447[m[33m ([m[1;31morigin/shootertesting[m[33m, [m[1;32mshootertesting[m[33m)[m HEAD@{134}: checkout: moving from main-cleanup to shootertesting
+[33mb849520[m[33m ([m[1;31morigin/main-cleanup[m[33m, [m[1;32mmain-cleanup[m[33m)[m HEAD@{135}: commit: ..
+[33mebdb3de[m HEAD@{136}: commit: comment replay
+[33m33e9a3a[m HEAD@{137}: checkout: moving from main to main-cleanup
+[33m33e9a3a[m HEAD@{138}: pull --tags origin main: Fast-forward
+[33mddbcaa0[m HEAD@{139}: checkout: moving from shootertesting to main
+[33mc4ed447[m[33m ([m[1;31morigin/shootertesting[m[33m, [m[1;32mshootertesting[m[33m)[m HEAD@{140}: commit: Testung publish
+[33mddbcaa0[m HEAD@{141}: checkout: moving from main to shootertesting
+[33mddbcaa0[m HEAD@{142}: checkout: moving from drivetrain to main
+[33m0b5741e[m[33m ([m[1;31morigin/drivetrain[m[33m, [m[1;32mdrivetrain[m[33m)[m HEAD@{143}: commit: sims
+[33me55cc53[m HEAD@{144}: checkout: moving from main to drivetrain
+[33mddbcaa0[m HEAD@{145}: pull --tags origin main: Fast-forward
+[33mbdcd113[m HEAD@{146}: checkout: moving from shooterinit to main
+[33md6a9425[m[33m ([m[1;31morigin/shooterinit[m[33m, [m[1;32mshooterinit[m[33m)[m HEAD@{147}: commit: init complete
+[33m5d8e645[m HEAD@{148}: commit: Refactor shooter subsystem for improved speed control and state management
+[33m080aa96[m HEAD@{149}: commit: useable
+[33m2ae1f56[m HEAD@{150}: checkout: moving from main to shooterinit
+[33mbdcd113[m HEAD@{151}: pull --tags origin main: Fast-forward
+[33m8bde5f8[m HEAD@{152}: commit: init
+[33m717d9ab[m HEAD@{153}: Branch: renamed refs/heads/master to refs/heads/main
+[33m717d9ab[m HEAD@{155}: commit (initial): first commit
