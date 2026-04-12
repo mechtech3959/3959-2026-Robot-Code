@@ -28,7 +28,7 @@ public class ConveyorREVIO implements ConveyorIO {
     }
 
     @Override
-    public void reverseConveyorMotor(){
+    public void reverseConveyorMotor() {
         conveyorMotor.set(-0.5);
     }
     @Override
