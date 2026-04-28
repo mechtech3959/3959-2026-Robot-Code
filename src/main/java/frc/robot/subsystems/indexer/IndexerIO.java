@@ -11,6 +11,9 @@ public interface IndexerIO {
     }
     default void runForwardMotor() {
     }
+     default void reverseMotor() {
+    }
+
 
     default void stopMotor() {
     }

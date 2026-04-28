@@ -18,6 +18,7 @@ public class IndexerSubsystem extends SubsystemBase {
         switch (currentIndexingState) {
             case RUN -> indexerIO.runForwardMotor();
             case STOP -> indexerIO.stopMotor();
+            case REVERSE -> indexerIO.reverseMotor();
             default -> System.out.println(
                     "Error in Fuel Indexing Subsystem: State applied to " + "non-existing option/undefined error.");
         }
@@ -38,6 +39,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     public enum IndexerStates {
         RUN,
-        STOP
+        STOP,
+        REVERSE
     }
 }

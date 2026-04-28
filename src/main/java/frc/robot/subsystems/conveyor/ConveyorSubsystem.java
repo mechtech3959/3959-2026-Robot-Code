@@ -18,6 +18,7 @@ public class ConveyorSubsystem extends SubsystemBase {
         switch (currentConveyorState) {
             case RUN -> conveyorIO.runConveyorMotor();
             case STOP -> conveyorIO.stopConveyorMotor();
+            case REVERSE -> conveyorIO.reverseConveyorMotor();
             default -> System.out.println(
                     "Error in Conveyor Subsystem: State applied to " + "non-existing option/undefined error.");
 
@@ -38,6 +39,7 @@ public class ConveyorSubsystem extends SubsystemBase {
 
     public enum ConveyorStates {
         RUN,
+        REVERSE,
         STOP
     }
 }

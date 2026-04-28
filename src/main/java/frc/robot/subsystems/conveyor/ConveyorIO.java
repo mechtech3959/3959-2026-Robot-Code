@@ -15,6 +15,9 @@ public interface ConveyorIO {
 
     default void stopConveyorMotor() {
     }
+
+    default void reverseConveyorMotor() {
+    }
     default void setSpeed(double speed) {
     }
     default void updateInputs(ConveyorIOInputs inputs) {
