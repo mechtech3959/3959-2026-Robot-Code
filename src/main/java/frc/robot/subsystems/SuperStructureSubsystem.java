@@ -26,6 +26,8 @@ public class SuperStructureSubsystem extends SubsystemBase {
         SHOOTING__CLOSE,
         SHOOTING__FAR,
         SHOOTING_STOP,
+        SHOOTING__JUGGLE,
+
         UNJAM,
         TRAVEL,
 
@@ -75,6 +77,7 @@ public class SuperStructureSubsystem extends SubsystemBase {
             case SHOOTING__CLOSE -> closeShoot();
             case SHOOTING__FAR -> farShoot();
             case SHOOTING_STOP -> stopShooting();
+            case SHOOTING__JUGGLE -> juggleShoot();
             case TRAVEL -> travel();
             case CLIMBING -> climbing();
             case PREP_CLIMB -> prep_Climb();
@@ -218,6 +221,12 @@ public class SuperStructureSubsystem extends SubsystemBase {
         indexer.changeState(IndexerStates.RUN);
         conveyor.changeState(ConveyorStates.RUN);
         shooter.changeState(ShooterStates.KNOWN_FAR);
+
+    }
+    public void juggleShoot(){
+        indexer.changeState(IndexerStates.RUN);
+        conveyor.changeState(ConveyorStates.RUN);
+        shooter.changeState(ShooterStates.INTAKE);
 
     }
 

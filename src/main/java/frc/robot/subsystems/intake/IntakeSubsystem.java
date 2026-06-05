@@ -2,17 +2,15 @@ package frc.robot.subsystems.intake;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
 import frc.robot.subsystems.intake.feed.FeedSubsystem;
+import frc.robot.subsystems.intake.feed.FeedSubsystem.FeedStates;
 
 public class IntakeSubsystem extends SubsystemBase {
     public enum IntakeStates {
         STOW,
         MID_STOW,
         INTAKE,
-
         START,
         TEST
     }
@@ -38,9 +36,9 @@ public class IntakeSubsystem extends SubsystemBase {
             case MID_STOW ->
                 intakeIO.setControl(0.1);
             case INTAKE ->
-            // was 0.3
+                // was 0.3
                 intakeIO.setControl(0.3);
-          
+
             case TEST -> {
             }
             case START -> {
@@ -57,7 +55,6 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeStates getState() {
         return currentIntakeState;
     }
- 
 
     public void changeState(IntakeStates state) {
         this.currentIntakeState = state;

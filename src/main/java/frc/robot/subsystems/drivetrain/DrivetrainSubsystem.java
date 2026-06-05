@@ -10,7 +10,6 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -160,7 +159,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         double xMagnitude = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
         double yMagnitude = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
         double angularMagnitude = MathUtil.applyDeadband(controller.getRightX(), 0.1);
-        double ramp = 1.1; //- controller.getLeftTriggerAxis();
+        double ramp = 1.1; // - controller.getLeftTriggerAxis();
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 
@@ -225,7 +224,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         double xMagnitude = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
         double yMagnitude = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
         double angularMagnitude = MathUtil.applyDeadband(controller.getRightX(), 0.1);
-        double ramp = 1.1; //- controller.getLeftTriggerAxis();
+        double ramp = 1.1; // - controller.getLeftTriggerAxis();
 
         angularMagnitude = Math.copySign(angularMagnitude * angularMagnitude, angularMagnitude);
 

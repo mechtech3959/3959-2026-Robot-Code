@@ -2,8 +2,6 @@ package frc.robot.generated;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.*;
 
 /**
  * Generated file containing variables defined in Choreo.
@@ -19,8 +17,10 @@ public final class ChoreoVars {
         public static final Pose2d BLFarShooting = new Pose2d(0.943, 7.073, Rotation2d.kZero);
         public static final Pose2d BLTFLIP = new Pose2d(2.6, 7.1, Rotation2d.fromRadians(3.142));
 
-        private Poses() {}
+        private Poses() {
+        }
     }
 
-    private ChoreoVars() {}
+    private ChoreoVars() {
+    }
 }
