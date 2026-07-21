@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface IndexerIO {
     @AutoLog
-    public class indexerIOInputs {
+    public class IndexerIOInputs {
         double indexerSpeed = 0;
         double indexerCurrent = 0;
         double indexerTemperature = 0;
@@ -19,6 +19,6 @@ public interface IndexerIO {
     default void stopMotor() {
     }
 
-    default void updateInputs(indexerIOInputs inputs) {
+    default void updateInputs(IndexerIOInputs inputs) {
     }
 }

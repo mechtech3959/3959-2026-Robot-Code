@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -117,7 +115,7 @@ public class RobotContainer {
         shooterMap = new ShooterMap();
         ledIO = new LEDCTREIO();
         ledSubsystem = new LEDSubsystem(ledIO);
-        ledHandler = new LEDHandler(ledSubsystem, superStructureSubsystem, intakeSubsystem,
+        ledHandler = new LEDHandler(ledSubsystem, intakeSubsystem,
                 shooterSubsystem, drivetrainSubsystem);
         drivetrainSubsystem.configureAutoBuilder();
         NamedCommands.registerCommand("ShootClose", Commands.runOnce(() -> {

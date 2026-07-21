@@ -34,7 +34,7 @@ public class IndexerREVIO implements IndexerIO {
     }
 
     @Override
-    public void updateInputs(indexerIOInputs inputs) {
+    public void updateInputs(IndexerIOInputs inputs) {
         inputs.indexerCurrent = fuelIndexingMotor.getOutputCurrent();
         inputs.indexerSpeed = fuelIndexingMotor.get();
         inputs.indexerTemperature = fuelIndexingMotor.getMotorTemperature();

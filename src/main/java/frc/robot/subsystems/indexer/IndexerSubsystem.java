@@ -5,6 +5,12 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
+    public enum IndexerStates {
+        RUN,
+        STOP,
+        REVERSE
+    }
+
     private final IndexerIO indexerIO;
 
     public IndexerSubsystem(IndexerIO io) {
@@ -12,7 +18,7 @@ public class IndexerSubsystem extends SubsystemBase {
     }
 
     private IndexerStates currentIndexingState = IndexerStates.STOP;
-    private final indexerIOInputsAutoLogged inputs = new indexerIOInputsAutoLogged();
+    private final IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
 
     private void applyState() {
         switch (currentIndexingState) {
@@ -37,9 +43,4 @@ public class IndexerSubsystem extends SubsystemBase {
         applyState();
     }
 
-    public enum IndexerStates {
-        RUN,
-        STOP,
-        REVERSE
-    }
 }
