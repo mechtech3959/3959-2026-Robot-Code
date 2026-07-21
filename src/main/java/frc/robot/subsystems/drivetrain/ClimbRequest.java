@@ -23,13 +23,10 @@ public class ClimbRequest implements SwerveRequest {
     public final StatusCode apply(SwerveDrivetrain.SwerveControlParameters parameters,
             SwerveModule<?, ?, ?>... modulesToApply) {
 
-
         for (SwerveModule<?, ?, ?> rawModule : modulesToApply) {
             // Cast to the concrete module type expected by this request.
             @SuppressWarnings("unchecked")
             SwerveModule<TalonFX, TalonFX, CANcoder> module = (SwerveModule<TalonFX, TalonFX, CANcoder>) rawModule;
-
- 
 
             // Apply the calculated request to the module
             module.apply(m_driveRequest, m_TurnRequest.withPosition(0.5));

@@ -84,13 +84,15 @@ public interface DrivetrainIO {
         return new ChassisSpeeds();
     }
 
-   
     default void simulationInit() {
     }
 
     default void simulationPeriodic() {
     }
-    default void seedField(){}
+
+    default void seedField() {
+    }
+
     default void periodic() {
     }
 

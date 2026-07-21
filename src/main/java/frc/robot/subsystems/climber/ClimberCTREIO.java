@@ -23,7 +23,7 @@ public class ClimberCTREIO implements ClimberIO {
         // if (position != target) {
         climberMotor.setControl(request.withPosition(Units.degreesToRotations(position)));
         target = position;
-       //  }
+        // }
     }
 
     @Override

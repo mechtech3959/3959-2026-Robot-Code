@@ -48,7 +48,7 @@ public class ShooterSubsystem extends SubsystemBase {
             case KNOWN_FAR -> io.setShooterSpeed(53);
             case REST -> io.setShooterNeutral();
             case UNKNOWN -> io.setShooterSpeed(0);
-            case INTAKE -> io.setShooterSpeed(15);
+            case INTAKE -> io.setShooterSpeed(18);
             case AUTO -> io.setShooterSpeed(targetRPS);
             case TUNING -> io.setShooterSpeed(tuningRPS.get());
         }

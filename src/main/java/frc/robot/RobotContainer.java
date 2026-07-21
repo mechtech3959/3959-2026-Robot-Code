@@ -187,12 +187,12 @@ public class RobotContainer {
     private Command controllerDualRumbleCommand() {
         return Commands.startEnd(
                 () -> {
-                    shooterStopperController.getHID().setRumble(RumbleType.kBothRumble, 1.0);
+                    // shooterStopperController.getHID().setRumble(RumbleType.kBothRumble, 1.0);
                     driverController.getHID().setRumble(RumbleType.kBothRumble, 1.0);
 
                 },
                 () -> {
-                    shooterStopperController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+                    // shooterStopperController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
                     driverController.getHID().setRumble(RumbleType.kBothRumble, 0.0);
 
                 });
@@ -217,7 +217,7 @@ public class RobotContainer {
             superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.STARTING_CONFIG);
 
         }));
-        shooterStopperController.leftBumper()
+        driverController.leftBumper()
                 .toggleOnTrue(Commands.parallel(
                         intakeCommand(),
                         timmedDualRumble()));
@@ -242,11 +242,11 @@ public class RobotContainer {
         // drivetrainSubsystem.changeState(SwerveStates.Climb);
         // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.CLIMBING);
         // }));
-        shooterStopperController.rightTrigger().onTrue(
+        driverController.rightTrigger().onTrue(
                 Commands.parallel(Commands.runOnce(() -> {
                     superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__FAR);
                 }), timmedDualRumble()));
-        shooterStopperController.rightBumper().onTrue(
+        driverController.rightBumper().onTrue(
                 Commands.parallel(Commands.runOnce(() -> {
                     superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__CLOSE);
                 }), timmedDualRumble()));
@@ -254,22 +254,26 @@ public class RobotContainer {
                 Commands.runOnce(() -> {
                     superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
                 }), timmedDualRumble()));
-        shooterStopperController.y().onTrue(Commands.parallel(
+        driverController.y().onTrue(Commands.parallel(
                 Commands.runOnce(() -> {
                     superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_AUTO);
                 }), timmedDualRumble()));
-        shooterStopperController.x().onTrue(
-                Commands.parallel(Commands.runOnce(() -> {
-                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+        driverController.b().onTrue(Commands.parallel(
+                Commands.runOnce(() -> {
+                    superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING__JUGGLE);
                 }), timmedDualRumble()));
-        shooterStopperController.a().onTrue(
+        // shooterStopperController.x().onTrue(
+        // Commands.parallel(Commands.runOnce(() -> {
+        // superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.SHOOTING_STOP);
+        // }), timmedDualRumble()));
+        driverController.a().onTrue(
                 Commands.parallel(Commands.runOnce(() -> {
                     superStructureSubsystem.changeState(SuperStructureSubsystem.SuperStructureState.UNJAM);
                 }), timmedDualRumble()));
-        shooterStopperController.start().onTrue(Commands.runOnce(() -> {
-            drivetrainSubsystem.seedField();
-        }));
-        shooterStopperController.start().onTrue(Commands.runOnce(() -> {
+        // shooterStopperController.start().onTrue(Commands.runOnce(() -> {
+        // drivetrainSubsystem.seedField();
+        // }));
+        driverController.start().onTrue(Commands.runOnce(() -> {
             resetAllianceHeading();
         }));
     }

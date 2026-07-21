@@ -21,11 +21,13 @@ public class FeedCTREIO implements FeedIO {
     public void stopFeedMotor() {
         feedMotor.set(0.0);
     }
+
     @Override
     public void setSpeed(double speed) {
         feedMotor.set(speed);
     }
-    @Override 
+
+    @Override
     public void updateInputs(FeedIOInputs inputs) {
         inputs.motorStaturCurrent = feedMotor.getStatorCurrent().getValueAsDouble();
         inputs.motorSupplyCurrent = feedMotor.getSupplyCurrent().getValueAsDouble();
