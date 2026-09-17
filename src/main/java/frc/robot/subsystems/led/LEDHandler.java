@@ -4,14 +4,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.subsystems.SuperStructureSubsystem;
 import frc.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class LEDHandler {
         private final LEDSubsystem ledSubsystem;
-        private final SuperStructureSubsystem superStructureSubsystem;
         private final IntakeSubsystem intakeSubsystem;
         private final ShooterSubsystem shooterSubsystem;
         private final DrivetrainSubsystem drivetrainSubsystem;
@@ -23,11 +21,10 @@ public class LEDHandler {
         private final Trigger headingLockTrigger;
         private final Trigger teliDriveTrigger;
 
-        public LEDHandler(LEDSubsystem ledSubsystem, SuperStructureSubsystem superStructureSubsystem,
+        public LEDHandler(LEDSubsystem ledSubsystem, 
                         IntakeSubsystem intakeSubsystem, ShooterSubsystem shooterSubsystem,
                         DrivetrainSubsystem drivetrainSubsystem) {
                 this.ledSubsystem = ledSubsystem;
-                this.superStructureSubsystem = superStructureSubsystem;
                 this.intakeSubsystem = intakeSubsystem;
                 this.shooterSubsystem = shooterSubsystem;
                 this.drivetrainSubsystem = drivetrainSubsystem;

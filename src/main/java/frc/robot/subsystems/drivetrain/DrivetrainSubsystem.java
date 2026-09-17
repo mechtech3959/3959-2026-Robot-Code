@@ -31,7 +31,7 @@ import frc.robot.util.FieldBasedConstants;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-
+    // Enum representing the possible states of the swerve drive system
     public enum SwerveStates {
         Disabled,
         Brake,
@@ -102,7 +102,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // try { ... AutoBuilder.configure(..., this) ... } catch (Exception e) { ... }
         // <-- moved to configureAutoBuilder()
 
+        //try not to use SmartDashboard if you don't have to, it is slow and can cause issues with the robot code. Use Logger instead.
+        //Howwever, some things you cannot properly visualize with Elastic Dashboards, so we will use SmartDashboard for those things.
         SmartDashboard.putData("Swerve Drive", (SendableBuilder builder) -> {
+            //This displays the position and velocity vector of the swerve modules on the field, and the robot's heading on the field, which is useful for debugging and visualization.
             builder.setSmartDashboardType("SwerveDrive");
 
             builder.addDoubleProperty("Front Left Angle", () -> moduleInputs[0].steerAbsolutePositionRad, null);
@@ -122,7 +125,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         });
 
     }
-
+    
     @Override
     public void periodic() {
 
@@ -270,14 +273,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
         switch (currentDriveState) {
             case Disabled -> disable();
             case Brake -> brake();
-
             case PathPlannerTrajectory -> {
                 if (trajectoryTargetSpeeds != null) {
                     followPathPlannerTrajectory(trajectoryTargetSpeeds);
                 }
             }
             case TeleOp -> teleopDrive();
-
             case Heading -> headingDrive();
             case VisionHeading -> visionHeadingDrive();
             case Climb -> climb();

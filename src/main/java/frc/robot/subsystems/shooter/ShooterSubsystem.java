@@ -1,3 +1,16 @@
+// Why two different enums?(ShooterActions and ShooterStates)
+// The shooter has more variation in states. But the the motion of each state
+// doesnt vary much, EX: the shooter motors are either forward, backward, or
+// stopped. but we have several different versions of foward motion.
+// A status machine(ShooterActions) is used to debug what the should
+// theoretically vs what the shooter is actually doing.
+// Addtionally, the status machine is a vital simplification for the shooter to
+// communicate with other subsystems, like the indexer and intake. The indexer
+// and intake only need to know if the shooter is at speed or not, they dont
+// care about the specific state of the shooter
+// if this is applied system wide this could be used to prevent jams in the
+// indexer and conveyor.(not implemented yet)
+
 package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
@@ -6,9 +19,7 @@ import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
-    // TODO time longest possible time to shoot all balls / average time to shoot
-    // all
-    // balls, use this to determine auto shooting times
+    // Shooter Actions specifies the current physical output of the shooter.
     public enum ShooterActions {
         STOPPED,
         IDLE,
@@ -17,6 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
         SHOOTING
     }
 
+    // Shooter States is the current specific action the shooter is performing
     public enum ShooterStates {
         KNOWN_CLOSE,
         KNOWN_FAR,
